@@ -29,21 +29,24 @@ class Vision:
     # constructor
     def __init__(self, window_name=None, border_px=8, titlebar_pixels=30):
         # create a thread lock object
+        self.window_name = window_name
         self.border_pixels = border_px
         self.titlebar_pixels = titlebar_pixels
-        self.lock = Lock()
-
-        # find the handle for the window we want to capture.
-        # if no window name is given, capture the entire screen
-        if window_name is None:
-            self.hwnd = win32gui.GetDesktopWindow()
-        else:
-            self.hwnd = win32gui.FindWindow(None, window_name)
-            if not self.hwnd:
-                raise Exception('Window not found: {}'.format(window_name))
+        self.lock = Lock() 
         self._update_window_info()
 
     def _update_window_info(self):
+        # find the handle for the window we want to capture.
+        # if no window name is given, capture the entire screen
+        if self.window_name is None:
+            self.hwnd = win32gui.GetDesktopWindow()
+        else:
+            self.hwnd = win32gui.FindWindow(None, self.window_name)
+            
+        if not self.hwnd:
+            print(f'Window {self.window_name} not found')
+            return 
+
         # get the window size
         window_rect = win32gui.GetWindowRect(self.hwnd)
         self.w = window_rect[2] - window_rect[0]
@@ -62,42 +65,48 @@ class Vision:
 
     def get_screenshot(self) -> np.ndarray:
         self._update_window_info()
+        if self.hwnd is None:
+            return
         if not win32gui.IsWindowVisible(self.hwnd):
             return None
         # get the window image data
-        wDC = win32gui.GetWindowDC(self.hwnd)
+        try:
+            wDC = win32gui.GetWindowDC(self.hwnd)
 
-        dcObj = win32ui.CreateDCFromHandle(wDC)
-        cDC = dcObj.CreateCompatibleDC()
-        dataBitMap = win32ui.CreateBitmap()
-        dataBitMap.CreateCompatibleBitmap(dcObj, self.w, self.h)
-        cDC.SelectObject(dataBitMap)
-        cDC.BitBlt((0, 0), (self.w, self.h), dcObj, (self.cropped_x, self.cropped_y), win32con.SRCCOPY)
+            dcObj = win32ui.CreateDCFromHandle(wDC)
+            cDC = dcObj.CreateCompatibleDC()
+            dataBitMap = win32ui.CreateBitmap()
+            dataBitMap.CreateCompatibleBitmap(dcObj, self.w, self.h)
+            cDC.SelectObject(dataBitMap)
+            cDC.BitBlt((0, 0), (self.w, self.h), dcObj, (self.cropped_x, self.cropped_y), win32con.SRCCOPY)
 
-        # convert the raw data into a format opencv can read
-        #dataBitMap.SaveBitmapFile(cDC, 'debug.bmp')
-        signedIntsArray = dataBitMap.GetBitmapBits(True)
-        img = np.fromstring(signedIntsArray, dtype='uint8')
-        img.shape = (self.h, self.w, 4)
+            # convert the raw data into a format opencv can read
+            #dataBitMap.SaveBitmapFile(cDC, 'debug.bmp')
+            signedIntsArray = dataBitMap.GetBitmapBits(True)
+            img = np.fromstring(signedIntsArray, dtype='uint8')
+            img.shape = (self.h, self.w, 4)
 
-        # free resources
-        dcObj.DeleteDC()
-        cDC.DeleteDC()
-        win32gui.ReleaseDC(self.hwnd, wDC)
-        win32gui.DeleteObject(dataBitMap.GetHandle())
+            # free resources
+            dcObj.DeleteDC()
+            cDC.DeleteDC()
+            win32gui.ReleaseDC(self.hwnd, wDC)
+            win32gui.DeleteObject(dataBitMap.GetHandle())
 
-        # drop the alpha channel, or cv.matchTemplate() will throw an error like:
-        #   error: (-215:Assertion failed) (depth == CV_8U || depth == CV_32F) && type == _templ.type()
-        #   && _img.dims() <= 2 in function 'cv::matchTemplate'
-        img = img[..., :3]
+            # drop the alpha channel, or cv.matchTemplate() will throw an error like:
+            #   error: (-215:Assertion failed) (depth == CV_8U || depth == CV_32F) && type == _templ.type()
+            #   && _img.dims() <= 2 in function 'cv::matchTemplate'
+            img = img[..., :3]
 
-        # make image C_CONTIGUOUS to avoid errors that look like:
-        #   File ... in draw_rectangles
-        #   TypeError: an integer is required (got type tuple)
-        # see the discussion here:
-        # https://github.com/opencv/opencv/issues/14866#issuecomment-580207109
-        img = np.ascontiguousarray(img)
-        return img
+            # make image C_CONTIGUOUS to avoid errors that look like:
+            #   File ... in draw_rectangles
+            #   TypeError: an integer is required (got type tuple)
+            # see the discussion here:
+            # https://github.com/opencv/opencv/issues/14866#issuecomment-580207109
+            img = np.ascontiguousarray(img)
+            return img
+        except:
+            pass
+        return None
 
     # find the name of the window you're interested in.
     # once you have it, update window_capture()
