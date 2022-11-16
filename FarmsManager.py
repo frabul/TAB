@@ -7,14 +7,15 @@ from typing import Optional
 
 import cv2
 import numpy as np
-from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal
-from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard,
+from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal,QTimer
+from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard, 
                            QPixmap)
 from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
-                               QGraphicsItem, QGraphicsRectItem,
+                               QGraphicsItem, QGraphicsRectItem, 
                                QGraphicsScene, QGraphicsSceneMouseEvent,
                                QGraphicsView, QLabel, QMainWindow, QWidget,
-                               QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout
+                               QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout,
+                               
                                )
 
 import farms_positions
