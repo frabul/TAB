@@ -38,14 +38,18 @@ def handle_mouse_move(x,y):
     last_y = y
 
 QImageViewer.create_window('farms' )
+time.sleep(0.2)
 QImageViewer.set_mouse_move_handler("farms", handle_mouse_move) 
 
 vision.start()
 
-while True: 
+import keyboard
+import os
+while True:  
     update_image(last_x, last_y)
-    QImageViewer.show_image('farms', farms_img)
-    found = vision.is_keybord_enabled()
-    time.sleep(0.05)
-
+    QImageViewer.show_image('farms', farms_img) 
+    time.sleep(0.1)
+    if keyboard.is_pressed('ctrl+q'):
+        QImageViewer.WINMAN.app.exit()
+        os._exit(0)
  

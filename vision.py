@@ -12,7 +12,6 @@ pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe'
 
 
 class Vision:
-
     # threading properties
     stopped = True
     lock = None
@@ -32,8 +31,9 @@ class Vision:
         self.window_name = window_name
         self.border_pixels = border_px
         self.titlebar_pixels = titlebar_pixels
-        self.lock = Lock() 
+        self.lock = Lock()
         self._update_window_info()
+        
 
     def _update_window_info(self):
         # find the handle for the window we want to capture.
@@ -42,10 +42,10 @@ class Vision:
             self.hwnd = win32gui.GetDesktopWindow()
         else:
             self.hwnd = win32gui.FindWindow(None, self.window_name)
-            
+
         if not self.hwnd:
             print(f'Window {self.window_name} not found')
-            return 
+            return
 
         # get the window size
         window_rect = win32gui.GetWindowRect(self.hwnd)
@@ -139,6 +139,12 @@ class Vision:
             return min
         return val
 
+    def get_section(self, top_left, bot_right) -> (np.ndarray or None):
+        x, y = top_left
+        w = bot_right[0] - x
+        h = bot_right[1] - y
+        return self.get_rectangle_proportional((x, y, w, h))
+
     def get_rectangle_proportional(self, rectangle) -> (np.ndarray or None):
         ''' rectangele defined by (x,y,w,h) '''
         if self.screenshot is None:
@@ -184,12 +190,18 @@ class Vision:
     #    str_read :str = txts[0][1].upper()
     #    return "OK" in str_read
     def is_keybord_enabled(self):
+        if not self.is_ready():
+            raise Exception('vision not ready')
+
         img = self.get_rectngle_2p((0.81, 0.95), (0.90, 0.98))
         #cv2.imshow("ok", img)
         txt: str = pytesseract.image_to_string(img).strip().upper()
         return "OK" in txt or "0K" in txt
 
+    def is_ready(self) -> bool:
+        return not self.screenshot is None
     # threading methods
+
     def start(self):
         self.stopped = False
         t = Thread(target=self._worker_method)
@@ -208,3 +220,9 @@ class Vision:
                 self.lock.acquire()
                 self.screenshot = screenshot
                 self.lock.release()
+
+   
+
+    
+
+

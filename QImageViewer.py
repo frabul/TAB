@@ -83,8 +83,8 @@ class WinManager(QObject):
         self.windows: dict[str, ImageViewer] = {}
         self.app = QApplication(sys.argv)
         self.app.setQuitOnLastWindowClosed(False)
-        while True:
-            self.app.exec()
+        #while True:
+        self.app.exec()
         self.is_running = False
 
     def set_mouse_move_handler(self, winName: str, handler: typing.Callable[[int, int], None]) -> None:
