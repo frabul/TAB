@@ -97,19 +97,21 @@ class ScreenShotAnalyzer(QMainWindow):
     def handle_label_mouse_release(self, event: QMouseEvent) -> None:
         pos = event.position().toPoint().toTuple()
         self.drag_end_pos = pos
+        w =  self.label_screen.size().width()
+        h =  self.label_screen.size().height()
         self.top_left = (
-            min( self.drag_init_pos[0], self.drag_end_pos[0]),
-            min( self.drag_init_pos[1], self.drag_end_pos[1])
+            round(min( self.drag_init_pos[0], self.drag_end_pos[0]) / w,3),
+            round(min( self.drag_init_pos[1], self.drag_end_pos[1]) / h,3)
         )
         self.bot_right = (
-            max( self.drag_init_pos[0], self.drag_end_pos[0]),
-            max( self.drag_init_pos[1], self.drag_end_pos[1])
+            round(max( self.drag_init_pos[0], self.drag_end_pos[0]) / w,3),
+            round(max( self.drag_init_pos[1], self.drag_end_pos[1]) / h,3)
         )
 
     def handle_label_mouse_move(self, event: QMouseEvent) -> None:
         x, y = event.position().toTuple()
         x_rel = x / self.label_screen.size().width()
-        y_rel = y / self.label_screen.size().width()
+        y_rel = y / self.label_screen.size().height()
         self.last_pos = event.position().toPoint().toTuple()
         self.last_pos_rel = (round(x_rel, 3), round(y_rel, 3))
 

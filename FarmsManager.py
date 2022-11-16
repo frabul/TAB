@@ -96,7 +96,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.label_cursor.setText("Cursor: (0, 0)")
         self.label_cursor.setSizePolicy(fixedPolicy)
         self.side_gui.addWidget(self.label_cursor)
-
+ 
         # label_position
         self.label_position = QLabel()
         self.label_position.setText("Last Selected: (0, 0)")

@@ -1,3 +1,4 @@
+import typing
 import cv2 as cv
 import cv2
 import numpy as np
@@ -8,18 +9,19 @@ import QImageViewer
 from vision import Vision
 from recognition import Recognition
 
+
 class Droid:
     def __init__(self, vision: Vision) -> None:
         self.vision = vision
         self.recognition = Recognition(vision)
         pass
 
-    def click_app(self, pos, dismiss_keyboard=True):
+    def click_app(self, pos, dismiss_keyboard=True, delay_after=0.15):
         if dismiss_keyboard:
             self.assure_keyboard_disabled()
         cx, cy = self.vision.get_screen_position_rel(pos)
         pyautogui.leftClick(x=cx, y=cy)
-        sleep(0.15)
+        sleep(delay_after)
 
     def assure_keyboard_disabled(self):
         if self.vision.is_keybord_enabled():
@@ -62,9 +64,9 @@ class Droid:
         self.click_app((0.86, 0.94))
 
     def attack_insect(self):
-        self.go_outside()   
+        self.go_outside()
         # controllo se ho una truppa free
-        troops_deployed = self.recognition.get_troops_deployed()    
+        troops_deployed = self.recognition.get_troops_deployed()
         # click lente
         self.click_app((0.39, 0.88))
         # conferma ricerca
@@ -75,3 +77,5 @@ class Droid:
         self.click_app((0.47, 0.66))
         # click march
         self.click_app((0.71, 0.94))
+
+

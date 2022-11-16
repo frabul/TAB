@@ -61,7 +61,7 @@ class Template:
             match = cv2.matchTemplate(img, self.img, cv2.TM_SQDIFF_NORMED)
             return 1 - cv2.minMaxLoc(match)[1] > threshold
 
-    def match_search(self, topleft, botright, threshold):
+    def match_search(self, vision, topleft, botright, threshold):
         ''' search for matches '''
         img = vision.get_section(topleft, botright).copy()
 
@@ -106,11 +106,12 @@ class Templates:
             return img[1]
         self.magniglass.prepare = prepareMagni
         self.items['magniglass'] = self.magniglass
+        self.magniglass.load()
 
         # nest_l16
         self.nest_l16 = Template('nest_l16', (0.34, 0.59), (0.49, 0.68))
-        self.items['nest_l16'] = self.nest_l16
-
+        self.items['nest_l16'] = self.nest_l16 
+        self.nest_l16.load()
 
 class Recognition:
     def __init__(self, vision: Vision):
@@ -125,7 +126,7 @@ class Recognition:
     read_world_position_upper_val = [105, 160, 200]
 
     def read_world_position(self) -> tuple[int]:
-        img = vision.get_section((0.38, 0.79), (0.60, 0.82)).copy()
+        img = self.vision.get_section((0.38, 0.79), (0.60, 0.82)).copy()
         #cv2.imwrite('temp.bmp', img)
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         # set lower and upper color limits
@@ -142,21 +143,52 @@ class Recognition:
             return (int(rematch.group(1)), int(rematch.group(2)))
         return None
 
-    def get_troops_deployed(self):
-        img = vision.get_section((.005, .200), (.06, .235)).copy()
-        #img = vision.get_section((.02, .47), (.06, .5)).copy()
-        cv2.imwrite('temp.bmp',img) 
-        QImageViewer.show_image('img', img)
+    def get_troops_deployed_count(self):
+        ''' needs to be outside '''
+        liclover = [
+            (0.006, 0.2, 0.052, 0.035),
+            (0.006, 0.257, 0.052, 0.035),
+            (0.006, 0.317, 0.052, 0.035),
+            (0.006, 0.374, 0.052, 0.035)]
+        count = 0
+        for i, pos in enumerate(liclover):
+            img = self.vision.get_rectangle_proportional(pos).copy()
+            hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            # set lower and upper color limits
+            lower_val = np.array([13, 80, 140])
+            upper_val = np.array([20, 120, 220])
+            mask = cv2.inRange(hsv, lower_val, upper_val)
+            print("avg " + str(np.average(mask)))
+            found = np.average(mask) > 95 and np.average(mask) < 125
+            if found:
+                count += 1
+            else:
+                break
+        return count
 
-        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV) 
-        # set lower and upper color limits
-        lower_val = np.array([13,80,140])
-        upper_val = np.array([20,120,220])
-        mask = cv2.inRange(hsv, lower_val, upper_val)
-        print("avg " + str(np.average(mask)))
+    def is_exit_game_gump(self):
+        img = self.vision.get_section((0.37, 0.459), (0.559, 0.495))
+        txt: str = pytesseract.image_to_string(img)
+        if txt and "Exit Game" in txt:
+            return True
+        return False
 
-        return np.average(mask) > 115
+    def is_troop_selection_gump(self): 
+        img = self.vision.get_section((0.348, 0.017),(0.627, 0.048))
+        txt: str = pytesseract.image_to_string(img)
+        if txt and "March Troops" in txt:
+            return True
+        return False
 
+    def is_attack_gump(self): 
+        img = self.vision.get_section((0.423, 0.652),(0.521, 0.677))
+        txt: str = pytesseract.image_to_string(img)
+        if txt and "Attack" in txt:
+            return True
+        return False
+
+    def is_inside(self):
+        return False
 
 if __name__ == '__main__':
     import time
@@ -186,6 +218,8 @@ if __name__ == '__main__':
         #pos = rec.read_world_position()
         #print(f'Pos read: {pos}')
 
-        print(rec.get_troops_deployed())
+        # test get_troops_deployed_count
+        # print(rec.get_troops_deployed_count())
+        print(f"is attack = {rec.is_attack_gump()}"   )
         time.sleep(1)
     os._exit(0)
