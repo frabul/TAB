@@ -1,14 +1,9 @@
 import numpy as np
-import win32gui
-import win32ui
-import win32con
-from threading import Thread, Lock
 import cv2
-import easyocr
-import QImageViewer
 import pytesseract
 import re
 from vision import Vision
+import QImageViewer
 pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe'
 
 
@@ -66,6 +61,8 @@ class Template:
         img = vision.get_section(topleft, botright).copy()
 
         img = self.prepare(img)
+        QImageViewer.show_image('screen',img)
+        QImageViewer.show_image('template',self.img)
         # todo resize
         if len(img.shape) > 2:
             matches = [
@@ -100,6 +97,7 @@ class Templates:
         # magniglass
         self.magniglass = Template('magniglass', (0.02, 0.63), (0.1, 0.68))
 
+        
         def prepareMagni(img: np.ndarray):
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = cv2.threshold(img, 150, 255, cv2.THRESH_BINARY)
@@ -109,9 +107,24 @@ class Templates:
         self.magniglass.load()
 
         # nest_l16
+        def prepareNest(img: np.ndarray):
+            lower_val = [6, 104, 27]
+            upper_val = [14, 181, 221] 
+            return self.apply_hsv_mask(img, lower_val, upper_val)
+
         self.nest_l16 = Template('nest_l16', (0.34, 0.59), (0.49, 0.68))
-        self.items['nest_l16'] = self.nest_l16 
+        self.nest_l16.prepare = prepareNest
+        self.items['nest_l16'] = self.nest_l16
         self.nest_l16.load()
+
+    def apply_hsv_mask(self, img: np.ndarray, lower_val, upper_val):
+        ksize = (8, 8)
+        hsv = cv2.blur(img, ksize)
+        hsv = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, np.array(lower_val), np.array(upper_val))
+        imgMasked = cv2.bitwise_and(img, img, mask=mask)
+        return imgMasked
+
 
 class Recognition:
     def __init__(self, vision: Vision):
@@ -173,15 +186,15 @@ class Recognition:
             return True
         return False
 
-    def is_troop_selection_gump(self): 
-        img = self.vision.get_section((0.348, 0.017),(0.627, 0.048))
+    def is_troop_selection_gump(self):
+        img = self.vision.get_section((0.348, 0.017), (0.627, 0.048))
         txt: str = pytesseract.image_to_string(img)
         if txt and "March Troops" in txt:
             return True
         return False
 
-    def is_attack_gump(self): 
-        img = self.vision.get_section((0.423, 0.652),(0.521, 0.677))
+    def is_attack_gump(self):
+        img = self.vision.get_section((0.423, 0.652), (0.521, 0.677))
         txt: str = pytesseract.image_to_string(img)
         if txt and "Attack" in txt:
             return True
@@ -190,12 +203,13 @@ class Recognition:
     def is_inside(self):
         return False
 
+
 if __name__ == '__main__':
     import time
     import keyboard
     import os
 
-    vision = Vision('BlueStacks App Player', 1, 34)
+    vision = Vision('BlueStacks App Player', (1, 35, 1, 1))
     vision.start()
     while not vision.is_ready():
         time.sleep(0.1)
@@ -206,8 +220,8 @@ if __name__ == '__main__':
     rec.templates.nest_l16.load()
 
     while not keyboard.is_pressed('ctrl+q'):
-        #hits = rec.templates.nest_l16.match_search((0.17, 0.45), (0.76, 0.83), 0.85)
-        #print(f'{len(hits)} hits')
+        hits = rec.templates.nest_l16.match_search(vision, (0.17, 0.45), (0.76, 0.83), 0.85)
+        print(f'{len(hits)} hits')
 
         # if rec.is_outside():
         #    print('outside')
@@ -220,6 +234,6 @@ if __name__ == '__main__':
 
         # test get_troops_deployed_count
         # print(rec.get_troops_deployed_count())
-        print(f"is attack = {rec.is_attack_gump()}"   )
+        #print(f"is attack = {rec.is_attack_gump()}")
         time.sleep(1)
     os._exit(0)

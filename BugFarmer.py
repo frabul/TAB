@@ -10,6 +10,7 @@ import QImageViewer
 from vision import Vision
 from recognition import Recognition
 
+
 class Stages:
     unknown = 'unknown'
     inside = 'inside'
@@ -24,43 +25,43 @@ class Stages:
     attack_gump = 'attack_gump'
     bug_search = 'bug_search'
 
+
 class BugFarmer:
     class OutsideActions:
         OpenSearch = 0
-        
+
     def __init__(self, droid: Droid) -> None:
         self.droid = droid
         self.rec = droid.recognition
         self.terminate = False
         self.actions: dict[str, typing.Callable | dict]
-        self.stage = [Stages.unknown,Stages.idle,Stages.unknown,Stages.unknown]
+        self.stage = [Stages.unknown, Stages.idle, Stages.unknown, Stages.unknown]
         self.troops_count = 4
-      
+
         self.stage_decisions = {
-            Stages.unknown: self.press_esc, 
+            Stages.unknown: self.press_esc,
             Stages.inside: self.droid.go_outside,
             Stages.exit_gump: self.droid.go_outside,
             Stages.outside: {
-                Stages.idle: self.search_bug, 
-                Stages.default: self.esc_and_idle, 
+                Stages.idle: self.search_bug,
+                Stages.default: self.esc_and_idle,
             },
-            #Stages.bug_search: {
+            # Stages.bug_search: {
             #    Stages.open_attack: self.open_attack,
             #    Stages.default: self.esc_and_idle
-            #},
+            # },
             Stages.troop_selection: {
                 Stages.pick_troop: self.pick_troop,
-                Stages.default: self.esc_and_idle, 
+                Stages.default: self.esc_and_idle,
             },
             Stages.attack_gump: {
-                Stages.confirm_attack:self.confirm_attack,
-                Stages.default: self.esc_and_idle, 
+                Stages.confirm_attack: self.confirm_attack,
+                Stages.default: self.esc_and_idle,
             }
         }
-    
 
     def step(self):
-        act = self.stage_decisions 
+        act = self.stage_decisions
         depth = 0
         while type(act) is dict:
             if self.stage[depth] in act:
@@ -95,19 +96,19 @@ class BugFarmer:
         while not self.terminate:
             self.identify()
             self.step()
-    
+
     def esc_and_idle(self):
         self.press_esc()
         self.stage[1] = Stages.idle
 
     def search_bug(self):
         troops_available = self.troops_count - self.rec.get_troops_deployed_count()
-        if troops_available > 0: 
+        if troops_available > 0:
             # we arre in outside stage
             # click magniglass
             self.droid.click_app((0.075, 0.654), delay_after=1)
             # confirm search
-            self.droid.click_app((0.804, 0.865), delay_after=1) 
+            self.droid.click_app((0.804, 0.865), delay_after=1)
             # click bug found
             self.droid.click_app((0.473, 0.506), delay_after=1)
             self.stage[1] = Stages.confirm_attack
@@ -122,26 +123,28 @@ class BugFarmer:
     def pick_troop(self):
         # click march
         self.droid.click_app((0.71, 0.94), delay_after=1)
-        # check if it was accepted 
+        # check if it was accepted
         if self.rec.is_troop_selection_gump():
-            #it was not accepted, probably troop stamina depleted
+            # it was not accepted, probably troop stamina depleted
             # decrease available troops and increase it after 5 minutes
-            self.troops_count -= 1 
+            self.troops_count -= 1
             self.esc_and_idle()
+
             def increase():
                 self.troops_count += 1
-            time = threading.Timer(5, increase )
+            time = threading.Timer(5, increase)
             time.start()
         else:
             self.stage[1] = Stages.idle
 
+
 if __name__ == '__main__':
     import threading
-    droid = Droid(Vision('BlueStacks App Player', 1, 34))
+    droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1)))
     droid.vision.start()
     while not droid.vision.is_ready():
         sleep(1)
     farmer = BugFarmer(droid)
-    
+
     t = threading.Thread(target=farmer.run)
     t.start()

@@ -244,15 +244,6 @@
    },
    {
       "position": [
-         478,
-         9
-      ],
-      "level": 1,
-      "name": null,
-      "last_raid": "00010101000000"
-   },
-   {
-      "position": [
          119,
          89
       ],
@@ -273,15 +264,6 @@
       "position": [
          235,
          114
-      ],
-      "level": 1,
-      "name": null,
-      "last_raid": "00010101000000"
-   },
-   {
-      "position": [
-         253,
-         95
       ],
       "level": 1,
       "name": null,
@@ -606,6 +588,159 @@
       "position": [
          31,
          714
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         484,
+         94
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         447,
+         101
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         363,
+         112
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         312,
+         80
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         92,
+         495
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         201,
+         39
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         203,
+         37
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         205,
+         37
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         146,
+         38
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         155,
+         616
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         152,
+         665
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         28,
+         646
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         3,
+         543
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         31,
+         287
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         30,
+         271
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         37,
+         189
+      ],
+      "level": 1,
+      "name": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         36,
+         45
       ],
       "level": 1,
       "name": null,

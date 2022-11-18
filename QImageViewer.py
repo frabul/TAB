@@ -1,7 +1,6 @@
-from threading import Thread
-import threading
+
+
 from PySide6.QtWidgets import QApplication, QLabel
-import sys
 import PySide6.QtCore
 from PySide6.QtCore import Qt, QThread, QObject, Signal
 from PySide6.QtGui import QPixmap, QImage, QMouseEvent
@@ -12,6 +11,7 @@ from types import MethodType
 from time import sleep
 from typing import Optional
 import typing
+import QDispatcher
 ######################################################################################################################################
 ######################################################################################################################################
 
@@ -24,7 +24,7 @@ class ImageViewer(QMainWindow):
 
     def __init__(self, name: str, image: np.ndarray):
         super().__init__()
-        flags = self.windowFlags() 
+        flags = self.windowFlags()
         flags = flags & (~(Qt.WindowType.WindowMaximizeButtonHint | Qt.WindowType.WindowMinimizeButtonHint))
         self.setWindowFlags(flags)
         self.title = name
@@ -77,15 +77,7 @@ class ImageViewer(QMainWindow):
 class WinManager(QObject):
     def __init__(self) -> None:
         super().__init__()
-
-    def run(self):
-        self.is_running = True
-        self.windows: dict[str, ImageViewer] = {}
-        self.app = QApplication(sys.argv)
-        self.app.setQuitOnLastWindowClosed(False)
-        #while True:
-        self.app.exec()
-        self.is_running = False
+        self.windows: dict[str, QWidget] = {}
 
     def set_mouse_move_handler(self, winName: str, handler: typing.Callable[[int, int], None]) -> None:
         if winName in self.windows:
@@ -111,19 +103,23 @@ class WinManager(QObject):
             w.show()
         #print("requested " + winName)
 
-    PySide6.QtCore.Slot( object, name='invoke')
-    def invoke(self, func : object):
+    PySide6.QtCore.Slot(object, name='invoke')
+
+    def invoke(self, func: object):
         self.it = func()
 
 ######################################################################################################################################
 ######################################################################################################################################
+
+
 class WinManagerInterface(QObject):
     ShowImageSignal = Signal(str, np.ndarray)
     InvokeSignal = Signal(object)
+
     def __init__(self) -> None:
         super().__init__()
 
-    def invoke(self, callable : typing.Callable):
+    def invoke(self, callable: typing.Callable):
         self.InvokeSignal.emit(callable)
 
     def show_image(self, winName: str, img: np.ndarray):
@@ -142,54 +138,63 @@ class WinManagerInterface(QObject):
 
 
 WINMAN: WinManager = None
+CONTROLLER: WinManagerInterface = None
+_started = False
 
 
-def start_winmanager():
-    global WINMAN
+def start_winmanager(a, b, c):
+    global WINMAN, CONTROLLER
     WINMAN = WinManager()
-    WINMAN.run()
+    CONTROLLER = WinManagerInterface()
+    CONTROLLER.ShowImageSignal.connect(WINMAN.show_image)
+    CONTROLLER.InvokeSignal.connect(WINMAN.invoke)
 
 
-GUI_THREAD = Thread(target=start_winmanager)
-GUI_THREAD.start()
-while WINMAN is None:
-    sleep(0.05)
+def wait_winman():
+    global _started
+    if not _started:
+        _started = True
+        QDispatcher.enqueue_job(start_winmanager, [1, 2, 3])
 
-CONTROLLER = WinManagerInterface()
-CONTROLLER.ShowImageSignal.connect(WINMAN.show_image)
-CONTROLLER.InvokeSignal.connect(WINMAN.invoke)
+    while not WINMAN or not CONTROLLER:
+        sleep(0.05)
+
 
 def show_image(winName: str, img: np.ndarray):
+    wait_winman()
     CONTROLLER.show_image(winName, img)
 
 
 def invoke(callable: typing.Callable):
+    wait_winman()
     CONTROLLER.invoke(callable)
 
 
 def create_window(winName: str):
+    wait_winman()
     CONTROLLER.show_image(winName, None)
 
 
 def set_mouse_move_handler(winName: str, handler: typing.Callable[[int, int], None]) -> None:
+    wait_winman()
     WINMAN.set_mouse_move_handler(winName, handler)
 
 
 def set_mouse_press_handler(winName: str, handler: typing.Callable[[QMouseEvent], None]) -> None:
+    wait_winman()
     WINMAN.set_mouse_press_handler(winName, handler)
 
 
 def set_mouse_release_handler(winName: str, handler: typing.Callable[[QMouseEvent], None]) -> None:
+    wait_winman()
     WINMAN.set_mouse_release_handler(winName, handler)
 
-
-
-
+import threading
 if __name__ == "__main__":
     def test_call():
-        print(f"Called from {threading.get_ident()}") 
+        print(f"Called from {threading.get_ident()}")
 
-    test_call()   
+    test_call()
     invoke(test_call)
 
     # CONTROLLER.run_test()

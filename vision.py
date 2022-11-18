@@ -2,14 +2,9 @@ import numpy as np
 import win32gui
 import win32ui
 import win32con
-from threading import Thread, Lock
-import cv2
-import easyocr
-import QImageViewer
-import pytesseract
-import re
-pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe'
-
+from threading import Thread, Lock 
+import pytesseract 
+pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe' 
 
 class Vision:
     # threading properties
@@ -20,20 +15,19 @@ class Vision:
     w = 0
     h = 0
     hwnd = None
-    cropped_x = 0
-    cropped_y = 0
-    offset_x = 0
-    offset_y = 0
+    
 
     # constructor
-    def __init__(self, window_name=None, border_px=8, titlebar_pixels=30):
+    def __init__(self, window_name=None, padding = (0,0,0,0)):
+        '''
+            padding: (left,top,right,bottom)
+        '''
         # create a thread lock object
-        self.window_name = window_name
-        self.border_pixels = border_px
-        self.titlebar_pixels = titlebar_pixels
+        self.padding = padding
+        self.window_name = window_name 
         self.lock = Lock()
         self._update_window_info()
-        
+        self.last_report = 0
 
     def _update_window_info(self):
         # find the handle for the window we want to capture.
@@ -49,36 +43,40 @@ class Vision:
 
         # get the window size
         window_rect = win32gui.GetWindowRect(self.hwnd)
-        self.w = window_rect[2] - window_rect[0]
-        self.h = window_rect[3] - window_rect[1]
-
+        self.w = window_rect[2] - window_rect[0] 
+        self.h = window_rect[3] - window_rect[1]  
         # account for the window border and titlebar and cut them off
-        self.w = self.w - (self.border_pixels * 2)
-        self.h = self.h - self.titlebar_pixels - self.border_pixels
-        self.cropped_x = self.border_pixels
-        self.cropped_y = self.titlebar_pixels
+        self.w = self.w - self.padding[0] - self.padding[2]
+        self.h = self.h - self.padding[1] - self.padding[3]
+        
+        if self.h < 0: self.h = 0
+        if self.w < 0: self.w = 0
+ 
 
         # set the cropped coordinates offset so we can translate screenshot
         # images into actual screen positions
-        self.offset_x = window_rect[0] + self.cropped_x
-        self.offset_y = window_rect[1] + self.cropped_y
+        self.offset_x = window_rect[0] + self.padding[0]
+        self.offset_y = window_rect[1] + self.padding[1]
 
     def get_screenshot(self) -> np.ndarray:
         self._update_window_info()
         if self.hwnd is None:
             return
-        if not win32gui.IsWindowVisible(self.hwnd):
+        if not win32gui.IsWindowVisible(self.hwnd) or self.w < 1 or self.h < 1:
+            import time 
+            if time.time() > self.last_report + 2:
+                print('not visible')
+                self.last_report = time.time()
             return None
         # get the window image data
-        try:
-            wDC = win32gui.GetWindowDC(self.hwnd)
-
+        try: 
+            wDC = win32gui.GetWindowDC(self.hwnd) 
             dcObj = win32ui.CreateDCFromHandle(wDC)
             cDC = dcObj.CreateCompatibleDC()
             dataBitMap = win32ui.CreateBitmap()
             dataBitMap.CreateCompatibleBitmap(dcObj, self.w, self.h)
             cDC.SelectObject(dataBitMap)
-            cDC.BitBlt((0, 0), (self.w, self.h), dcObj, (self.cropped_x, self.cropped_y), win32con.SRCCOPY)
+            cDC.BitBlt((0, 0), (self.w, self.h), dcObj, (self.padding[0], self.padding[1]), win32con.SRCCOPY)
 
             # convert the raw data into a format opencv can read
             #dataBitMap.SaveBitmapFile(cDC, 'debug.bmp')
@@ -86,11 +84,7 @@ class Vision:
             img = np.fromstring(signedIntsArray, dtype='uint8')
             img.shape = (self.h, self.w, 4)
 
-            # free resources
-            dcObj.DeleteDC()
-            cDC.DeleteDC()
-            win32gui.ReleaseDC(self.hwnd, wDC)
-            win32gui.DeleteObject(dataBitMap.GetHandle())
+        
 
             # drop the alpha channel, or cv.matchTemplate() will throw an error like:
             #   error: (-215:Assertion failed) (depth == CV_8U || depth == CV_32F) && type == _templ.type()
@@ -104,8 +98,22 @@ class Vision:
             # https://github.com/opencv/opencv/issues/14866#issuecomment-580207109
             img = np.ascontiguousarray(img)
             return img
-        except:
+        except Exception as ex:
+            print("Exception in get_screenshot "+ str(ex))
             pass
+        finally:
+            # free resources
+            if cDC:
+                cDC.DeleteDC()
+            if dcObj:
+                dcObj.DeleteDC()
+            if wDC:    
+                win32gui.ReleaseDC(self.hwnd, wDC)
+            if dataBitMap:   
+                try:
+                    win32gui.DeleteObject(dataBitMap.GetHandle())
+                except:
+                    pass
         return None
 
     # find the name of the window you're interested in.
@@ -205,6 +213,7 @@ class Vision:
     def start(self):
         self.stopped = False
         t = Thread(target=self._worker_method)
+        t.daemon = True
         t.start()
 
     def stop(self):

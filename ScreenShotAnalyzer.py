@@ -1,14 +1,3 @@
-import keyboard
-import os
-import sys
-import typing
-from threading import Thread
-from time import sleep
-from types import MethodType
-from typing import Optional
-
-import cv2
-import numpy as np
 from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal, QTimer
 from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard,
                            QPixmap, QMouseEvent)
@@ -18,16 +7,12 @@ from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
                                QGraphicsView, QLabel, QMainWindow, QWidget,
                                QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout
                                )
-
-import farms_positions
-import QImageViewer
-from droid import Droid
-from vision import Vision
-from FarmsDb import Farm, FarmsDb
+ 
 
 
-vision = Vision('BlueStacks App Player', 1, 34)
-
+from vision import Vision    
+import QDispatcher
+import threading
 
 class ScreenShotAnalyzer(QMainWindow):
     def __init__(self) -> None:
@@ -38,7 +23,7 @@ class ScreenShotAnalyzer(QMainWindow):
         self.top_left = (0,0)
         self.bot_right = (0,0)
 
-        self.vision = Vision('BlueStacks App Player', 1, 34)
+        self.vision = Vision('BlueStacks App Player', (1, 35, 1, 1))
         self.vision.start()
 
         self.setWindowTitle("Screenshot Analyzer")
@@ -139,13 +124,13 @@ class ScreenShotAnalyzer(QMainWindow):
         # self.repaint()
 
 
-def main():
-    win = ScreenShotAnalyzer()
-    win.show()
-    return win
+
+QDispatcher.create(True)
+print(f"ScreenShotAnalyzer running in thread #{threading.get_ident()}") 
+win = ScreenShotAnalyzer( )
+#win.setParent(QDispatcher.instance)
+win.show() 
+QDispatcher.exec()
 
 
-QImageViewer.invoke(main)
-while True:
-    if keyboard.is_pressed('ctrl+q'):
-        os._exit(0)
+ 

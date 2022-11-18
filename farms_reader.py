@@ -29,7 +29,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # set failsafe just in case
 pyautogui.FAILSAFE = True
-wincap = Vision('BlueStacks App Player', 1, 34)
+wincap = Vision('BlueStacks App Player', (1, 35, 1, 1))
 callback_queue = queue.Queue()
 
 

@@ -7,7 +7,7 @@ from time import sleep
 import QImageViewer
 
 delay_after_write = 0.2
-vision = Vision('BlueStacks App Player', 1, 34)
+vision = Vision('BlueStacks App Player', (1, 35, 1, 1))
 
 dai_figli = [(512,12),(1143,51),(1139,53)]
 farms =  [

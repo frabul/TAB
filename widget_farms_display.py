@@ -36,7 +36,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.map_size = (600, 600)
         self.farms = farms
 
-        self.droid = Droid(Vision('BlueStacks App Player', 1, 34))
+        self.droid = Vision('BlueStacks App Player', (1, 35, 1, 1))
         self.droid.vision.start()
 
 

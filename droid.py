@@ -1,36 +1,51 @@
-import typing
-import cv2 as cv
-import cv2
 import numpy as np
-from vision import Vision
+
 import pyautogui
 from time import sleep
-import QImageViewer
-from vision import Vision
 from recognition import Recognition
+from vision import Vision
+import autoit
+import win32gui
+import time 
+import random
 
 
 class Droid:
-    def __init__(self, vision: Vision) -> None:
-        self.vision = vision
+    def __init__(self, vision) -> None:
+        self.vision: Vision = vision
         self.recognition = Recognition(vision)
         pass
 
-    def click_app(self, pos, dismiss_keyboard=True, delay_after=0.15):
+    def activate_win(self, timeout = 0.5):
+        try: 
+            ret = win32gui.SetForegroundWindow(self.vision.hwnd)
+            sleep(0.01) 
+            ret = win32gui.SetActiveWindow(self.vision.hwnd)
+            tstart = time.time() 
+            while win32gui.GetForegroundWindow() != self.vision.hwnd and time.time() < tstart + timeout:
+                sleep(0.01) 
+        except Exception as ex:
+            print("Exception in Droid.activate_win" + str(ex))
+        
+    def click_app(self, pos, dismiss_keyboard=True, delay_after=0.15, radius_px=5):
         if dismiss_keyboard:
             self.assure_keyboard_disabled()
         cx, cy = self.vision.get_screen_position_rel(pos)
+        cx += random.randint(-radius_px,radius_px)
+        cy += random.randint(-radius_px,radius_px)
         pyautogui.leftClick(x=cx, y=cy)
         sleep(delay_after)
 
     def assure_keyboard_disabled(self):
-        if self.vision.is_keybord_enabled():
-            self.click_app((0.5, 0.5), False)
+        if self.vision.is_keybord_enabled(): 
+            self.click_app((0.5, 0.5), False, radius_px=20)
 
     def go_to_location(self, pos):
-        fx, fy = pos
-        # todo check that we are outside
+        self.activate_win()
 
+        if not self.recognition.is_outside():
+            return False 
+        fx, fy = pos 
         # attivo app
         #self.click_app((0.5, 0.5), False)
 
@@ -57,25 +72,12 @@ class Droid:
 
         # click go
         self.click_app((0.8, 0.84))
+        return True
 
     def go_outside(self):
-        if self.vision.is_outside():
+        self.activate_win()
+        if self.recognition.is_outside():
             return
         self.click_app((0.86, 0.94))
 
-    def attack_insect(self):
-        self.go_outside()
-        # controllo se ho una truppa free
-        troops_deployed = self.recognition.get_troops_deployed()
-        # click lente
-        self.click_app((0.39, 0.88))
-        # conferma ricerca
-        self.click_app((0.81, 0.87))
-        # click bug
-        self.click_app((0.46, 0.5))
-        # click attack
-        self.click_app((0.47, 0.66))
-        # click march
-        self.click_app((0.71, 0.94))
-
-
+ 

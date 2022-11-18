@@ -1,11 +1,7 @@
-import sys
-import typing
-from threading import Thread
-from time import sleep
-from types import MethodType
-from typing import Optional
+import QDispatcher
+QDispatcher.create(True)  
 
-import cv2
+from types import MethodType 
 import numpy as np
 from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal,QTimer
 from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard, 
@@ -15,22 +11,26 @@ from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
                                QGraphicsScene, QGraphicsSceneMouseEvent,
                                QGraphicsView, QLabel, QMainWindow, QWidget,
                                QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout,
-                               
                                )
-
-import farms_positions
-import QImageViewer
 from droid import Droid
 from vision import Vision
 from FarmsDb import Farm, FarmsDb
 
 
 class FarmMarker(QGraphicsEllipseItem):
+    def __init__( self, farm:Farm, rect : QRect ) -> None:
+        super().__init__(rect)
+        self.farm : Farm = farm
+        self.set_explored(False)
+        self.setFlags(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
 
-    def setBrushes(self, selected, unselected):
+    def _setBrushes(self, selected, unselected):
         self.selectedBrush = selected
         self.unselectedBrush = unselected
-        self.setBrush(self.unselectedBrush)
+        if self.isSelected():
+            self.setBrush(self.selectedBrush)
+        else:
+            self.setBrush(self.unselectedBrush)
 
     @staticmethod
     def onSelectedChanged(sender, isSelected):
@@ -45,20 +45,31 @@ class FarmMarker(QGraphicsEllipseItem):
             self.onSelectedChanged(self, value)
         return super().itemChange(change, value)
 
+    def set_explored(self, was_explored: bool):
+        if was_explored:
+            self._setBrushes( 
+                    QBrush(Qt.GlobalColor.blue),
+                    QBrush(Qt.GlobalColor.cyan) 
+                )
+        else:
+            self._setBrushes( 
+                    QBrush(Qt.GlobalColor.blue),
+                    QBrush(Qt.GlobalColor.red) 
+                )
 
 class WidgetFarmsDisplay(QMainWindow):
     mouse_move_handler = None
     mouse_press_handler = None
     mouse_release_handler = None
     farms_map = None
-    last_selected_farm: QWidget = None
-
-    def __init__(self) -> None:
+    last_selected_marker: FarmMarker = None
+    
+    def __init__(self) -> None: 
         super().__init__()
         win = self
         self.map_size = (1200, 1200)
-        self.farm_widgets: dict[tuple, QWidget] = {}
-        self.droid = Droid(Vision('BlueStacks App Player', 1, 34))
+        self.farm_widgets: dict[tuple, FarmMarker] = {}
+        self.droid = Vision('BlueStacks App Player', (1, 35, 1, 1))
         self.farms = FarmsDb('FarmsDb.json')
         self.droid.vision.start()
 
@@ -71,7 +82,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.scene.setSceneRect(0, 0, self.map_size[0], self.map_size[1])
         self.scene.mouseDoubleClickEvent = MethodType(WidgetFarmsDisplay.handle_mouse_double_click_on_scene, self)
         self.scene.mouseMoveEvent = MethodType(WidgetFarmsDisplay.handle_mouse_move_on_scene, self)
-
+       
         # my marker
         self.my_marker = QGraphicsEllipseItem(QRect(0, 0, 20, 20))
         self.my_marker.setBrush(QBrush(Qt.GlobalColor.green))
@@ -86,6 +97,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.view.scale(0.48, 0.48)
         self.view.setMouseTracking(True)
 
+        # layout 
         widget = QWidget(self)
         self.side_gui = QVBoxLayout()
         # self.layout().addChildLayout(self.side_gui)
@@ -103,10 +115,16 @@ class WidgetFarmsDisplay(QMainWindow):
         self.label_position.setSizePolicy(fixedPolicy)
         self.side_gui.addWidget(self.label_position)
 
-        # button_show_all
-        self.button_show_all = QPushButton(text="Show All")
-        self.button_show_all.clicked.connect(self.handle_show_all)
-        self.side_gui.addWidget(self.button_show_all)
+        # button_unmark
+        self.button_unmark_explored = QPushButton(text="Unmark explored")
+        self.button_unmark_explored.clicked.connect(self.handle_unmark_explored)
+        self.side_gui.addWidget(self.button_unmark_explored)
+
+         # button mark explored
+        self.button_mark_explored = QPushButton(text='Mark Explored')
+        self.button_mark_explored.clicked.connect(self.handle_mark_explored)
+        self.side_gui.addWidget(self.button_mark_explored)
+        
 
         # button_add and fields
         horiz = QHBoxLayout()
@@ -127,6 +145,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.button_remove = QPushButton(text='Remove')
         self.button_remove.clicked.connect(self.handle_remove)
         self.side_gui.addWidget(self.button_remove)
+
         # filler
         filler = QWidget()
         filler.sizePolicy().setVerticalStretch(1)
@@ -141,11 +160,9 @@ class WidgetFarmsDisplay(QMainWindow):
         self.action_goto.triggered.connect(self.handle_goto)
         self.addAction(self.action_goto)
 
-        self.action_goto = QShortcut(QKeySequence("Ctrl+C"), self)
-        self.action_goto.setEnabled(True)
-        self.action_goto.activated.connect(self.handle_ctrl_c)
-        # self.addAction(self.action_goto)
-
+        self.action_copy = QShortcut(QKeySequence("Ctrl+C"), self)
+        self.action_copy.setEnabled(True)
+        self.action_copy.activated.connect(self.handle_ctrl_c)
         self.update_map()
 
     def closeEvent(self, event ) -> None:
@@ -156,15 +173,20 @@ class WidgetFarmsDisplay(QMainWindow):
         self.my_marker.setPos(event.scenePos().toPoint())
         self.my_marker.show()
 
-    def handle_mouse_move_on_scene(self, event: QGraphicsSceneMouseEvent):
-        self.label_cursor.setText(f"Cursor: {event.scenePos().toPoint().toTuple()}")
+    def handle_mouse_move_on_scene(self, event: QGraphicsSceneMouseEvent): 
+        pos = self.map_to_world(event.scenePos().toTuple() )
+        self.label_cursor.setText(f"Cursor: {pos}")
 
     def handle_add(self):
         try:
             x = int(self.ledit_x.text())
             y = int(self.ledit_y.text())
-            self.farms.add_farm(Farm((x, y)))
-            self.update_map()
+            newfarm = Farm((x, y))
+            self.farms.add_farm(newfarm)
+            if not newfarm.position in self.farm_widgets:
+                self.add_marker(newfarm) 
+            else:
+                self.farm_widgets[newfarm.position].farm = newfarm
             self.farms.save()
         except:
             pass
@@ -194,14 +216,21 @@ class WidgetFarmsDisplay(QMainWindow):
         clipboard = QApplication.clipboard()
         clipboard.setText(str(positions)[1:-1])
 
-    def handle_show_all(self, checked):
-        for it in self.farm_widgets.values:
-            it.show()
+    def handle_unmark_explored(self, checked):
+        for it in self.scene.selectedItems():
+            if type(it) is FarmMarker:
+                it.set_explored(False)
+
+    def handle_mark_explored(self, checked):
+        for it in self.scene.selectedItems():
+            if type(it) is FarmMarker:
+                it.set_explored(True)
 
     def handle_goto(self, checked):
-        if self.last_selected_farm:
-            self.droid.go_to_location(self.last_selected_farm.farm.position)
-            self.last_selected_farm.hide()
+        if self.last_selected_marker:
+            ok = self.droid.go_to_location(self.last_selected_marker.farm.position)
+            if ok: 
+                self.last_selected_marker.set_explored(True)
 
     def world_to_map(self, pos):
         mw, mh = self.map_size
@@ -216,6 +245,19 @@ class WidgetFarmsDisplay(QMainWindow):
         fy = y * 1200 / mh
         return (int(fx), int(fy))
 
+    def add_marker(self, farm):
+        x, y = self.world_to_map(farm.position)
+        item = FarmMarker(farm, QRect(x, y, 12, 12))  
+
+        def handleItemSelectedChanged(sender : FarmMarker, val):
+            if val:
+                self.set_label_position(sender.farm.position)
+                self.last_selected_marker = sender
+
+        item.onSelectedChanged = handleItemSelectedChanged
+        self.scene.addItem(item)
+        self.farm_widgets[farm.position] = item
+
     def update_map(self) -> QImage:
         mw, mh = self.map_size
         img = np.zeros((mh, mw, 3), dtype=np.uint8)
@@ -225,23 +267,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.farm_widgets.clear()
        
         for farm in self.farms:
-            x, y = self.world_to_map(farm.position)
-            item = FarmMarker(QRect(x, y, 20, 20))
-            item.setBrushes(
-                QBrush(Qt.GlobalColor.blue),
-                QBrush(Qt.GlobalColor.red)
-            )
-            item.setFlags(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
-            item.farm = farm
-
-            def handleItemSelectedChanged(sender, val):
-                if val:
-                    self.set_label_position(sender.farm.position)
-                    self.last_selected_farm = sender
-
-            item.onSelectedChanged = handleItemSelectedChanged
-            self.scene.addItem(item)
-            self.farm_widgets[farm.position] = item
+            self.add_marker(farm) 
 
         self.scene.invalidate()
 
@@ -250,13 +276,11 @@ class WidgetFarmsDisplay(QMainWindow):
 
 
 ######################################################################################
-global win
+ 
+QApplication.setDoubleClickInterval(250)
+win = WidgetFarmsDisplay()
+win.show()
+QDispatcher.exec()
 
 
-def main():
-    win = WidgetFarmsDisplay()
-    win.show()
-    return win
-
-
-QImageViewer.invoke(main)
+ 
