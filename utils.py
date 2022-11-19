@@ -10,8 +10,9 @@ def get_hsv_mask( img: np.ndarray, lower_val, upper_val):
     return mask
 
 def apply_hsv_mask( img: np.ndarray, lower_val, upper_val):
-    ksize = (8, 8)
-    hsv = cv2.blur(img, ksize)
+    hsv = img.copy()
+    #ksize = (8, 8)
+    #hsv = cv2.blur(img, ksize)
     hsv = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, np.array(lower_val), np.array(upper_val))
     imgMasked = cv2.bitwise_and(img, img, mask=mask)

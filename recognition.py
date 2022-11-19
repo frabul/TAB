@@ -28,13 +28,13 @@ class Recognition:
         #cv2.imwrite('temp.bmp', img)
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         # set lower and upper color limits
-        lower_val = np.array(self.read_world_position_lower_val)
-        upper_val = np.array(self.read_world_position_upper_val)
-        mask = cv2.inRange(hsv, lower_val, upper_val)
+        hsv_max = np.array([99, 149, 162])
+        hsv_min = np.array([58, 82, 67])
+        mask = cv2.inRange(hsv, hsv_min, hsv_max)
         # apply mask to original image
         only_txt = cv2.bitwise_and(img, img, mask=mask)
         #_, img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
-        #QImageViewer.show_image('imgpos', only_txt)
+        QImageViewer.show_image('imgpos', only_txt)
         txt = pytesseract.image_to_string(only_txt)
         rematch = re.match("X[:](\d+) [Y¥][:.-](\d+).*", txt)
         if rematch:
@@ -93,28 +93,32 @@ class Recognition:
         alliance = None
         if res:
             maxVal, maxLoc = res
-            nameRect = (maxLoc[0] - 0.015, maxLoc[1] - .126, 0.364, 0.052)
-            locRect = (maxLoc[0] + .028, maxLoc[1], 0.195, 0.024)  
+            nameRect1 = (maxLoc[0] - 0.015, maxLoc[1] - .105, 0.364, 0.025)
+            nameRect2 = (maxLoc[0] - 0.015, maxLoc[1] - .126, 0.364, 0.025)
+            locRect = (maxLoc[0] + .0285, maxLoc[1], 0.195, 0.024)  
 
-            nameImg = self.vision.get_rectangle_proportional(nameRect).copy()
-            txt :str = pytesseract.image_to_string(nameImg)
-            if len(txt)>0:
-                name = txt.splitlines()[0]
-                rematch = re.match("[(]([A-Za-z0-9]+)[)](.+)", name)
-                if rematch:
-                    name = rematch.group(2)
-                    alliance = rematch.group(1) 
+            nameImg1 = self.vision.get_rectangle_proportional(nameRect1).copy()
+            nameImg2 = self.vision.get_rectangle_proportional(nameRect1).copy()
+            for nameImg in [nameImg1, nameImg2]:
+                txt :str = pytesseract.image_to_string(nameImg)
+                if len(txt)>0:
+                    name = txt.splitlines()[0]
+                    rematch = re.match("[(]([A-Za-z0-9]+)[)](.+)", name)
+                    if rematch:
+                        name = rematch.group(2)
+                        alliance = rematch.group(1) 
 
             
             locImg = self.vision.get_rectangle_proportional(locRect).copy()
             locStr = pytesseract.image_to_string(locImg)
-            rematch = re.match("X[:]([\d,]+)[\s ,]+[Y¥][:.-]([\d,]+).*", locStr)
+            rematch = re.search("X[:]([\d,.]+)[\s ,]+[Y¥][:.-]([\d,.]+).*", locStr)
             location = None
-            QImageViewer.show_image('nameImg',nameImg)
-            QImageViewer.show_image('locImg',locImg) 
+            #QImageViewer.show_image('nameImg1',nameImg1)
+            #QImageViewer.show_image('nameImg2',nameImg2)
+            #QImageViewer.show_image('locImg',locImg) 
             if rematch:
                 location = (int(rematch.group(1).replace(',','')), int(rematch.group(2).replace(',',''))) 
-
+             
         return (name, alliance, location)
 
 
@@ -136,8 +140,9 @@ if __name__ == '__main__':
     # rec.templates.nest_l16.save(vision) 
 
     while not keyboard.is_pressed('ctrl+q'):
-        #hits = rec.templates.nest_l16.match_search(vision, (0.17, 0.45), (0.76, 0.83), 0.85)
-        #print(f'{len(hits)} hits')
+        hits = rec.templates.nest_l16.find_all(vision, (0.17, 0.45), (0.76, 0.83))
+        
+        print(f'{len(hits)} hits')
 
         # if rec.is_outside():
         #    print('outside')
@@ -145,13 +150,13 @@ if __name__ == '__main__':
         #    print('inside')
 
         # test read_world_position
-        #pos = rec.read_world_position()
-        #print(f'Pos read: {pos}')
+        pos = rec.read_world_position()
+        print(f'Pos read: {pos}')
 
         # test get_troops_deployed_count
         # print(rec.get_troops_deployed_count())
         #print(f"is attack = {rec.is_attack_gump()}")
 
-        print(rec.read_location_info())
+        #print(rec.read_location_info())
         time.sleep(1)
     os._exit(0)

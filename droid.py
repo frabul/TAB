@@ -88,7 +88,7 @@ class Droid:
 
     def move(self, direction_su):
         ''' direction is expresses in screen units '''
-        drag_start = (self.random_range(0.4, 0.6), self.random_range(0.5, 0.6))
+        drag_start = (self.random_range(0.4, 0.6), self.random_range(0.70, 0.77))
         drag_start = self.vision.get_screen_position_rel(drag_start)
 
         drag_vector = self.vision.proportional_to_absolute((-direction_su[0], -direction_su[1]))

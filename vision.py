@@ -166,7 +166,7 @@ class Vision:
         w = int(sat(w) * self.w)
         h = int(sat(h) * self.h)
         self.lock.acquire()
-        res = self. screenshot[y: y + h, x: x + w, :]
+        res = self.screenshot[y: y + h, x: x + w, :].copy()
         self.lock.release()
         return res
 
@@ -178,11 +178,13 @@ class Vision:
 
     def point_to_proportional(self, point) -> tuple:
         return (point[0] / self.w, point[1] / self.h)
+        
     def proportional_to_absolute(self, prop) -> tuple:  
         return (int(prop[0] * self.w), int(prop[1] * self.h))
+
     def get_last(self) -> (np.ndarray or None):
         self.lock.acquire()
-        res = self.screenshot
+        res = self.screenshot.copy()
         self.lock.release()
         return res
 

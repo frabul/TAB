@@ -32,6 +32,7 @@ class Template:
         self.bot_right = botright
         self.rect = (x, y, w, h)
 
+
     def save(self, vision: Vision):
         img = vision.get_rectangle_proportional(self.rect).copy()
         self.screen_size = (vision.w, vision.h)
@@ -69,8 +70,8 @@ class Template:
     def find_max(self, vision: Vision, topleft, botright):
         img = vision.get_section(topleft, botright).copy()
         img = self.prepare(img)
-        QImageViewer.show_image('screen', img)
-        QImageViewer.show_image('template', self.img)
+        #QImageViewer.show_image('screen', img)
+        #QImageViewer.show_image('template', self.img)
         # todo resize
         if len(img.shape) > 2:
             matches = [
@@ -94,9 +95,12 @@ class Template:
 
     def find_all(self, vision: Vision, topleft, botright) -> list[QRectF]:
         ''' search for matches '''
-        img = vision.get_section(topleft, botright).copy()
+        self.w_px = self.img.shape[1]
+        self.h_px = self.img.shape[0]
+
+        img = vision.get_section(topleft, botright) 
+        #QImageViewer.show_image('screen',img)
         img = self.prepare(img)
-        # QImageViewer.show_image('screen',img)
         # QImageViewer.show_image('template',self.img)
         # todo resize
         if len(img.shape) > 2:
@@ -118,7 +122,7 @@ class Template:
 
             coordinates = list(zip(hits[0], hits[1]))
             for hit in coordinates:
-                infos.append(info(hit[0], hit[1], score[hit[0]][hit[1]]))
+                infos.append(info(x=hit[1], y=hit[0], score=score[hit[0]][hit[1]]))
 
             # scrematura doppioni
             templateSize = vision.proportional_to_absolute(self.rect[2:4])
@@ -139,6 +143,7 @@ class Template:
                                 break
                 if not added:
                     groups.append([to_add, ])
+
             # search max for each group
             results: list[info] = []
             for group in groups:
@@ -148,12 +153,19 @@ class Template:
                         maxElem = el
                 if not maxElem is None:
                     results.append(maxElem)
+
             # trasformiamo le coordinate in coordinate generali
             rectangles = []
+            #rectOnsection = img.copy()
             for el in results:
+                #disegno nel rettangoli
+                #rectOnsection = cv2.rectangle( rectOnsection, ( el.x,el.y), (  el.x + self.w_px, el.y + self.h_px), (255,0,0) ) 
                 offset = vision.proportional_to_absolute(topleft)
                 el.x += offset[0]
                 el.y += offset[1]
                 x, y = vision.point_to_proportional((el.x, el.y))
-                rectangles.append(QRectF(x, y, self.rect[2], self.rect[3]))
+                w, h = vision.point_to_proportional((self.w_px, self.h_px))
+                rectangles.append(QRectF(x, y, w, h))
+
+            #QImageViewer.show_image('rectOnsection', rectOnsection)
             return rectangles
