@@ -38,7 +38,7 @@ class Vision:
             self.hwnd = win32gui.FindWindow(None, self.window_name)
 
         if not self.hwnd:
-            print(f'Window {self.window_name} not found')
+            #print(f'Window {self.window_name} not found')
             return
 
         # get the window size
@@ -134,9 +134,9 @@ class Vision:
     def get_screen_position_raw(self, pos):
         return (pos[0] + self.offset_x, pos[1] + self.offset_y)
 
-    def get_screen_position_rel(self, pos: tuple):
-        x = pos[0] * self.w
-        y = pos[1] * self.h
+    def get_screen_position_rel(self, pos_su: tuple):
+        x = pos_su[0] * self.w
+        y = pos_su[1] * self.h
         return (x + self.offset_x, y + self.offset_y)
 
     @staticmethod
@@ -146,7 +146,7 @@ class Vision:
         if val < min:
             return min
         return val
-
+    
     def get_section(self, top_left, bot_right) -> (np.ndarray or None):
         x, y = top_left
         w = bot_right[0] - x
@@ -177,11 +177,12 @@ class Vision:
         return self.get_rectangle_proportional(rect)
 
     def point_to_proportional(self, point) -> tuple:
-        return (int(point[0] / self.w), int(point[1] / self.h))
-
+        return (point[0] / self.w, point[1] / self.h)
+    def proportional_to_absolute(self, prop) -> tuple:  
+        return (int(prop[0] * self.w), int(prop[1] * self.h))
     def get_last(self) -> (np.ndarray or None):
         self.lock.acquire()
-        res = self. screenshot
+        res = self.screenshot
         self.lock.release()
         return res
 
@@ -212,7 +213,7 @@ class Vision:
 
     def start(self):
         self.stopped = False
-        t = Thread(target=self._worker_method)
+        t = Thread(target=self._worker_method, daemon=True)
         t.daemon = True
         t.start()
 

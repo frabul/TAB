@@ -4,126 +4,11 @@ import pytesseract
 import re
 from vision import Vision
 import QImageViewer
+from template import Template
+from templates import Templates
+
 pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe'
 
-
-class Template:
-    img: np.ndarray = None
-    top_left = 0
-    bot_right = 0
-    rect = (0, 0, 0, 0)
-
-    def __init__(self, name: str, topleft, botright) -> None:
-        self.name: str = name
-        x, y = topleft
-        w = botright[0] - x
-        h = botright[1] - y
-        self.top_left = topleft
-        self.bot_right = botright
-        self.rect = (x, y, w, h)
-
-    def save(self, vision: Vision):
-        img = vision.get_rectangle_proportional(self.rect).copy()
-        self.screen_size = (vision.w, vision.h)
-        cv2.imwrite(f'./images/{self.name}.bmp', img)
-        img = self.prepare(img)
-        self.img = img
-
-    def load(self):
-        img = cv2.imread(f'./images/{self.name}.bmp')
-        self.img = self.prepare(img)
-        pass
-
-    def prepare(self, img):
-        return img
-
-    def match_exact(self, vision: Vision, threshold=0.95) -> bool:
-        ''' cuts a rectangle at the recorded position and matches on same size'''
-        img = vision.get_rectangle_proportional(self.rect).copy()
-        img = self.prepare(img)
-        img = cv2.resize(img, (self.img.shape[1], self.img.shape[0])).copy()
-
-        if len(img.shape) > 2:
-            matches = [
-                cv2.matchTemplate(img[:, :, 0], self.img[:, :, 0], cv2.TM_SQDIFF_NORMED),
-                cv2.matchTemplate(img[:, :, 1], self.img[:, :, 1], cv2.TM_SQDIFF_NORMED),
-                cv2.matchTemplate(img[:, :, 2], self.img[:, :, 2], cv2.TM_SQDIFF_NORMED)
-            ]
-            scores = [cv2.minMaxLoc(match)[1] for match in matches]
-            positives = [1 for s in scores if (1 - s) > threshold]
-            return len(positives) == len(matches)
-        else:
-            match = cv2.matchTemplate(img, self.img, cv2.TM_SQDIFF_NORMED)
-            return 1 - cv2.minMaxLoc(match)[1] > threshold
-
-    def match_search(self, vision, topleft, botright, threshold):
-        ''' search for matches '''
-        img = vision.get_section(topleft, botright).copy()
-
-        img = self.prepare(img)
-        QImageViewer.show_image('screen',img)
-        QImageViewer.show_image('template',self.img)
-        # todo resize
-        if len(img.shape) > 2:
-            matches = [
-                cv2.matchTemplate(img[:, :, 0], self.img[:, :, 0], cv2.TM_SQDIFF_NORMED),
-                cv2.matchTemplate(img[:, :, 1], self.img[:, :, 1], cv2.TM_SQDIFF_NORMED),
-                cv2.matchTemplate(img[:, :, 2], self.img[:, :, 2], cv2.TM_SQDIFF_NORMED)
-            ]
-
-            score = (3 - (matches[0] + matches[1] + matches[2])) / 3
-            print("found " + str(cv2.minMaxLoc(score)))
-
-            booleanized = [(1 - m) > threshold for m in matches]
-            truth_table = np.logical_and(booleanized[0], booleanized[1])
-            truth_table = np.logical_and(truth_table, booleanized[2])
-
-            hits = np.where(truth_table)
-
-            #oktiles = []
-            # for x in range(matches[0].shape[1]):
-            #    for y in range(matches[1].shape[0]):
-            #        scores = [s[y][x] for s in matches]
-            #        found = all((1-s) > threshold  for s in scores )
-            #        if(found):
-            #            oktiles.append((x,y))
-
-            return list(zip(hits[0], hits[1]))
-
-
-class Templates:
-    def __init__(self) -> None:
-        self.items = {}
-        # magniglass
-        self.magniglass = Template('magniglass', (0.02, 0.63), (0.1, 0.68))
-
-        
-        def prepareMagni(img: np.ndarray):
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            img = cv2.threshold(img, 150, 255, cv2.THRESH_BINARY)
-            return img[1]
-        self.magniglass.prepare = prepareMagni
-        self.items['magniglass'] = self.magniglass
-        self.magniglass.load()
-
-        # nest_l16
-        def prepareNest(img: np.ndarray):
-            lower_val = [6, 104, 27]
-            upper_val = [14, 181, 221] 
-            return self.apply_hsv_mask(img, lower_val, upper_val)
-
-        self.nest_l16 = Template('nest_l16', (0.34, 0.59), (0.49, 0.68))
-        self.nest_l16.prepare = prepareNest
-        self.items['nest_l16'] = self.nest_l16
-        self.nest_l16.load()
-
-    def apply_hsv_mask(self, img: np.ndarray, lower_val, upper_val):
-        ksize = (8, 8)
-        hsv = cv2.blur(img, ksize)
-        hsv = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, np.array(lower_val), np.array(upper_val))
-        imgMasked = cv2.bitwise_and(img, img, mask=mask)
-        return imgMasked
 
 
 class Recognition:
@@ -133,7 +18,7 @@ class Recognition:
 
     def is_outside(self) -> bool:
         tm = self.templates.magniglass
-        return tm.match_exact(self.vision, 0.7)
+        return tm.match_exact(self.vision)
 
     read_world_position_lower_val = [88, 90, 120]
     read_world_position_upper_val = [105, 160, 200]
@@ -200,6 +85,39 @@ class Recognition:
             return True
         return False
 
+    def read_location_info(self):
+        ''' returns (name, alliance, location)'''
+        res = self.templates.location_marker.find_max(self.vision,(0.004, 0.079), (0.949, 0.754) )
+        name = None
+        location = None
+        alliance = None
+        if res:
+            maxVal, maxLoc = res
+            nameRect = (maxLoc[0] - 0.015, maxLoc[1] - .126, 0.364, 0.052)
+            locRect = (maxLoc[0] + .028, maxLoc[1], 0.195, 0.024)  
+
+            nameImg = self.vision.get_rectangle_proportional(nameRect).copy()
+            txt :str = pytesseract.image_to_string(nameImg)
+            if len(txt)>0:
+                name = txt.splitlines()[0]
+                rematch = re.match("[(]([A-Za-z0-9]+)[)](.+)", name)
+                if rematch:
+                    name = rematch.group(2)
+                    alliance = rematch.group(1) 
+
+            
+            locImg = self.vision.get_rectangle_proportional(locRect).copy()
+            locStr = pytesseract.image_to_string(locImg)
+            rematch = re.match("X[:]([\d,]+)[\s ,]+[Y¥][:.-]([\d,]+).*", locStr)
+            location = None
+            QImageViewer.show_image('nameImg',nameImg)
+            QImageViewer.show_image('locImg',locImg) 
+            if rematch:
+                location = (int(rematch.group(1).replace(',','')), int(rematch.group(2).replace(',',''))) 
+
+        return (name, alliance, location)
+
+
     def is_inside(self):
         return False
 
@@ -214,14 +132,12 @@ if __name__ == '__main__':
     while not vision.is_ready():
         time.sleep(0.1)
     rec = Recognition(vision)
-    # rec.templates.magniglass.save(vision)
-    rec.templates.magniglass.load()
-    # rec.templates.nest_l16.save(vision)
-    rec.templates.nest_l16.load()
+    # rec.templates.magniglass.save(vision) 
+    # rec.templates.nest_l16.save(vision) 
 
     while not keyboard.is_pressed('ctrl+q'):
-        hits = rec.templates.nest_l16.match_search(vision, (0.17, 0.45), (0.76, 0.83), 0.85)
-        print(f'{len(hits)} hits')
+        #hits = rec.templates.nest_l16.match_search(vision, (0.17, 0.45), (0.76, 0.83), 0.85)
+        #print(f'{len(hits)} hits')
 
         # if rec.is_outside():
         #    print('outside')
@@ -235,5 +151,7 @@ if __name__ == '__main__':
         # test get_troops_deployed_count
         # print(rec.get_troops_deployed_count())
         #print(f"is attack = {rec.is_attack_gump()}")
+
+        print(rec.read_location_info())
         time.sleep(1)
     os._exit(0)

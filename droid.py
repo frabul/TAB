@@ -6,7 +6,7 @@ from recognition import Recognition
 from vision import Vision
 import autoit
 import win32gui
-import time 
+import time
 import random
 
 
@@ -16,36 +16,39 @@ class Droid:
         self.recognition = Recognition(vision)
         pass
 
-    def activate_win(self, timeout = 0.5):
-        try: 
+    def activate_win(self, timeout=0.5):
+        try:
             ret = win32gui.SetForegroundWindow(self.vision.hwnd)
-            sleep(0.01) 
+            sleep(0.01)
             ret = win32gui.SetActiveWindow(self.vision.hwnd)
-            tstart = time.time() 
+            tstart = time.time()
             while win32gui.GetForegroundWindow() != self.vision.hwnd and time.time() < tstart + timeout:
-                sleep(0.01) 
+                sleep(0.01)
         except Exception as ex:
             print("Exception in Droid.activate_win" + str(ex))
-        
+
     def click_app(self, pos, dismiss_keyboard=True, delay_after=0.15, radius_px=5):
         if dismiss_keyboard:
             self.assure_keyboard_disabled()
         cx, cy = self.vision.get_screen_position_rel(pos)
-        cx += random.randint(-radius_px,radius_px)
-        cy += random.randint(-radius_px,radius_px)
+        cx += random.randint(-radius_px, radius_px)
+        cy += random.randint(-radius_px, radius_px)
         pyautogui.leftClick(x=cx, y=cy)
-        sleep(delay_after)
+        self.sleep_random(delay_after)
+
+    def sleep_random(self, delay, variability=0.2):
+        sleep(delay + (random.random() * 2 - 1) * variability * delay)
 
     def assure_keyboard_disabled(self):
-        if self.vision.is_keybord_enabled(): 
+        if self.vision.is_keybord_enabled():
             self.click_app((0.5, 0.5), False, radius_px=20)
 
     def go_to_location(self, pos):
         self.activate_win()
 
         if not self.recognition.is_outside():
-            return False 
-        fx, fy = pos 
+            return False
+        fx, fy = pos
         # attivo app
         #self.click_app((0.5, 0.5), False)
 
@@ -80,4 +83,23 @@ class Droid:
             return
         self.click_app((0.86, 0.94))
 
- 
+    def random_range(self, rangestart, rangend):
+        return rangestart + random.random() * (rangend - rangestart)
+
+    def move(self, direction_su):
+        ''' direction is expresses in screen units '''
+        drag_start = (self.random_range(0.4, 0.6), self.random_range(0.5, 0.6))
+        drag_start = self.vision.get_screen_position_rel(drag_start)
+
+        drag_vector = self.vision.proportional_to_absolute((-direction_su[0], -direction_su[1]))
+        pyautogui.moveTo(x=drag_start[0], y=drag_start[1])
+        self.sleep_random(0.1)
+        pyautogui.mouseDown(button='left')
+        self.sleep_random(0.1)
+        pyautogui.moveRel(
+            xOffset=drag_vector[0],
+            yOffset=drag_vector[1],
+            duration=(1 + random.random() / 2) * 1
+        )
+        self.sleep_random(0.1)
+        pyautogui.mouseUp(button='left')

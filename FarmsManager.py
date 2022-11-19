@@ -18,7 +18,8 @@ from FarmsDb import Farm, FarmsDb
 
 
 class FarmMarker(QGraphicsEllipseItem):
-    def __init__( self, farm:Farm, rect : QRect ) -> None:
+    def __init__( self, farm:Farm    ) -> None:
+        rect = QRect(farm.position[0] - 8, farm.position[1] - 8, 16, 16)
         super().__init__(rect)
         self.farm : Farm = farm
         self.set_explored(False)
@@ -69,7 +70,7 @@ class WidgetFarmsDisplay(QMainWindow):
         win = self
         self.map_size = (1200, 1200)
         self.farm_widgets: dict[tuple, FarmMarker] = {}
-        self.droid = Vision('BlueStacks App Player', (1, 35, 1, 1))
+        self.droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1))) 
         self.farms = FarmsDb('FarmsDb.json')
         self.droid.vision.start()
 
@@ -79,22 +80,24 @@ class WidgetFarmsDisplay(QMainWindow):
         # scene
         self.scene = QGraphicsScene()
         self.scene.setBackgroundBrush(QBrush(Qt.GlobalColor.black))
-        self.scene.setSceneRect(0, 0, self.map_size[0], self.map_size[1])
+        self.scene.setSceneRect(-5, -5, self.map_size[0] + 10, self.map_size[1]+10)
         self.scene.mouseDoubleClickEvent = MethodType(WidgetFarmsDisplay.handle_mouse_double_click_on_scene, self)
         self.scene.mouseMoveEvent = MethodType(WidgetFarmsDisplay.handle_mouse_move_on_scene, self)
-       
+     
         # my marker
-        self.my_marker = QGraphicsEllipseItem(QRect(0, 0, 20, 20))
+        self.my_marker = QGraphicsEllipseItem(QRect(0, 0, 16, 16))
         self.my_marker.setBrush(QBrush(Qt.GlobalColor.green))
         self.my_marker.hide()
         self.scene.addItem(self.my_marker)
 
         # view
         self.view = QGraphicsView(self.scene, win)
+        self.view.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.view.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
-        self.view.setGeometry(0, 0, 600, 600)
-        self.view.setSceneRect(0, 0, self.map_size[0], self.map_size[1])
-        self.view.scale(0.48, 0.48)
+        self.view.setContentsMargins(0,0,0,0)
+        self.view.setGeometry(0, 0, self.scene.width()/2 + 2 , self.scene.height()/2 + 2 ) 
+        self.view.setSceneRect(self.scene.sceneRect())
+        self.view.scale(0.5, 0.5)
         self.view.setMouseTracking(True)
 
         # layout 
@@ -247,7 +250,7 @@ class WidgetFarmsDisplay(QMainWindow):
 
     def add_marker(self, farm):
         x, y = self.world_to_map(farm.position)
-        item = FarmMarker(farm, QRect(x, y, 12, 12))  
+        item = FarmMarker(farm)  
 
         def handleItemSelectedChanged(sender : FarmMarker, val):
             if val:
@@ -281,6 +284,6 @@ QApplication.setDoubleClickInterval(250)
 win = WidgetFarmsDisplay()
 win.show()
 QDispatcher.exec()
-
+QRect
 
  

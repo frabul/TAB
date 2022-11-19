@@ -1,0 +1,2 @@
+call activate automation
+python ScreenShotAnalyzer.py

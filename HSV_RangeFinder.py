@@ -13,6 +13,8 @@ from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
 from vision import Vision
 import cv2
 import QDispatcher
+import utils
+
 class HSV_RangeFinder(QMainWindow):
     image_original : np.ndarray = None
     def __init__(self) -> None:
@@ -42,6 +44,17 @@ class HSV_RangeFinder(QMainWindow):
         self.action_paste.setEnabled(True)
         self.action_paste.activated.connect(self.get_image_from_clipboard)
 
+        self.action_copy = QShortcut(QKeySequence("Ctrl+C"), self)
+        self.action_copy.setEnabled(True)
+        self.action_copy.activated.connect(self.copy_range)
+
+    def copy_range(self):
+        
+        txt = f'''
+hsv_max = np.array({self.upper_val.tolist()})
+hsv_min = np.array({self.lower_val.tolist()})
+        '''
+        QApplication.clipboard().setText(txt)
 
     def get_image_from_clipboard(self):
         copied = QApplication.clipboard().image()
@@ -84,26 +97,23 @@ class HSV_RangeFinder(QMainWindow):
     def update_image(self):
         if   self.image_original is None:
             return 
-        ksize = (8, 8)    
-        hsv = cv2.blur(self.image_original, ksize)
-        hsv = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
+        
         # set lower and upper color limits
-        upper_val = np.array([
+        self.upper_val = np.array([
                 self.slider_h_max.value(),
                 self.slider_s_max.value(),
                 self.slider_v_max.value()
             ])
-        lower_val = np.array([
+        self.lower_val = np.array([
                 self.slider_h_min.value(),
                 self.slider_s_min.value(),
                 self.slider_v_min.value()
             ])
-        mask = cv2.inRange(hsv, lower_val, upper_val)
+             
         # apply mask to original image
-        self.img_masked : np.ndarray= cv2.bitwise_and(self.image_original, self.image_original, mask=mask)
-        image = self.img_masked
-        height ,width,channel = image.shape
-        self.qimg = QImage(image.data, width, height, channel * width, QImage.Format.Format_BGR888)
+        self.img_masked : np.ndarray = utils.apply_hsv_mask(self.image_original, self.lower_val, self.upper_val)
+        image = self.img_masked 
+        self.qimg = utils.qimage_from_cv2(image)
         self.label_img.setPixmap(QPixmap.fromImageInPlace(self.qimg))
 
 QDispatcher.create(True) 
