@@ -111,7 +111,7 @@ hsv_min = np.array({self.lower_val.tolist()})
             ])
              
         # apply mask to original image
-        self.img_masked : np.ndarray = utils.apply_hsv_mask(self.image_original, self.lower_val, self.upper_val)
+        self.img_masked : np.ndarray = utils.apply_hsv_mask(self.image_original, self.lower_val, self.upper_val, ksize=(2,2))
         image = self.img_masked 
         self.qimg = utils.qimage_from_cv2(image)
         self.label_img.setPixmap(QPixmap.fromImageInPlace(self.qimg))

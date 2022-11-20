@@ -8,6 +8,7 @@ import autoit
 import win32gui
 import time
 import random
+import utils
 
 
 class Droid:
@@ -37,7 +38,8 @@ class Droid:
         self.sleep_random(delay_after)
 
     def sleep_random(self, delay, variability=0.2):
-        sleep(delay + (random.random() * 2 - 1) * variability * delay)
+        random_delay = (1 + utils.random_range(-variability, +variability)) * delay
+        sleep(random_delay)
 
     def assure_keyboard_disabled(self):
         if self.vision.is_keybord_enabled():
@@ -86,20 +88,20 @@ class Droid:
     def random_range(self, rangestart, rangend):
         return rangestart + random.random() * (rangend - rangestart)
 
-    def move(self, direction_su):
+    def move(self, direction_su, drag_start):
         ''' direction is expresses in screen units '''
-        drag_start = (self.random_range(0.4, 0.6), self.random_range(0.70, 0.77))
+
         drag_start = self.vision.get_screen_position_rel(drag_start)
 
         drag_vector = self.vision.proportional_to_absolute((-direction_su[0], -direction_su[1]))
         pyautogui.moveTo(x=drag_start[0], y=drag_start[1])
-        self.sleep_random(0.1)
+        self.sleep_random(0.1, 0.05)
         pyautogui.mouseDown(button='left')
-        self.sleep_random(0.1)
+        self.sleep_random(0.1, 0.05)
         pyautogui.moveRel(
             xOffset=drag_vector[0],
             yOffset=drag_vector[1],
-            duration=(1 + random.random() / 2) * 1
+            duration=self.random_range(0.4, .8)
         )
-        self.sleep_random(0.1)
+        self.sleep_random(0.1, 0.05)
         pyautogui.mouseUp(button='left')

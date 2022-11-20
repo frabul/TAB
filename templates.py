@@ -32,10 +32,12 @@ class Templates:
         def prepare_location_marker(img): 
             #hsv_max = np.array([83, 145, 129])
             #hsv_min = np.array([69, 74, 58]) 
-            hsv_max = np.array([83, 146, 129])
-            hsv_min = np.array([59, 54, 51])
-            return utils.apply_hsv_mask(img, hsv_min, hsv_max) 
-        self.location_marker = Template('location_marker',(0.285, 0.599), (0.285, 0.599),score_min=0.95)
+            #hsv_max = np.array([83, 146, 129])
+            #hsv_min = np.array([59, 54, 51]) 
+            hsv_max = np.array([78, 171, 199])
+            hsv_min = np.array([67, 54, 44])
+            return utils.apply_hsv_mask(img, hsv_min, hsv_max, ksize=(2,2)) 
+        self.location_marker = Template('location_marker',(0.285, 0.599), (0.285, 0.599),score_min=0.85)
         self.location_marker.prepare = prepare_location_marker
  
         # load all

@@ -6,10 +6,13 @@ from vision import Vision
 import QImageViewer
 from template import Template
 from templates import Templates
+import utils
 
 pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe'
-
-
+debug = False
+def show_image(winname, img):
+    if debug:
+        QImageViewer.show_image(winname, img)
 
 class Recognition:
     def __init__(self, vision: Vision):
@@ -32,11 +35,22 @@ class Recognition:
         hsv_min = np.array([58, 82, 67])
         mask = cv2.inRange(hsv, hsv_min, hsv_max)
         # apply mask to original image
-        only_txt = cv2.bitwise_and(img, img, mask=mask)
-        #_, img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)
-        QImageViewer.show_image('imgpos', only_txt)
-        txt = pytesseract.image_to_string(only_txt)
-        rematch = re.match("X[:](\d+) [Y¥][:.-](\d+).*", txt)
+        only_txt = cv2.bitwise_and(img, img, mask=mask) 
+        #only_txt = cv2.cvtColor(only_txt, cv2.COLOR_BGR2GRAY) 
+        #only_txt = cv2.blur(only_txt,  (2,2) )
+        show_image('imgpos', only_txt)
+        txt = pytesseract.image_to_string(only_txt) 
+        rematch = re.match("X[:](\d+) [Y¥][:.-](\d+).*", txt) 
+        if rematch is None:
+            only_txt2 = cv2.erode(only_txt, np.ones((2,1)))
+            txt = pytesseract.image_to_string(only_txt2)
+            rematch = re.match("X[:](\d+) [Y¥][:.-](\d+).*", txt) 
+            
+        if rematch is None:
+            only_txt3 = cv2.erode(only_txt, np.ones((1,2)))
+            txt = pytesseract.image_to_string(only_txt3)
+            rematch = re.match("X[:](\d+) [Y¥][:.-](\d+).*", txt) 
+
         if rematch:
             return (int(rematch.group(1)), int(rematch.group(2)))
         return None
@@ -95,10 +109,10 @@ class Recognition:
             maxVal, maxLoc = res
             nameRect1 = (maxLoc[0] - 0.015, maxLoc[1] - .105, 0.364, 0.025)
             nameRect2 = (maxLoc[0] - 0.015, maxLoc[1] - .126, 0.364, 0.025)
-            locRect = (maxLoc[0] + .0285, maxLoc[1], 0.195, 0.024)  
+            locRect = (maxLoc[0] + .0250, maxLoc[1], 0.195, 0.027)  
 
-            nameImg1 = self.vision.get_rectangle_proportional(nameRect1).copy()
-            nameImg2 = self.vision.get_rectangle_proportional(nameRect1).copy()
+            nameImg1 = self.vision.get_rectangle_proportional(nameRect1)
+            nameImg2 = self.vision.get_rectangle_proportional(nameRect2)
             for nameImg in [nameImg1, nameImg2]:
                 txt :str = pytesseract.image_to_string(nameImg)
                 if len(txt)>0:
@@ -109,13 +123,23 @@ class Recognition:
                         alliance = rematch.group(1) 
 
             
-            locImg = self.vision.get_rectangle_proportional(locRect).copy()
+            locImg = self.vision.get_rectangle_proportional(locRect)
+            locImg = cv2.rectangle( locImg, ( 0,0), (  locImg.shape[1]-1, locImg.shape[0]-1), (255,255,255) ) 
+            locImg = cv2.resize(locImg, (locImg.shape[1]*2,locImg.shape[0]*2))
+            #locImg = cv2.dilate(locImg, np.ones((1,2),dtype=np.uint8))
+            #locImg = cv2.blur(locImg, (1,2))
+            #locImg = cv2.dilate(locImg, np.ones((1,2),dtype=np.uint8))
+            #locImg = cv2.cvtColor(locImg, cv2.COLOR_RGB2GRAY)
+            #locImg = cv2.threshold(locImg, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+            
+
             locStr = pytesseract.image_to_string(locImg)
+  
             rematch = re.search("X[:]([\d,.]+)[\s ,]+[Y¥][:.-]([\d,.]+).*", locStr)
             location = None
-            #QImageViewer.show_image('nameImg1',nameImg1)
-            #QImageViewer.show_image('nameImg2',nameImg2)
-            #QImageViewer.show_image('locImg',locImg) 
+            show_image('nameImg1',nameImg1)
+            show_image('nameImg2',nameImg2)
+            show_image('locImg',locImg) 
             if rematch:
                 location = (int(rematch.group(1).replace(',','')), int(rematch.group(2).replace(',',''))) 
              
@@ -138,7 +162,7 @@ if __name__ == '__main__':
     rec = Recognition(vision)
     # rec.templates.magniglass.save(vision) 
     # rec.templates.nest_l16.save(vision) 
-
+    debug = True
     while not keyboard.is_pressed('ctrl+q'):
         hits = rec.templates.nest_l16.find_all(vision, (0.17, 0.45), (0.76, 0.83))
         
@@ -157,6 +181,8 @@ if __name__ == '__main__':
         # print(rec.get_troops_deployed_count())
         #print(f"is attack = {rec.is_attack_gump()}")
 
-        #print(rec.read_location_info())
+        # test read location info
+        print(rec.read_location_info())
+
         time.sleep(1)
     os._exit(0)

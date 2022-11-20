@@ -71,7 +71,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.map_size = (1200, 1200)
         self.farm_widgets: dict[tuple, FarmMarker] = {}
         self.droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1))) 
-        self.farms = FarmsDb('FarmsDb.json')
+        self.farms = FarmsDb('FarmsDb_new.json')
         self.droid.vision.start()
 
         self.setWindowTitle("Farms display")

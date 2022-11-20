@@ -8,10 +8,11 @@ import shutil
 class Farm:
     strtimeformat = '%Y%m%d%H%M%S'
 
-    def __init__(self, position=(0, 0), level=1, name=None, last_raid=None) -> None:
+    def __init__(self, position=(0, 0), level=1, name=None, last_raid=None, alliance = None) -> None:
         self.position = position
         self.level = level
         self.name = name
+        self.alliance = alliance
         if last_raid:
             self.last_raid = last_raid
         else:
