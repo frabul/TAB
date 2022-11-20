@@ -93,20 +93,17 @@ class FarmsFinder:
 
         keyboard.add_hotkey('q', callback=set_stop_requested)
         keyboard.add_hotkey('p', callback=toggle_pause)
-        while not self.stop_requested:
-
+        while not self.stop_requested: 
             if self.pause:
                 print("Entering pause")
                 while self.pause:
                     time.sleep(0.1)
                 print("Resuming...")
-
+            # move
             self.move()
             time.sleep(0.1)
             # search nest
-            nests = self.droid.recognition.templates.nest_l16_mini.find_all(self.vision, (0.285, 0.574), (0.915, 0.857))
-            # if len(nests)>0:
-            #    nests = self.droid.recognition.templates.nest_l16.find_all(self.vision, (0.135, 0.531), (0.917, 0.855))
+            nests = self.droid.recognition.templates.nest_l16_mini.find_all(self.vision, (0.285, 0.574), (0.915, 0.857)) 
             for nest in nests:
                 print(f'Nest found at {nest.center().x()}, {nest.center().y()}')
                 self.droid.click_app((nest.center().x(), nest.center().y()))

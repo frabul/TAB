@@ -70,7 +70,7 @@ class Recognition:
             lower_val = np.array([13, 80, 140])
             upper_val = np.array([20, 120, 220])
             mask = cv2.inRange(hsv, lower_val, upper_val)
-            print("avg " + str(np.average(mask)))
+            #print("avg " + str(np.average(mask)))
             found = np.average(mask) > 95 and np.average(mask) < 125
             if found:
                 count += 1

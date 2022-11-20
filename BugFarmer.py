@@ -9,7 +9,8 @@ from time import sleep
 import QImageViewer
 from vision import Vision
 from recognition import Recognition
-
+import keyboard
+import time
 
 class Stages:
     unknown = 'unknown'
@@ -34,6 +35,7 @@ class BugFarmer:
         self.droid = droid
         self.rec = droid.recognition
         self.terminate = False
+        self.pause = False
         self.actions: dict[str, typing.Callable | dict]
         self.stage = [Stages.unknown, Stages.idle, Stages.unknown, Stages.unknown]
         self.troops_count = 4
@@ -92,8 +94,21 @@ class BugFarmer:
         else:
             self.stage[0] = Stages.unknown
 
-    def run(self):
+    def run(self):  
+        def set_stop_requested():
+            self.terminate = True
+
+        def toggle_pause():
+            self.pause = not self.pause
+   
+        keyboard.add_hotkey('q', callback=set_stop_requested)
+        keyboard.add_hotkey('p', callback=toggle_pause)
         while not self.terminate:
+            if self.pause:
+                print("Entering pause")
+                while self.pause:
+                    time.sleep(0.1)
+                print("Resuming...")
             self.identify()
             self.step()
 
@@ -132,7 +147,7 @@ class BugFarmer:
 
             def increase():
                 self.troops_count += 1
-            time = threading.Timer(5, increase)
+            time = threading.Timer(60*5, increase)
             time.start()
         else:
             self.stage[1] = Stages.idle
