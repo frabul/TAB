@@ -1,2 +1,2 @@
 call activate automation
-python FarmsManager.py
+python FarmsManager.py %1

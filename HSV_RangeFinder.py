@@ -51,8 +51,8 @@ class HSV_RangeFinder(QMainWindow):
     def copy_range(self):
         
         txt = f'''
-hsv_max = np.array({self.upper_val.tolist()})
 hsv_min = np.array({self.lower_val.tolist()})
+hsv_max = np.array({self.upper_val.tolist()})
         '''
         QApplication.clipboard().setText(txt)
 

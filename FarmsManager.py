@@ -18,8 +18,8 @@ from FarmsDb import Farm, FarmsDb
 
 
 class FarmMarker(QGraphicsEllipseItem):
-    def __init__( self, farm:Farm    ) -> None:
-        rect = QRect(farm.position[0] - 8, farm.position[1] - 8, 16, 16)
+    def __init__( self, farm:Farm, pos_in_map) -> None:
+        rect = QRect(pos_in_map[0] - 8, pos_in_map[1] - 8, 16, 16)
         super().__init__(rect)
         self.farm : Farm = farm
         self.set_explored(False)
@@ -65,18 +65,18 @@ class WidgetFarmsDisplay(QMainWindow):
     farms_map = None
     last_selected_marker: FarmMarker = None
     
-    def __init__(self) -> None: 
+    def __init__(self, farmsdb) -> None: 
         super().__init__()
         win = self
         self.map_size = (1200, 1200)
         self.farm_widgets: dict[tuple, FarmMarker] = {}
         self.droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1))) 
-        self.farms = FarmsDb('FarmsDb_new.json')
+        self.farms = farmsdb
         self.droid.vision.start()
 
         self.setWindowTitle("Farms display")
         self.setGeometry(0, 0, 800, 800)
-
+        
         # scene
         self.scene = QGraphicsScene()
         self.scene.setBackgroundBrush(QBrush(Qt.GlobalColor.black))
@@ -250,7 +250,7 @@ class WidgetFarmsDisplay(QMainWindow):
 
     def add_marker(self, farm):
         x, y = self.world_to_map(farm.position)
-        item = FarmMarker(farm)  
+        item = FarmMarker(farm, (x,y))  
 
         def handleItemSelectedChanged(sender : FarmMarker, val):
             if val:
@@ -279,11 +279,19 @@ class WidgetFarmsDisplay(QMainWindow):
 
 
 ######################################################################################
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='Manage farms')
+    parser.add_argument('farms_db', nargs='?', default='FarmsDb.json') 
+    ns = parser.parse_args()
+  
  
-QApplication.setDoubleClickInterval(250)
-win = WidgetFarmsDisplay()
-win.show()
-QDispatcher.exec()
-QRect
+
+    QApplication.setDoubleClickInterval(250)
+    win = WidgetFarmsDisplay(FarmsDb(ns.farms_db))
+    win.show()
+    QDispatcher.exec()
+ 
 
  

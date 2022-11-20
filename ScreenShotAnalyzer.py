@@ -30,20 +30,9 @@ class ScreenShotAnalyzer(QMainWindow):
 
         self.setWindowTitle("Screenshot Analyzer")
         self.setGeometry(0, 0, 500, 800)
-
-        #mainframe = QWidget(self)
-        #self.setCentralWidget(mainframe)
-
-        #mainpanel = QHBoxLayout()
-        #mainframe.setLayout(mainpanel)
+ 
         self.selection_start : QPointF= None
-        self.selection_end : QPointF= None
-        #self.label_screen = QLabel() 
-        #self.label_screen.mouseMoveEvent = self.handle_label_mouse_move
-        #self.label_screen.mousePressEvent = self.handle_label_mouse_press
-        #self.label_screen.mouseReleaseEvent = self.handle_label_mouse_release
-        #self.label_screen.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        #mainpanel.addWidget(self.label_screen)
+        self.selection_end : QPointF= None  
 
         
         def screen_scene_handle_mouse_press( event: QGraphicsSceneMouseEvent):
@@ -62,10 +51,10 @@ class ScreenShotAnalyzer(QMainWindow):
                 self.selection_rect.setRect(xmin,ymin,w,h)
                 self.selection_rect.setPen(QPen(Qt.GlobalColor.red))
 
-            sw =  self.screen_scene.width() 
-            sh =  self.screen_scene.height() 
-            self.top_left = ( round(xmin / sw,3), round(ymin / sh,3) )
-            self.bot_right = ( round(xmax / sw,3), round(ymax / sh,3)  )
+                sw =  self.screen_scene.width() 
+                sh =  self.screen_scene.height() 
+                self.top_left = ( round(xmin / sw,3), round(ymin / sh,3) )
+                self.bot_right = ( round(xmax / sw,3), round(ymax / sh,3)  )
 
 
         self.screen_scene = QGraphicsScene() 
@@ -102,7 +91,7 @@ class ScreenShotAnalyzer(QMainWindow):
         self.view.setContentsMargins(0,0,0,0)
         self.view.setGeometry(0, 0, self.screen_scene.width()  + 2 , self.screen_scene.height()  + 2 ) 
         self.view.setSceneRect(self.screen_scene.sceneRect()) 
-        self.view.setMouseTracking(True)
+        #self.view.setMouseTracking(True)
         self.view.setSizePolicy( QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed )
         #mainpanel.addWidget(self.view)
    

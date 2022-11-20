@@ -99,6 +99,13 @@ class Recognition:
             return True
         return False
 
+    def is_lizard_rally_gump(self):
+        img = self.vision.get_section((0.535, 0.216),(0.678, 0.256))
+        txt: str = pytesseract.image_to_string(img)
+        if txt and "Lizard" in txt:
+            return True
+        return False
+
     def read_location_info(self):
         ''' returns (name, alliance, location)'''
         res = self.templates.location_marker.find_max(self.vision,(0.004, 0.079), (0.949, 0.754) )
@@ -128,14 +135,14 @@ class Recognition:
             locImg = cv2.resize(locImg, (locImg.shape[1]*2,locImg.shape[0]*2))
             #locImg = cv2.dilate(locImg, np.ones((1,2),dtype=np.uint8))
             #locImg = cv2.blur(locImg, (1,2))
-            #locImg = cv2.dilate(locImg, np.ones((1,2),dtype=np.uint8))
-            #locImg = cv2.cvtColor(locImg, cv2.COLOR_RGB2GRAY)
-            #locImg = cv2.threshold(locImg, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+            locImg = cv2.cvtColor(locImg, cv2.COLOR_RGB2GRAY)
+            locImg = cv2.threshold(locImg, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+            locImg = cv2.dilate(locImg, np.zeros((2,2),dtype=np.uint8))
             
 
             locStr = pytesseract.image_to_string(locImg)
   
-            rematch = re.search("X[:]([\d,.]+)[\s ,]+[Y¥][:.-]([\d,.]+).*", locStr)
+            rematch = re.search("X[:]([\d,.]+)[\s ,|]+[Y¥][:.-]([\d,.]+).*", locStr)
             location = None
             show_image('nameImg1',nameImg1)
             show_image('nameImg2',nameImg2)

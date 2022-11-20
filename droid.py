@@ -45,6 +45,13 @@ class Droid:
         if self.vision.is_keybord_enabled():
             self.click_app((0.5, 0.5), False, radius_px=20)
 
+    def open_goto_gum(self):
+        # apro gump
+        self.click_app((0.5, 0.81))
+
+    def open_search(self):
+        self.click_app((0.075, 0.654))
+
     def go_to_location(self, pos):
         self.activate_win()
 
@@ -55,7 +62,7 @@ class Droid:
         #self.click_app((0.5, 0.5), False)
 
         # apro gump
-        self.click_app((0.5, 0.81))
+        self.open_goto_gum( )
 
         # insert x
         self.click_app((0.22, 0.84))

@@ -31,8 +31,7 @@ class Template:
         self.top_left = topleft
         self.bot_right = botright
         self.rect = (x, y, w, h)
-
-
+         
     def save(self, vision: Vision):
         img = vision.get_rectangle_proportional(self.rect).copy()
         self.screen_size = (vision.w, vision.h)
@@ -43,6 +42,7 @@ class Template:
     def load(self):
         img = cv2.imread(f'./images/{self.name}.bmp')
         self.img = self.prepare(img)
+        self.size_px = (img.shape[1], img.shape[0])
         pass
 
     def prepare(self, img):
