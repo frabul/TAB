@@ -33,3 +33,8 @@ def binarize(img, threshold = 150):
 
 def random_range( rangestart, rangend):
     return rangestart + random.random() * (rangend - rangestart)
+
+def point_sum(a : tuple[int | float,int | float] ,b : tuple[int | float,int | float]) -> tuple[int | float,int | float]:
+    return (a[0] + b[0], a[1] + b[1]) 
+def point_sub(a :tuple[int | float,int | float] ,b : tuple[int | float,int | float]) -> tuple[int | float,int | float]:
+    return (a[0] - b[0], a[1] - b[1]) 

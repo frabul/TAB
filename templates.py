@@ -13,8 +13,7 @@ class Templates:
         self.items = {}
 
         # magniglass
-        self.magniglass = Template('magniglass', (0.02, 0.63), (0.1, 0.68), score_min=0.7)
-
+        self.magniglass = Template('magniglass', (0.02, 0.63), (0.1, 0.68), score_min=0.7) 
         def prepareMagni(img: np.ndarray):
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = cv2.threshold(img, 150, 255, cv2.THRESH_BINARY)
@@ -34,10 +33,16 @@ class Templates:
             hsv_max = np.array([14, 179, 228])
             hsv_min = np.array([1, 108, 53])
             return utils.apply_hsv_mask(img, hsv_min, hsv_max)
-        self.nest_l16_mini = Template('nest_l16_mini', (0.546, 0.618),(0.644, 0.653))
+        self.nest_l16_mini = Template('nest_l16_mini', (0.546, 0.618), (0.644, 0.653))
         self.nest_l16_mini.prepare = prepareNest
 
-        # location_marker 
+        # stamina_marker
+        def prepare_stamina_marker(img: np.ndarray):
+            return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        self.stamina_marker = Template('stamina_marker', (0.528, 0.609), (0.58, 0.635), score_min=0.95)
+        self.stamina_marker.prepare = prepare_stamina_marker
+
+        # location_marker
         def prepare_location_marker(img):
             #hsv_max = np.array([83, 145, 129])
             #hsv_min = np.array([69, 74, 58])
@@ -54,6 +59,7 @@ class Templates:
             if type(it) is Template:
                 it.load()
 
+    
 
 if __name__ == '__main__':
     import time
@@ -65,13 +71,13 @@ if __name__ == '__main__':
     while not keyboard.is_pressed('ctrl+q'):
         #maxVal, maxLoc = templates.location_marker.find_max(vision, (0.004, 0.079), (0.949, 0.754) )
         #print(f"found {maxVal} at {maxLoc}"  )
-        rectangles = templates.nest_l16_mini.find_all(vision, (0.17, 0.45), (0.76, 0.83))
-        img = vision.get_last()
+        rectangles = templates.stamina_marker.find_all(vision, (0.491, 0.321),(0.781, 0.886))
+        img = vision.get_last_screen()
         print(f"found {len(rectangles)} rectangeles")
         for rect in rectangles:
             print(f"    {rect.x()} {rect.y()} {rect.width()} {rect.height()} ")
-            pos = vision.proportional_to_absolute((rect.x(), rect.y()))
-            size = vision.proportional_to_absolute((rect.width(), rect.height()))
+            pos = vision.point_su_to_px((rect.x(), rect.y()))
+            size = vision.point_su_to_px((rect.width(), rect.height()))
             img = cv2.rectangle(img, pos, (pos[0] + size[0], pos[1] + size[1]), (0, 0, 255))
         QImageViewer.show_image('foundings', img)
         time.sleep(1)

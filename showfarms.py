@@ -52,7 +52,7 @@ farms_img = img
 def click_app(pos, dismiss_keyboard=True):
     if dismiss_keyboard:
         assure_keyboard_disabled()
-    cx,cy = vision.get_screen_position_rel(pos) 
+    cx,cy = vision.get_screen_position_su(pos) 
     pyautogui.leftClick(x=cx, y=cy) 
     sleep(0.3)
 

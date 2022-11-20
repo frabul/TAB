@@ -145,7 +145,7 @@ class ScreenShotAnalyzer(QMainWindow):
     def handle_timer_timeout(self):
         if not self.vision.is_ready():
             return
-        screen = self.vision.get_last()
+        screen = self.vision.get_last_screen()
         h, w, _ = screen.shape
         #cv2.imwrite('screen.png',screen)
         self.last_screen_cv = screen

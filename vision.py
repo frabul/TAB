@@ -131,10 +131,10 @@ class Vision:
     # WARNING: if you move the window being captured after execution is started, this will
     # return incorrect coordinates, because the window position is only calculated in
     # the __init__ constructor.
-    def get_screen_position_raw(self, pos):
+    def get_screen_position_px(self, pos):
         return (pos[0] + self.offset_x, pos[1] + self.offset_y)
 
-    def get_screen_position_rel(self, pos_su: tuple):
+    def get_screen_position_su(self, pos_su: tuple):
         x = pos_su[0] * self.w
         y = pos_su[1] * self.h
         return (x + self.offset_x, y + self.offset_y)
@@ -147,13 +147,13 @@ class Vision:
             return min
         return val
     
-    def get_section(self, top_left, bot_right) -> (np.ndarray or None):
+    def get_section_2p_su(self, top_left, bot_right) -> (np.ndarray or None):
         x, y = top_left
         w = bot_right[0] - x
         h = bot_right[1] - y
-        return self.get_rectangle_proportional((x, y, w, h))
+        return self.get_section_su((x, y, w, h))
 
-    def get_rectangle_proportional(self, rectangle) -> (np.ndarray or None):
+    def get_section_su(self, rectangle) -> (np.ndarray or None):
         ''' rectangele defined by (x,y,w,h) '''
         if self.screenshot is None:
             return None
@@ -170,45 +170,19 @@ class Vision:
         self.lock.release()
         return res
 
-    def get_rectngle_2p(self, top_left, botto_right):
-        x1, y1 = top_left
-        x2, y2 = botto_right
-        rect = (x1, y1, x2 - x1, y2 - y1)
-        return self.get_rectangle_proportional(rect)
-
-    def point_to_proportional(self, point) -> tuple:
+ 
+    def point_px_to_su(self, point) -> tuple:
         return (point[0] / self.w, point[1] / self.h)
         
-    def proportional_to_absolute(self, prop) -> tuple:  
+    def point_su_to_px(self, prop) -> tuple:  
         return (int(prop[0] * self.w), int(prop[1] * self.h))
 
-    def get_last(self) -> (np.ndarray or None):
+    def get_last_screen(self) -> (np.ndarray or None):
         self.lock.acquire()
         res = self.screenshot.copy()
         self.lock.release()
         return res
-
-    # def is_keybord_enabled(self):
-    #    _cut = self.get_rectngle_2p((0.81, 0.95), (0.90, 0.98))
-    #
-    #    if _cut is None:
-    #        return False
-    #    _cut = _cut.copy()
-    #    txts = reader.readtext(_cut,min_size=2, detail = 2, blocklist="0")
-    #    QImageViewer.show_image('txt', _cut)
-    #    if len(txts) < 1:
-    #        return False
-    #    str_read :str = txts[0][1].upper()
-    #    return "OK" in str_read
-    def is_keybord_enabled(self):
-        if not self.is_ready():
-            raise Exception('vision not ready')
-
-        img = self.get_rectngle_2p((0.81, 0.95), (0.90, 0.98))
-        #cv2.imshow("ok", img)
-        txt: str = pytesseract.image_to_string(img).strip().upper()
-        return "OK" in txt or "0K" in txt
-
+ 
     def is_ready(self) -> bool:
         return not self.screenshot is None
     # threading methods

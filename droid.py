@@ -31,7 +31,7 @@ class Droid:
     def click_app(self, pos, dismiss_keyboard=True, delay_after=0.15, radius_px=5):
         if dismiss_keyboard:
             self.assure_keyboard_disabled()
-        cx, cy = self.vision.get_screen_position_rel(pos)
+        cx, cy = self.vision.get_screen_position_su(pos)
         cx += random.randint(-radius_px, radius_px)
         cy += random.randint(-radius_px, radius_px)
         pyautogui.leftClick(x=cx, y=cy)
@@ -98,9 +98,9 @@ class Droid:
     def move(self, direction_su, drag_start):
         ''' direction is expresses in screen units '''
 
-        drag_start = self.vision.get_screen_position_rel(drag_start)
+        drag_start = self.vision.get_screen_position_su(drag_start)
 
-        drag_vector = self.vision.proportional_to_absolute((-direction_su[0], -direction_su[1]))
+        drag_vector = self.vision.point_su_to_px((-direction_su[0], -direction_su[1]))
         pyautogui.moveTo(x=drag_start[0], y=drag_start[1])
         self.sleep_random(0.1, 0.05)
         pyautogui.mouseDown(button='left')

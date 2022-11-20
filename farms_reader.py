@@ -41,7 +41,7 @@ end = False
 while not end:
     # debug the loop rate
     loop_time = time()
-    img = wincap.get_rectangle_proportional((0.18, 0.27, 0.58, 0.48))
+    img = wincap.get_section_su((0.18, 0.27, 0.58, 0.48))
     if img is None:
         continue
     
