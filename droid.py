@@ -42,7 +42,7 @@ class Droid:
         sleep(random_delay)
 
     def assure_keyboard_disabled(self):
-        if self.vision.is_keybord_enabled():
+        if self.recognition.is_keybord_enabled():
             self.click_app((0.5, 0.5), False, radius_px=20)
 
     def open_goto_gum(self):

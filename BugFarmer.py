@@ -7,10 +7,12 @@ from vision import Vision
 import pyautogui
 from time import sleep
 import QImageViewer
+from PySide6.QtWidgets import QMessageBox
 from vision import Vision
 from recognition import Recognition
 import keyboard
 import time
+import QDispatcher
 
 class Stages:
     unknown = 'unknown'
@@ -39,6 +41,7 @@ class BugFarmer:
         self.actions: dict[str, typing.Callable | dict]
         self.stage = [Stages.unknown, Stages.idle, Stages.unknown, Stages.unknown]
         self.troops_count = 4
+        self.need_user_confirmation = True
 
         self.stage_decisions = {
             Stages.unknown: self.press_esc,
@@ -94,13 +97,13 @@ class BugFarmer:
         else:
             self.stage[0] = Stages.unknown
 
-    def run(self):  
+    def run(self):
         def set_stop_requested():
             self.terminate = True
 
         def toggle_pause():
             self.pause = not self.pause
-   
+
         keyboard.add_hotkey('q', callback=set_stop_requested)
         keyboard.add_hotkey('p', callback=toggle_pause)
         while not self.terminate:
@@ -113,44 +116,92 @@ class BugFarmer:
             self.step()
 
     def esc_and_idle(self):
+        self.droid.activate_win()
         self.press_esc()
         self.stage[1] = Stages.idle
 
+    def wait_for_user_confirmation(self):
+        self.can_go = False
+        def show_box(): 
+            msgBox  = QMessageBox()
+            msgBox.setText("Can go?") 
+            msgBox.exec()
+            self.can_go = True
+        QDispatcher.enqueue_job(show_box)  
+        while not self.can_go:
+            sleep(0.1) 
+
     def search_bug(self):
         troops_available = self.troops_count - self.rec.get_troops_deployed_count()
-        if troops_available > 0:
+        if troops_available > 0: 
+            if self.need_user_confirmation: 
+                self.wait_for_user_confirmation()        
             # we arre in outside stage
             # click magniglass
-            self.droid.click_app((0.075, 0.654), delay_after=1)
+            self.droid.click_app((0.075, 0.654), delay_after=0.4)
             # confirm search
-            self.droid.click_app((0.804, 0.865), delay_after=1)
+            self.droid.click_app((0.804, 0.865), delay_after=0.4)
             # click bug found
-            self.droid.click_app((0.473, 0.506), delay_after=1)
+            self.droid.click_app((0.473, 0.506), delay_after=0.4)
             self.stage[1] = Stages.confirm_attack
         else:
             sleep(5)
 
     def confirm_attack(self):
         # click attack
-        self.droid.click_app((0.47, 0.66), delay_after=1)
+        self.droid.click_app((0.47, 0.66), delay_after=0.4)
         self.stage[1] = Stages.pick_troop
 
     def pick_troop(self):
-        # click march
-        self.droid.click_app((0.71, 0.94), delay_after=1)
-        # check if it was accepted
-        if self.rec.is_troop_selection_gump():
-            # it was not accepted, probably troop stamina depleted
-            # decrease available troops and increase it after 5 minutes
-            self.troops_count -= 1
-            self.esc_and_idle()
 
-            def increase():
-                self.troops_count += 1
-            time = threading.Timer(60*5, increase)
-            time.start()
-        else:
-            self.stage[1] = Stages.idle
+        def try_confirm():
+            # check staminas
+            staminas = self.rec.read_staminas()
+            print(f'First try, staminas found {[x[0] for x in staminas]}')
+            stamok = [x for x in staminas if x[0] >= 10]
+
+            # check if the selected
+            for troop in stamok:
+                # click the position
+                self.droid.click_app(troop[1], delay_after=0.4)
+                if self.rec.is_march_button():
+                    # click march
+                    self.droid.click_app((0.71, 0.94), delay_after=0.4)
+                    if self.rec.is_outside():
+                        return True
+                    elif self.rec.is_troop_selection_gump():
+                        # probably the troop is not available
+                        self.decrease_available_troops()
+                        pass
+                    if not self.rec.is_outside() and not self.rec.is_troop_selection_gump():
+                        # we have some kind of gump probably
+                        self.droid.activate_win()
+                        pyautogui.press('esc')
+
+            return False
+        ok = try_confirm()
+        if not ok:
+            # scroll down and second try again
+            self.droid.move((0, 0.5), (0.431, 0.838))
+            ok = try_confirm()
+        if not ok:
+            self.decrease_available_troops()
+
+        self.stage[1] = Stages.idle
+        if not self.rec.is_outside():
+            self.droid.activate_win()
+            pyautogui.press('esc')
+
+    def decrease_available_troops(self):
+        # it was not accepted, probably troop stamina depleted
+        # decrease available troops and increase it after 5 minutes
+        self.troops_count -= 1
+        self.esc_and_idle()
+
+        def increase():
+            self.troops_count += 1
+        time = threading.Timer(60 * 5, increase)
+        time.start()
 
 
 if __name__ == '__main__':

@@ -30,7 +30,7 @@ class Recognition:
     read_world_position_upper_val = [105, 160, 200]
 
     def read_world_position(self) -> tuple[int]:
-        img = self.vision.get_section_2p_su((0.38, 0.79), (0.60, 0.82)).copy()
+        img = self.vision.get_section_2p_su((0.38, 0.79), (0.60, 0.82)) 
         #cv2.imwrite('temp.bmp', img)
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         # set lower and upper color limits
@@ -67,7 +67,7 @@ class Recognition:
             (0.006, 0.374, 0.052, 0.035)]
         count = 0
         for i, pos in enumerate(liclover):
-            img = self.vision.get_section_su(pos).copy()
+            img = self.vision.get_section_su(pos) 
             hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             # set lower and upper color limits
             lower_val = np.array([13, 80, 140])
@@ -81,28 +81,28 @@ class Recognition:
                 break
         return count
 
-    def is_exit_game_gump(self):
+    def is_exit_game_gump(self)-> bool:
         img = self.vision.get_section_2p_su((0.37, 0.459), (0.559, 0.495))
         txt: str = pytesseract.image_to_string(img)
         if txt and "Exit Game" in txt:
             return True
         return False
 
-    def is_troop_selection_gump(self):
+    def is_troop_selection_gump(self)-> bool:
         img = self.vision.get_section_2p_su((0.348, 0.017), (0.627, 0.048))
         txt: str = pytesseract.image_to_string(img)
         if txt and "March Troops" in txt:
             return True
         return False
 
-    def is_attack_gump(self):
+    def is_attack_gump(self)-> bool:
         img = self.vision.get_section_2p_su((0.423, 0.652), (0.521, 0.677))
         txt: str = pytesseract.image_to_string(img)
         if txt and "Attack" in txt:
             return True
         return False
 
-    def is_lizard_rally_gump(self):
+    def is_lizard_rally_gump(self)-> bool:
         img = self.vision.get_section_2p_su((0.535, 0.216), (0.678, 0.256))
         txt: str = pytesseract.image_to_string(img)
         if txt and "Lizard" in txt:
@@ -153,7 +153,7 @@ class Recognition:
 
         return (name, alliance, location)
 
-    def is_inside(self):
+    def is_inside(self)-> bool:
         return False
 
     def read_staminas(self) -> tuple[str, tuple[float,float]]:
@@ -175,13 +175,25 @@ class Recognition:
                     pass
         return results
 
-    def is_keybord_enabled(self):
+    def is_keybord_enabled(self)-> bool:
         if not self.vision.is_ready():
             raise Exception('vision not ready')
         img = self.vision.get_section_2p_su((0.81, 0.95), (0.90, 0.98))
         #cv2.imshow("ok", img)
         txt: str = pytesseract.image_to_string(img).strip().upper()
         return "OK" in txt or "0K" in txt
+
+    def is_march_button(self) -> bool:
+        # troop_march_button  
+        img = self.vision.get_section_2p_su((0.5, 0.916),(0.883, 0.973)) 
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        # set lower and upper color limits
+        hsv_min = np.array([16, 67, 0])
+        hsv_max = np.array([25, 255, 255])
+        mask = cv2.inRange(hsv, hsv_min, hsv_max)
+        #print("avg " + str(np.average(mask)))
+        found = np.average(mask) > 200  
+        return found 
 
     @staticmethod
     def read_small_white_text(locImg: cv2.Mat, resize_factor=2, threshold=70) -> str: 
@@ -232,6 +244,7 @@ if __name__ == '__main__':
         print(f'Squads found: {staminas}')
         for s in staminas:
             print(s)
-        
+
+        print(f'is_march_button() -> {rec.is_march_button()}')
         time.sleep(1)
     os._exit(0)

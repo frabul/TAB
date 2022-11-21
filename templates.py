@@ -41,13 +41,9 @@ class Templates:
             return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.stamina_marker = Template('stamina_marker', (0.528, 0.609), (0.58, 0.635), score_min=0.95)
         self.stamina_marker.prepare = prepare_stamina_marker
-
+ 
         # location_marker
-        def prepare_location_marker(img):
-            #hsv_max = np.array([83, 145, 129])
-            #hsv_min = np.array([69, 74, 58])
-            #hsv_max = np.array([83, 146, 129])
-            #hsv_min = np.array([59, 54, 51])
+        def prepare_location_marker(img): 
             hsv_max = np.array([78, 171, 199])
             hsv_min = np.array([67, 54, 44])
             return utils.apply_hsv_mask(img, hsv_min, hsv_max, ksize=(2, 2))
