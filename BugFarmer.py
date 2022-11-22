@@ -13,6 +13,7 @@ from recognition import Recognition
 import keyboard
 import time
 import QDispatcher
+import utils
 
 class Stages:
     unknown = 'unknown'
@@ -33,6 +34,10 @@ class BugFarmer:
     class OutsideActions:
         OpenSearch = 0
 
+    min_stamina = 40
+    troops_count = 4
+    need_user_confirmation = False
+
     def __init__(self, droid: Droid) -> None:
         self.droid = droid
         self.rec = droid.recognition
@@ -40,9 +45,7 @@ class BugFarmer:
         self.pause = False
         self.actions: dict[str, typing.Callable | dict]
         self.stage = [Stages.unknown, Stages.idle, Stages.unknown, Stages.unknown]
-        self.troops_count = 4
-        self.need_user_confirmation = True
-
+    
         self.stage_decisions = {
             Stages.unknown: self.press_esc,
             Stages.inside: self.droid.go_outside,
@@ -104,8 +107,9 @@ class BugFarmer:
         def toggle_pause():
             self.pause = not self.pause
 
-        keyboard.add_hotkey('q', callback=set_stop_requested)
-        keyboard.add_hotkey('p', callback=toggle_pause)
+        keyboard.add_hotkey('alt+q', callback=set_stop_requested)
+        keyboard.add_hotkey('alt+p', callback=toggle_pause)
+
         while not self.terminate:
             if self.pause:
                 print("Entering pause")
@@ -157,8 +161,8 @@ class BugFarmer:
         def try_confirm():
             # check staminas
             staminas = self.rec.read_staminas()
-            print(f'First try, staminas found {[x[0] for x in staminas]}')
-            stamok = [x for x in staminas if x[0] >= 10]
+            print(f'Staminas found {[x[0] for x in staminas]}')
+            stamok = [x for x in staminas if x[0] >= self.min_stamina]
 
             # check if the selected
             for troop in stamok:
@@ -182,7 +186,11 @@ class BugFarmer:
         ok = try_confirm()
         if not ok:
             # scroll down and second try again
-            self.droid.move((0, 0.5), (0.431, 0.838))
+            sx = utils.random_range(0.4, 0.43)
+            sy = utils.random_range(0.74, 0.77) 
+            self.droid.move((0, 0.5), (sx, sy))
+            self.droid.move((0, 0.5), (sx, sy))
+            sleep(1)
             ok = try_confirm()
         if not ok:
             self.decrease_available_troops()

@@ -3,27 +3,31 @@ QDispatcher.create(True)
 
 from types import MethodType 
 import numpy as np
-from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal,QTimer
+from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal,QTimer 
 from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard, 
                            QPixmap)
 from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
                                QGraphicsItem, QGraphicsRectItem, 
                                QGraphicsScene, QGraphicsSceneMouseEvent,
                                QGraphicsView, QLabel, QMainWindow, QWidget,
-                               QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout,
+                               QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout,QSlider
                                )
 from droid import Droid
 from vision import Vision
 from FarmsDb import Farm, FarmsDb
-
+import utils
 
 class FarmMarker(QGraphicsEllipseItem):
-    def __init__( self, farm:Farm, pos_in_map) -> None:
-        rect = QRect(pos_in_map[0] - 8, pos_in_map[1] - 8, 16, 16)
-        super().__init__(rect)
+    def __init__( self, farm:Farm, pos_in_map) -> None: 
+        super().__init__( )
+        self.set_position(pos_in_map)
         self.farm : Farm = farm
         self.set_explored(False)
         self.setFlags(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
+
+    def set_position(self, pos_in_map):
+        rect = QRect(pos_in_map[0] - 8, pos_in_map[1] - 8, 16, 16)
+        self.setRect(rect)
 
     def _setBrushes(self, selected, unselected):
         self.selectedBrush = selected
@@ -58,13 +62,22 @@ class FarmMarker(QGraphicsEllipseItem):
                     QBrush(Qt.GlobalColor.red) 
                 )
 
+class FixedSizeLabel(QLabel):
+    fixedPolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    def __init__(self, txt = None, parent =None  ):
+        super().__init__( )
+        self.setText(txt)
+        self.setSizePolicy(self.fixedPolicy)
+
 class WidgetFarmsDisplay(QMainWindow):
     mouse_move_handler = None
     mouse_press_handler = None
     mouse_release_handler = None
     farms_map = None
     last_selected_marker: FarmMarker = None
-    
+    fixedPolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+
+
     def __init__(self, farmsdb) -> None: 
         super().__init__()
         win = self
@@ -83,11 +96,13 @@ class WidgetFarmsDisplay(QMainWindow):
         self.scene.setSceneRect(-5, -5, self.map_size[0] + 10, self.map_size[1]+10)
         self.scene.mouseDoubleClickEvent = MethodType(WidgetFarmsDisplay.handle_mouse_double_click_on_scene, self)
         self.scene.mouseMoveEvent = MethodType(WidgetFarmsDisplay.handle_mouse_move_on_scene, self)
-     
+        self.scene.selectionChanged.connect(self.handle_scene_selectionChanged)
+
         # my marker
-        self.my_marker = QGraphicsEllipseItem(QRect(0, 0, 16, 16))
-        self.my_marker.setBrush(QBrush(Qt.GlobalColor.green))
-        self.my_marker.hide()
+        self.my_position = (600,600)
+        self.my_marker = FarmMarker(Farm(self.my_position, name='Me'), self.world_to_map(self.my_position))
+        self.my_marker.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, False)
+        self.my_marker._setBrushes(QBrush(Qt.GlobalColor.green),QBrush(Qt.GlobalColor.green))
         self.scene.addItem(self.my_marker)
 
         # view
@@ -102,43 +117,50 @@ class WidgetFarmsDisplay(QMainWindow):
 
         # layout 
         widget = QWidget(self)
-        self.side_gui = QVBoxLayout()
-        # self.layout().addChildLayout(self.side_gui)
+        self.side_gui = QVBoxLayout() 
 
-        fixedPolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         # label_cursor
-        self.label_cursor = QLabel()
-        self.label_cursor.setText("Cursor: (0, 0)")
-        self.label_cursor.setSizePolicy(fixedPolicy)
+        self.label_cursor = FixedSizeLabel("Cursor: (0, 0)") 
         self.side_gui.addWidget(self.label_cursor)
- 
-        # label_position
-        self.label_position = QLabel()
-        self.label_position.setText("Last Selected: (0, 0)")
-        self.label_position.setSizePolicy(fixedPolicy)
-        self.side_gui.addWidget(self.label_position)
+
+        # label_farms_selected
+        self.label_farms_selected = FixedSizeLabel('Farms selected: 0')
+        self.side_gui.addWidget(self.label_farms_selected)
+
+        # label_last_selected
+        self.label_last_selected = FixedSizeLabel("Last Selected: (0, 0)") 
+        self.side_gui.addWidget(self.label_last_selected)
+
+        # button_attack_selected
+        self.button_attack_selected = QPushButton(text="Attack selected")
+        self.button_attack_selected.clicked.connect(self.handle_attack_selected)
+        self.side_gui.addWidget(self.button_attack_selected)
+
+        # button_refresh_info
+        self.button_refresh_info = QPushButton(text="Refresh info on selected")
+        self.button_refresh_info.clicked.connect(self.handle_refresh_info)
+        self.side_gui.addWidget(self.button_refresh_info)
 
         # button_unmark
         self.button_unmark_explored = QPushButton(text="Unmark explored")
         self.button_unmark_explored.clicked.connect(self.handle_unmark_explored)
         self.side_gui.addWidget(self.button_unmark_explored)
 
-         # button mark explored
+        # button mark explored
         self.button_mark_explored = QPushButton(text='Mark Explored')
         self.button_mark_explored.clicked.connect(self.handle_mark_explored)
         self.side_gui.addWidget(self.button_mark_explored)
-        
-
-        # button_add and fields
+         
+        # X Y to add
         horiz = QHBoxLayout()
         self.side_gui.addLayout(horiz)
         self.ledit_x = QLineEdit('0')
-        horiz.addWidget(QLabel('X:'))
+        horiz.addWidget(FixedSizeLabel('X:'))
         horiz.addWidget(self.ledit_x)
         self.ledit_y = QLineEdit('0')
-        horiz.addWidget(QLabel('Y:'))
+        horiz.addWidget(FixedSizeLabel('Y:'))
         horiz.addWidget(self.ledit_y)
-
+         
         # button_add
         self.button_add = QPushButton(text='Add')
         self.button_add.clicked.connect(self.handle_add)
@@ -149,6 +171,25 @@ class WidgetFarmsDisplay(QMainWindow):
         self.button_remove.clicked.connect(self.handle_remove)
         self.side_gui.addWidget(self.button_remove)
 
+        # filter by level   
+        self.slider_filter_level = QSlider(Qt.Orientation.Horizontal) 
+        self.slider_filter_level.label = FixedSizeLabel()
+        self.slider_filter_level.valueChanged.connect(self.handle_filters_change)
+        self.slider_filter_level.setRange(-1,25)
+        self.slider_filter_level.setValue(-1) 
+        self.side_gui.addWidget(self.slider_filter_level.label)
+        self.side_gui.addWidget(self.slider_filter_level)
+        
+
+        # filter by distance
+        self.slider_filter_distance = QSlider(Qt.Orientation.Horizontal) 
+        self.slider_filter_distance.label = FixedSizeLabel()
+        self.slider_filter_distance.valueChanged.connect(self.handle_filters_change)
+        self.slider_filter_distance.setRange(0,2000)
+        self.slider_filter_distance.setValue(2000)
+        self.side_gui.addWidget(self.slider_filter_distance.label)
+        self.side_gui.addWidget(self.slider_filter_distance)
+        
         # filler
         filler = QWidget()
         filler.sizePolicy().setVerticalStretch(1)
@@ -167,14 +208,36 @@ class WidgetFarmsDisplay(QMainWindow):
         self.action_copy.setEnabled(True)
         self.action_copy.activated.connect(self.handle_ctrl_c)
         self.update_map()
+        self.handle_filters_change()
 
+    def handle_filters_change(self, arg1=None, arg2=None): 
+        min_level = self.slider_filter_level.value()
+        max_d = self.slider_filter_distance.value()
+        for pos, marker in self.farm_widgets.items():
+            d = utils.point_distance(self.my_position, pos )  
+            if d > max_d or  marker.farm.level < min_level:
+                marker.hide()
+            else:
+                marker.show()
+
+        self.slider_filter_distance.label.setText(f"Filter by distance: {max_d}")
+        self.slider_filter_level.label.setText(f"Filter by level: {min_level}")
+    
     def closeEvent(self, event ) -> None:
         exit()
         return super().closeEvent(event)
 
     def handle_mouse_double_click_on_scene(self, event: QGraphicsSceneMouseEvent):
-        self.my_marker.setPos(event.scenePos().toPoint())
-        self.my_marker.show()
+        self.set_my_position(self.map_to_world(event.scenePos().toTuple()))
+
+    def set_my_position(self, pos):
+        self.my_position = pos
+        self.my_marker.farm.position = pos
+        mpos = self.world_to_map(pos)
+        self.my_marker.set_position(mpos)
+
+     
+      
 
     def handle_mouse_move_on_scene(self, event: QGraphicsSceneMouseEvent): 
         pos = self.map_to_world(event.scenePos().toTuple() )
@@ -275,23 +338,28 @@ class WidgetFarmsDisplay(QMainWindow):
         self.scene.invalidate()
 
     def set_label_position(self, pos):
-        self.label_position.setText(f"Last selected: {pos}")
+        self.label_last_selected.setText(f"Last selected: {pos}")
 
+    def handle_scene_selectionChanged(self):
+        self.label_farms_selected.setText(f"Farms selected: {len(self.scene.selectedItems())}")
 
+    def handle_attack_selected(self):
+        pass
+
+    def handle_refresh_info(self):
+        pass
 ######################################################################################
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Manage farms')
     parser.add_argument('farms_db', nargs='?', default='FarmsDb.json') 
-    ns = parser.parse_args()
-  
- 
+    ns = parser.parse_args() 
 
     QApplication.setDoubleClickInterval(250)
     win = WidgetFarmsDisplay(FarmsDb(ns.farms_db))
     win.show()
     QDispatcher.exec()
- 
+    exit()
 
  

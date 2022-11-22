@@ -41,17 +41,18 @@ class Recognition:
         only_txt = cv2.bitwise_and(img, img, mask=mask)
         #only_txt = cv2.cvtColor(only_txt, cv2.COLOR_BGR2GRAY)
         #only_txt = cv2.blur(only_txt,  (2,2) )
-        show_image('imgpos', only_txt)
-        txt = pytesseract.image_to_string(only_txt)
-        rematch = re.match("X[:](\d+) [Y¥][:.-](\d+).*", txt)
+        #show_image('imgpos', only_txt)
+        tesserconfig = '--psm 10 -c tessedit_char_whitelist=0123456789XY:'
+        txt = pytesseract.image_to_string(only_txt, config=tesserconfig)
+        rematch = re.match("X[:](\d+)\s?[Y¥][:.-](\d+).*", txt)
         if rematch is None:
             only_txt2 = cv2.erode(only_txt, np.ones((2, 1)))
-            txt = pytesseract.image_to_string(only_txt2)
+            txt = pytesseract.image_to_string(only_txt2, config=tesserconfig)
             rematch = re.match("X[:](\d+) [Y¥][:.-](\d+).*", txt)
 
         if rematch is None:
             only_txt3 = cv2.erode(only_txt, np.ones((1, 2)))
-            txt = pytesseract.image_to_string(only_txt3)
+            txt = pytesseract.image_to_string(only_txt3, config=tesserconfig)
             rematch = re.match("X[:](\d+) [Y¥][:.-](\d+).*", txt)
 
         if rematch:
@@ -83,35 +84,35 @@ class Recognition:
 
     def is_exit_game_gump(self)-> bool:
         img = self.vision.get_section_2p_su((0.37, 0.459), (0.559, 0.495))
-        txt: str = pytesseract.image_to_string(img)
+        txt: str = pytesseract.image_to_string(img, config='--psm 10')
         if txt and "Exit Game" in txt:
             return True
         return False
 
     def is_troop_selection_gump(self)-> bool:
         img = self.vision.get_section_2p_su((0.348, 0.017), (0.627, 0.048))
-        txt: str = pytesseract.image_to_string(img)
+        txt: str = pytesseract.image_to_string(img, config='--psm 10')
         if txt and "March Troops" in txt:
             return True
         return False
 
     def is_attack_gump(self)-> bool:
         img = self.vision.get_section_2p_su((0.423, 0.652), (0.521, 0.677))
-        txt: str = pytesseract.image_to_string(img)
+        txt: str = pytesseract.image_to_string(img, config='--psm 10' )
         if txt and "Attack" in txt:
             return True
         return False
 
     def is_lizard_rally_gump(self)-> bool:
         img = self.vision.get_section_2p_su((0.535, 0.216), (0.678, 0.256))
-        txt: str = pytesseract.image_to_string(img)
+        txt: str = pytesseract.image_to_string(img, config='--psm 10')
         if txt and "Lizard" in txt:
             return True
         return False
 
     def read_location_info(self):
         ''' returns (name, alliance, location)'''
-        res = self.templates.location_marker.find_max(self.vision, (0.004, 0.079), (0.949, 0.754))
+        res = self.templates.location_marker.find_max(self.vision, (0.002, 0.193),(0.821, 0.844))
         name = None
         location = None
         alliance = None
@@ -124,7 +125,7 @@ class Recognition:
             nameImg1 = self.vision.get_section_su(nameRect1)
             nameImg2 = self.vision.get_section_su(nameRect2)
             for nameImg in [nameImg1, nameImg2]:
-                txt: str = pytesseract.image_to_string(nameImg)
+                txt: str = pytesseract.image_to_string(nameImg, config='--psm 10')
                 if len(txt) > 0:
                     name = txt.splitlines()[0]
                     rematch = re.match("[(]([A-Za-z0-9]+)[)](.+)", name)
@@ -133,21 +134,19 @@ class Recognition:
                         alliance = rematch.group(1)
 
             locImg = self.vision.get_section_su(locRect)
-            locImg = cv2.rectangle(locImg, (0, 0), (locImg.shape[1] - 1, locImg.shape[0] - 1), (255, 255, 255))
-            locImg = cv2.resize(locImg, (locImg.shape[1] * 2, locImg.shape[0] * 2))
-            #locImg = cv2.dilate(locImg, np.ones((1,2),dtype=np.uint8))
-            #locImg = cv2.blur(locImg, (1,2))
-            locImg = cv2.cvtColor(locImg, cv2.COLOR_RGB2GRAY)
-            locImg = cv2.threshold(locImg, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-            locImg = cv2.dilate(locImg, np.zeros((2, 2), dtype=np.uint8))
+            
 
-            locStr = pytesseract.image_to_string(locImg)
+            locStr = self.read_small_white_text(
+                locImg, 
+                2, 
+                100,
+                (2,2), 
+                chars_allowed='0123456789,:XY ')
 
             rematch = re.search("X[:]([\d,.]+)[\s ,|]+[Y¥][:.-]([\d,.]+).*", locStr)
             location = None
-            show_image('nameImg1', nameImg1)
-            show_image('nameImg2', nameImg2)
-            show_image('locImg', locImg)
+            #show_image('nameImg1', nameImg1)
+            #show_image('nameImg2', nameImg2) 
             if rematch:
                 location = (int(rematch.group(1).replace(',', '')), int(rematch.group(2).replace(',', '')))
 
@@ -165,7 +164,7 @@ class Recognition:
             w, h = (0.126, 0.028)
             img = self.vision.get_section_su((x, y, w, h))
             
-            stam_txt = self.read_small_white_text(img)
+            stam_txt = self.read_small_white_text(img, dilate_size=(2, 2), chars_allowed='0123456789/', threshold=50)
             parts = stam_txt.split('/')
             if len(parts) == 2:
                 try:
@@ -180,7 +179,7 @@ class Recognition:
             raise Exception('vision not ready')
         img = self.vision.get_section_2p_su((0.81, 0.95), (0.90, 0.98))
         #cv2.imshow("ok", img)
-        txt: str = pytesseract.image_to_string(img).strip().upper()
+        txt: str = pytesseract.image_to_string(img, config='--psm 10').strip().upper()
         return "OK" in txt or "0K" in txt
 
     def is_march_button(self) -> bool:
@@ -195,20 +194,50 @@ class Recognition:
         found = np.average(mask) > 200  
         return found 
 
+    def read_nest_level(self) -> int:
+        #img = self.vision.get_section_2p_su((0.449, 0.47),(0.490, 0.490))   
+        img = self.vision.get_section_2p_su((0.457, 0.478),(0.481, 0.492)) 
+        hsv_min = np.array([0, 0, 40])
+        hsv_max = np.array([250, 75, 260]) 
+        #img = utils.apply_hsv_mask(img, hsv_min, hsv_max, blur=False )  
+        txt = self.read_small_white_text(img, 
+            3, 
+            90, 
+            #dilate_size=(2,2),
+            chars_allowed='0123456789'
+        ) 
+        try:
+            if len(txt) > 0:
+                num = int(txt.splitlines()[0])
+                if num <= 25 and num > 0:
+                    return num 
+        except:
+            pass
+        return None
+
     @staticmethod
-    def read_small_white_text(locImg: cv2.Mat, resize_factor=2, threshold=70) -> str: 
+    def read_small_white_text(locImg: cv2.Mat, resize_factor=2, threshold=70, dilate_size=None, chars_allowed='', margin=5) -> str: 
         img = locImg.copy()
-        img = cv2.resize(img, (img.shape[1] * resize_factor, img.shape[0] * resize_factor))
-        img = cv2.rectangle(img, (0, 0), (img.shape[1] - 1, img.shape[0] - 1), (255, 255, 255))
+        img = cv2.resize(img, (img.shape[1] * resize_factor, img.shape[0] * resize_factor)) 
         img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-        img = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY_INV)[1]
-        #img = cv2.dilate(img, np.zeros((2, 2), dtype=np.uint8))
+        img = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY_INV)[1] 
+    
+        frame = np.ones((img.shape[0]+ margin*2, img.shape[1] + margin*2), dtype=np.uint8) * 255
+        frame[margin: -margin, margin:-margin] = img
+        img = frame 
+
+        if not dilate_size is None:
+            img = cv2.erode(img, np.ones(dilate_size, dtype=np.uint8)) 
         if debug:
             QImageViewer.show_image('read_small_white_text_img', locImg)
-            QImageViewer.show_image('read_small_white_text_final', img)
-
-        txt = pytesseract.image_to_string(img)
+            QImageViewer.show_image('read_small_white_text_final', img) 
+        
+        confstring = '--psm 10 '
+        if not chars_allowed is None:
+           confstring +=  f'-c tessedit_char_whitelist="{chars_allowed}"'
+        txt = pytesseract.image_to_string(img, config=confstring)
         return txt
+        
 
 if __name__ == '__main__':
     import time
@@ -242,9 +271,13 @@ if __name__ == '__main__':
 
         staminas = rec.read_staminas()
         print(f'Squads found: {staminas}')
-        for s in staminas:
-            print(s)
+        #for s in staminas:
+        #    print(s)
 
-        print(f'is_march_button() -> {rec.is_march_button()}')
+        #print(f'is_march_button() -> {rec.is_march_button()}')
+
+
+        #print(f'read_nest_level() -> {rec.read_nest_level()}')
+
         time.sleep(1)
     os._exit(0)

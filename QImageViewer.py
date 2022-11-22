@@ -39,7 +39,9 @@ class ImageViewer(QMainWindow):
 
     def __update_size(self):
         self.label.setGeometry(0, 0, self.qImg.width(), self.qImg.height())
-        self.setFixedSize(self.qImg.width(), self.qImg.height())
+        w = max(self.qImg.width(), 30)  
+        h = max(self.qImg.height(), 30)
+        self.setFixedSize(w, h)
 
     def set_image(self, image: np.ndarray):
         if image is None:

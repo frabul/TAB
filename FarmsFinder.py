@@ -3,6 +3,7 @@ from droid import Droid
 from vision import Vision
 from recognition import Recognition
 from FarmsDb import FarmsDb, Farm
+from PySide6.QtCore import QRect,QRectF
 import keyboard
 import utils
 import pyautogui
@@ -11,20 +12,36 @@ import json
 
 
 class FarmsFinder:
-    def __init__(self) -> None:
-        self.farms = FarmsDb('FarmsDb_test.json')
+    def __init__(self,db_file ) -> None: 
+        self.stop_requested = False
+        self.pause = False
+        self.farms = FarmsDb(db_file)
         self.sessions_file = 'FarmsFinderSession.json'
         self.vision = Vision('BlueStacks App Player', (1, 35, 1, 1))
         self.vision.start()
         self.droid = Droid(self.vision)
         self.recognition = self.droid.recognition 
         self.column_step = 5
-        self.move_direction = (0, 0.16) 
+        self.skip_zone = QRect(350,350,500,500)
+    
+        self.scan_p1 = (0.283, 0.465) 
+        self.scan_p2 = (0.795, 0.829)
+        self.scan_size = utils.point_sub(self.scan_p2, self.scan_p1)
+        self.move_direction = (0,self.scan_size[1]*0.65) 
         self.session = {
             'last_x': 1200,
             'last_y': 0
         }
         self.load_session()
+        
+        def set_stop_requested():
+            self.stop_requested = True
+
+        def toggle_pause():
+            self.pause = not self.pause
+
+        keyboard.add_hotkey('alt+q', callback=set_stop_requested)
+        keyboard.add_hotkey('alt+p', callback=toggle_pause)
 
     def load_session(self):
         try:
@@ -55,56 +72,67 @@ class FarmsFinder:
                 pyautogui.press('esc')
 
     def move(self):
+        self.droid.activate_win()
         self.assure_stage()
         map_pos = self.droid.recognition.read_world_position()
         if map_pos:
-            print(f'Scanning at {map_pos}')
+            print(f'Scanned at {map_pos}')
+             
             if map_pos[0] == 1200 or map_pos[1] == 1200:
+                print('Map limit reached. Pass to next column')
+                self.save_session()   
                 if self.session['last_x'] >= 0:
                     self.session['last_x'] -= self.column_step
                     self.session['last_x'] = max(self.session['last_x'], 0)  
                 else:
                     self.session['last_y'] += self.column_step
-                    self.session['last_y'] = min(self.session['last_y'], 1200)  
-                self.save_session()   
+                    self.session['last_y'] = min(self.session['last_y'], 1200)   
                 self.droid.go_to_location((self.session['last_x'], self.session['last_y']))
 
+            elif self.skip_zone.contains(map_pos[0], map_pos[1]):
+                print('Move out of skip zone')
+                cursor = map_pos
+                while self.skip_zone.contains(*cursor):
+                    cursor = utils.point_sum(cursor,(1,1))
+                self.droid.go_to_location(cursor)
+
         else:
-            print(f'Scanning at unknown position')
+            print(f'Scanned at unknown position')
         drag_start = (utils.random_range(0.12, 0.9), utils.random_range(0.60, 0.85))
         direction = (
-            self.move_direction[0] * utils.random_range(0.75, 1.25),
-            self.move_direction[1] * utils.random_range(0.75, 1.25))
+            self.move_direction[0] * utils.random_range(0.85, 1.15),
+            self.move_direction[1] * utils.random_range(0.85, 1.15))
         f.droid.move(direction, drag_start)
 
+    def pause_loop(self):
+        if self.pause:
+            print("Entering pause")
+            while self.pause:
+                time.sleep(0.1)
+            print("Resuming...")
+
     def run(self):
+        
         self.stop_requested = False
         self.pause = False
         # inizializzazione
         while not f.droid.vision.is_ready():
             time.sleep(0.2)
-
-        #self.droid.go_to_location((self.x_start, 0))
-        def set_stop_requested():
-            self.stop_requested = True
-
-        def toggle_pause():
-            self.pause = not self.pause
-
-        keyboard.add_hotkey('q', callback=set_stop_requested)
-        keyboard.add_hotkey('p', callback=toggle_pause)
-        while not self.stop_requested: 
-            if self.pause:
-                print("Entering pause")
-                while self.pause:
-                    time.sleep(0.1)
-                print("Resuming...")
-            # move
+ 
+        
+        while not self.stop_requested:   
+            self.pause_loop()
+            if self.stop_requested: return
+            # move 
             self.move()
+            self.pause_loop()
+            if self.stop_requested: return
             time.sleep(0.1)
             # search nest
-            nests = self.droid.recognition.templates.nest_l16_mini.find_all(self.vision, (0.285, 0.574), (0.915, 0.857)) 
+            nests = self.droid.recognition.templates.nest_l16_mini.find_all(self.vision, self.scan_p1, self.scan_p2) 
             for nest in nests:
+                if self.stop_requested: return
+                self.pause_loop()
                 print(f'Nest found at {nest.center().x()}, {nest.center().y()}')
                 self.droid.click_app((nest.center().x(), nest.center().y()))
                 trycnt = 0
@@ -122,13 +150,14 @@ class FarmsFinder:
                 self.dismiss_tile_info()
 
 
+
+
 if __name__ == '__main__':
 
-    f = FarmsFinder()
+    f = FarmsFinder('FarmsDb_new.json')
     # while not f.droid.vision.is_ready():
     #    time.sleep(0.2)
     # while not keyboard.is_pressed('q'):
     #    f.droid.move((0, 0.2))
     f.run()
-    exit()
-    pass
+    exit() 
