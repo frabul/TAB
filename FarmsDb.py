@@ -20,10 +20,12 @@ class Farm:
 
     @staticmethod
     def from_json_object(jfarm):
+        
         return Farm(
             position=tuple(jfarm['position']),
             level=jfarm['level'],
             name=jfarm['name'],
+            alliance= jfarm['alliance'] if 'alliance' in jfarm else None, 
             last_raid=datetime.datetime.strptime(jfarm['last_raid'], Farm.strtimeformat)
         )
 
@@ -32,6 +34,7 @@ class Farm:
             'position': self.position,
             'level': self.level,
             'name': self.name,
+            'alliance': self.alliance,
             'last_raid': self.last_raid.strftime(Farm.strtimeformat)
         }
 

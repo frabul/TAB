@@ -6,7 +6,7 @@ import numpy as np
 from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal,QTimer 
 from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard, 
                            QPixmap)
-from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
+from PySide6.QtWidgets import (QMessageBox, QApplication, QGraphicsEllipseItem,
                                QGraphicsItem, QGraphicsRectItem, 
                                QGraphicsScene, QGraphicsSceneMouseEvent,
                                QGraphicsView, QLabel, QMainWindow, QWidget,
@@ -174,9 +174,9 @@ class WidgetFarmsDisplay(QMainWindow):
         # filter by level   
         self.slider_filter_level = QSlider(Qt.Orientation.Horizontal) 
         self.slider_filter_level.label = FixedSizeLabel()
-        self.slider_filter_level.valueChanged.connect(self.handle_filters_change)
         self.slider_filter_level.setRange(-1,25)
         self.slider_filter_level.setValue(-1) 
+        self.slider_filter_level.valueChanged.connect(self.handle_filters_change)
         self.side_gui.addWidget(self.slider_filter_level.label)
         self.side_gui.addWidget(self.slider_filter_level)
         
@@ -235,10 +235,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.my_marker.farm.position = pos
         mpos = self.world_to_map(pos)
         self.my_marker.set_position(mpos)
-
-     
-      
-
+ 
     def handle_mouse_move_on_scene(self, event: QGraphicsSceneMouseEvent): 
         pos = self.map_to_world(event.scenePos().toTuple() )
         self.label_cursor.setText(f"Cursor: {pos}")
@@ -344,10 +341,21 @@ class WidgetFarmsDisplay(QMainWindow):
         self.label_farms_selected.setText(f"Farms selected: {len(self.scene.selectedItems())}")
 
     def handle_attack_selected(self):
-        pass
-
+        from AutoFarmer import AutoFarmer
+        mbox = QMessageBox(parent=self, text="Need user confirmation?", standardButtons= QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No ) 
+        answer = mbox.exec()
+        self.farmer = AutoFarmer(
+            drodi=self.droid,
+            farms_positions=[x.farm.position for x in self.scene.selectedItems()],
+            troops_count= 2,
+            min_stamina= 25,
+            user_confirmation_required=(answer == QMessageBox.StandardButton.Yes),
+            max_cycles=4
+        )
+        
     def handle_refresh_info(self):
         pass
+
 ######################################################################################
 
 if __name__ == '__main__':

@@ -15,6 +15,7 @@ import time
 import QDispatcher
 import utils
 
+
 class Stages:
     unknown = 'unknown'
     inside = 'inside'
@@ -30,22 +31,24 @@ class Stages:
     bug_search = 'bug_search'
 
 
-class BugFarmer:
-    class OutsideActions:
-        OpenSearch = 0
-
-    min_stamina = 40
-    troops_count = 4
+class AutoFarmer:
     need_user_confirmation = False
 
-    def __init__(self, droid: Droid) -> None:
+    def __init__(self, droid: Droid, farms_positions: list = None, troops_count=4, min_stamina=40, user_confirmation_required=False, max_cycles=2) -> None:
+        self.min_stamina = min_stamina
+        self.initial_troops = troops_count
+        self.troops_count = troops_count
+        self.farms_positions = farms_positions
+        self.need_user_confirmation = user_confirmation_required
+        self.max_cycles = max_cycles
+        self.farms_attacked = 0
+
         self.droid = droid
         self.rec = droid.recognition
-        self.terminate = False
-        self.pause = False
         self.actions: dict[str, typing.Callable | dict]
         self.stage = [Stages.unknown, Stages.idle, Stages.unknown, Stages.unknown]
-    
+        self.pause = False
+        self.terminate = False
         self.stage_decisions = {
             Stages.unknown: self.press_esc,
             Stages.inside: self.droid.go_outside,
@@ -67,6 +70,20 @@ class BugFarmer:
                 Stages.default: self.esc_and_idle,
             }
         }
+
+        # if farms_positions is not None then attack farms instead of bugs
+        if not farms_positions is None:
+            self.farms_attacked = 0
+            self.stage_decisions[Stages.outside][Stages.idle] = self.search_farm
+
+    def next_farm(self):
+        if self.farms_attacked > len(self.farms_positions) * self.max_cycles:
+            self.terminate = True
+            return None
+
+        farmindex = self.farms_attacked % len(self.farms_positions)
+        print(f'Trying to attack farm {farmindex+1} of {len(self.farms_positions)}')
+        return self.farms_positions[farmindex]
 
     def step(self):
         act = self.stage_decisions
@@ -101,6 +118,9 @@ class BugFarmer:
             self.stage[0] = Stages.unknown
 
     def run(self):
+        print("Running autofarmer")
+        self.farms_attacked = 0
+
         def set_stop_requested():
             self.terminate = True
 
@@ -111,13 +131,21 @@ class BugFarmer:
         keyboard.add_hotkey('alt+p', callback=toggle_pause)
 
         while not self.terminate:
-            if self.pause:
-                print("Entering pause")
-                while self.pause:
-                    time.sleep(0.1)
-                print("Resuming...")
+            self.pause_loop()
             self.identify()
+            self.pause_loop()
             self.step()
+
+        keyboard.remove_hotkey(set_stop_requested)
+        keyboard.remove_hotkey(toggle_pause)
+        print('Autofarmer terminated')
+
+    def pause_loop(self):
+        if self.pause:
+            print("Entering pause")
+            while self.pause:
+                time.sleep(0.1)
+            print("Resuming...")
 
     def esc_and_idle(self):
         self.droid.activate_win()
@@ -126,20 +154,21 @@ class BugFarmer:
 
     def wait_for_user_confirmation(self):
         self.can_go = False
-        def show_box(): 
-            msgBox  = QMessageBox()
-            msgBox.setText("Can go?") 
+
+        def show_box():
+            msgBox = QMessageBox()
+            msgBox.setText("Can go?")
             msgBox.exec()
             self.can_go = True
-        QDispatcher.enqueue_job(show_box)  
+        QDispatcher.enqueue_job(show_box)
         while not self.can_go:
-            sleep(0.1) 
+            sleep(0.1)
 
     def search_bug(self):
         troops_available = self.troops_count - self.rec.get_troops_deployed_count()
-        if troops_available > 0: 
-            if self.need_user_confirmation: 
-                self.wait_for_user_confirmation()        
+        if troops_available > 0:
+            if self.need_user_confirmation:
+                self.wait_for_user_confirmation()
             # we arre in outside stage
             # click magniglass
             self.droid.click_app((0.075, 0.654), delay_after=0.4)
@@ -151,26 +180,57 @@ class BugFarmer:
         else:
             sleep(5)
 
+    def search_farm(self):
+        # wait for troop availabe
+        troops_available = self.troops_count - self.rec.get_troops_deployed_count()
+        # sometimes a message can interfer with get_troops_deployed_count() so confirm it
+        if troops_available > 0:
+            sleep(4)
+            troops_available = self.troops_count - self.rec.get_troops_deployed_count()
+
+        if troops_available > 0:
+            if self.need_user_confirmation:
+                self.wait_for_user_confirmation()
+            fpos = self.next_farm()
+            if(not fpos is None):
+                self.droid.activate_win()
+                self.droid.go_to_location(fpos)
+                # click farm
+                self.droid.click_in_range((0.42, 0.431), (0.516, 0.464))
+                # click attack
+                self.droid.click_in_range((0.556, 0.607), (0.614, 0.638), delay_after=0.3)
+
+                if self.droid.recognition.is_troop_selection_gump():
+                    self.stage[1] = Stages.pick_troop
+                else:
+                    # if no gump go to next farm
+                    self.farms_attacked += 1
+        else:
+            sleep(5)
+
     def confirm_attack(self):
         # click attack
         self.droid.click_app((0.47, 0.66), delay_after=0.4)
         self.stage[1] = Stages.pick_troop
 
     def pick_troop(self):
+        done = self.try_pick_troop()
+        if done:
+            self.farms_attacked += 1
 
+    def try_pick_troop(self) -> bool:
         def try_confirm():
             # check staminas
             staminas = self.rec.read_staminas()
             print(f'Staminas found {[x[0] for x in staminas]}')
             stamok = [x for x in staminas if x[0] >= self.min_stamina]
-
             # check if the selected
             for troop in stamok:
                 # click the position
-                self.droid.click_app(troop[1], delay_after=0.4)
+                self.droid.click_app(troop[1], delay_after=0.6)
                 if self.rec.is_march_button():
                     # click march
-                    self.droid.click_app((0.71, 0.94), delay_after=0.4)
+                    self.droid.click_app((0.71, 0.94), delay_after=0.6)
                     if self.rec.is_outside():
                         return True
                     elif self.rec.is_troop_selection_gump():
@@ -181,24 +241,25 @@ class BugFarmer:
                         # we have some kind of gump probably
                         self.droid.activate_win()
                         pyautogui.press('esc')
-
             return False
+
         ok = try_confirm()
-        if not ok:
+        if not ok and self.initial_troops > 2:
             # scroll down and second try again
             sx = utils.random_range(0.4, 0.43)
-            sy = utils.random_range(0.74, 0.77) 
+            sy = utils.random_range(0.74, 0.77)
             self.droid.move((0, 0.5), (sx, sy))
             self.droid.move((0, 0.5), (sx, sy))
             sleep(1)
             ok = try_confirm()
+
         if not ok:
             self.decrease_available_troops()
-
-        self.stage[1] = Stages.idle
-        if not self.rec.is_outside():
             self.droid.activate_win()
             pyautogui.press('esc')
+
+        self.stage[1] = Stages.idle
+        return ok
 
     def decrease_available_troops(self):
         # it was not accepted, probably troop stamina depleted
@@ -218,7 +279,15 @@ if __name__ == '__main__':
     droid.vision.start()
     while not droid.vision.is_ready():
         sleep(1)
-    farmer = BugFarmer(droid)
 
-    t = threading.Thread(target=farmer.run)
-    t.start()
+    farmer = AutoFarmer(
+        droid,
+        farms_positions=[(556, 797), (558, 799), (557, 788)],
+        troops_count=2,
+        max_cycles=2,
+        min_stamina=40,
+        user_confirmation_required=False,
+    )
+
+    farmer.run()
+    exit()

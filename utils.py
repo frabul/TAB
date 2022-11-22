@@ -42,6 +42,10 @@ def random_range(rangestart, rangend):
     return rangestart + random.random() * (rangend - rangestart)
 
 
+def random_point_in_rectangle(top_left, bot_right):
+    return (random_range(top_left[0], bot_right[0]), random_range(top_left[1], bot_right[1]))
+
+
 def point_sum(a: tuple[int | float, int | float], b: tuple[int | float, int | float]) -> tuple[int | float, int | float]:
     return (a[0] + b[0], a[1] + b[1])
 

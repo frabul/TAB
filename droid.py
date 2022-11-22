@@ -37,6 +37,11 @@ class Droid:
         pyautogui.leftClick(x=cx, y=cy)
         self.sleep_random(delay_after)
 
+    def click_in_range(self, p1, p2, dismiss_keyboard=True, delay_after=0.15):
+        x = utils.random_range(p1[0], p2[0])
+        y = utils.random_range(p1[1],p2[1])
+        self.click_app((x,y), dismiss_keyboard, delay_after, 0)
+
     def sleep_random(self, delay, variability=0.2):
         random_delay = (1 + utils.random_range(-variability, +variability)) * delay
         sleep(random_delay)
