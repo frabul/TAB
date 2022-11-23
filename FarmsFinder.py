@@ -12,7 +12,6 @@ import json
 import logging
 
 
-
 class FarmsFinder:
     def __init__(self, db_file) -> None:
         self.stop_requested = False
@@ -25,7 +24,7 @@ class FarmsFinder:
         self.recognition = self.droid.recognition
         self.column_step = 5
         self.skip_zone = QRect(350, 350, 500, 500)
-
+        self.steps_in_skip_zone = 0
         self.scan_p1 = (0.283, 0.465)
         self.scan_p2 = (0.795, 0.829)
         self.scan_size = utils.point_sub(self.scan_p2, self.scan_p1)
@@ -80,7 +79,7 @@ class FarmsFinder:
             logging.info(f'Scanned at {map_pos}')
 
             if map_pos[0] == 1200 or map_pos[1] == 1200:
-                
+
                 self.save_session()
                 if self.session['last_x'] >= 0:
                     self.session['last_x'] -= self.column_step
@@ -90,15 +89,34 @@ class FarmsFinder:
                     self.session['last_y'] = min(self.session['last_y'], 1200)
                 nextposition = (self.session['last_x'], self.session['last_y'])
                 logging.info('Map limit reached. Pass to next column: {nextposition}')
-                
+
                 self.droid.go_to_location(nextposition)
 
-            elif self.skip_zone.contains(map_pos[0], map_pos[1]):
-                logging.info('Move out of skip zone')
-                cursor = map_pos
-                while self.skip_zone.contains(*cursor):
-                    cursor = utils.point_sum(cursor, (1, 1))
-                self.droid.go_to_location(cursor)
+            else:
+                if self.skip_zone.contains(map_pos[0], map_pos[1]):
+                    self.steps_in_skip_zone += 1
+                else:
+                    self.steps_in_skip_zone = 0
+
+                if self.steps_in_skip_zone > 2:
+                    self.steps_in_skip_zone = 0
+                    logging.info('Moving out of skip zone')
+                    cursor = (self.session['last_x'], self.session['last_y'])
+                    # cursor start at the colum origin and then moves to skip zone
+                    while not self.skip_zone.contains(*cursor):
+                        cursor = utils.point_sum(cursor, (1, 1))
+                    # exit out of skip zone
+                    while self.skip_zone.contains(*cursor):
+                        cursor = utils.point_sum(cursor, (1, 1))
+                    x, y = cursor
+                    if x > 1200:
+                        logging.warning('Cursor.x > 1200 out of skip zone')
+                        x = 1200
+                    if y > 1200:
+                        logging.warning('Cursor.y > 1200 out of skip zone')
+                        y = 1200
+                    # exit
+                    self.droid.go_to_location((x, y))
 
         else:
             logging.warning(f'Scanned at unknown position')
@@ -117,7 +135,7 @@ class FarmsFinder:
             print("Resuming...")
 
     def run(self):
-
+        self.steps_in_skip_zone = 0
         self.stop_requested = False
         self.pause = False
         # inizializzazione
@@ -136,7 +154,9 @@ class FarmsFinder:
             time.sleep(0.1)
 
             # search nest
-            nests = self.droid.recognition.templates.nest_l16_mini.find_all(self.vision, self.scan_p1, self.scan_p2)
+            nests = \
+                self.droid.recognition.templates.nest_l16_mini.find_all(self.vision, self.scan_p1, self.scan_p2) + \
+                self.droid.recognition.templates.nest_eggs_mini.find_all(self.vision, self.scan_p1, self.scan_p2)
             for nest in nests:
                 if self.stop_requested:
                     return
@@ -157,17 +177,25 @@ class FarmsFinder:
                             self.farms.save()
                         break
                 self.dismiss_tile_info()
-            
-            farms_count = self.farms.farms
-            
+
+         
+
 
 if __name__ == '__main__':
+    import sys
     logging.basicConfig(
-        filename='FarmsFinderLog.log', 
+        filename='FarmsFinderLog.log',
         format='%(asctime)s %(message)s',
-        encoding='utf-8', 
+        encoding='utf-8',
         level=logging.DEBUG
     )
+    root = logging.getLogger() 
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    root.addHandler(handler)
+
     f = FarmsFinder('FarmsDb_new.json')
     # while not f.droid.vision.is_ready():
     #    time.sleep(0.2)

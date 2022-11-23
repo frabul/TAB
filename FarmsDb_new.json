@@ -928,5 +928,15 @@
       "name": "MrX",
       "alliance": null,
       "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         688,
+         184
+      ],
+      "level": 1,
+      "name": "Foeadoy",
+      "alliance": "FFF",
+      "last_raid": "00010101000000"
    }
 ]

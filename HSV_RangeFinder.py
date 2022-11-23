@@ -114,7 +114,7 @@ hsv_max = np.array({self.upper_val.tolist()})
         self.img_masked : np.ndarray = utils.apply_hsv_mask(
             self.image_original, 
             self.lower_val, 
-            self.upper_val, ksize=(2,2), 
+            self.upper_val, ksize=(3,3), 
             blur=False)
         image = self.img_masked 
         self.qimg = utils.qimage_from_cv2(image)

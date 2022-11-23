@@ -13,7 +13,7 @@ class Templates:
         self.items = {}
 
         # magniglass
-        self.magniglass = Template('magniglass', (0.02, 0.63), (0.1, 0.68), score_min=0.7) 
+        self.magniglass = Template('magniglass', (0.022, 0.63),(0.101, 0.677), score_min=0.7) 
         def prepareMagni(img: np.ndarray):
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = cv2.threshold(img, 150, 255, cv2.THRESH_BINARY)
@@ -29,12 +29,15 @@ class Templates:
         self.nest_l16.prepare = prepareNest
 
         # nest_l16_mini
-        def prepareNest(img: np.ndarray):
-            hsv_max = np.array([14, 179, 228])
-            hsv_min = np.array([1, 108, 53])
-            return utils.apply_hsv_mask(img, hsv_min, hsv_max)
-        self.nest_l16_mini = Template('nest_l16_mini', (0.546, 0.618), (0.644, 0.653))
+        def prepareNest(img: np.ndarray): 
+            hsv_min = np.array([3, 113, 49])
+            hsv_max = np.array([16, 201, 230])
+            return utils.apply_hsv_mask(img, hsv_min, hsv_max, ksize=(3,3))
+        self.nest_l16_mini = Template('nest_l16_mini', (0.546, 0.618), (0.644, 0.653)) #(0.453, 0.692),(0.556, 0.724)
         self.nest_l16_mini.prepare = prepareNest
+
+        # nest_eggs_mini
+        self.nest_eggs_mini = Template('nest_eggs_mini', (0.453, 0.68),(0.549, 0.7))
 
         # stamina_marker
         def prepare_stamina_marker(img: np.ndarray):
@@ -45,9 +48,9 @@ class Templates:
         # location_marker
         def prepare_location_marker(img): 
             hsv_max = np.array([78, 171, 199])
-            hsv_min = np.array([67, 54, 44])
+            hsv_min = np.array([67, 54, 44]) 
             return utils.apply_hsv_mask(img, hsv_min, hsv_max, ksize=(2, 2))
-        self.location_marker = Template('location_marker', (0.285, 0.599), (0.285, 0.599), score_min=0.85)
+        self.location_marker = Template('location_marker', (0.271, 0.526),(0.305, 0.552), score_min=0.85)
         self.location_marker.prepare = prepare_location_marker
 
         # load all
@@ -67,7 +70,7 @@ if __name__ == '__main__':
     while not keyboard.is_pressed('ctrl+q'):
         #maxVal, maxLoc = templates.location_marker.find_max(vision, (0.004, 0.079), (0.949, 0.754) )
         #print(f"found {maxVal} at {maxLoc}"  )
-        rectangles = templates.stamina_marker.find_all(vision, (0.491, 0.321),(0.781, 0.886))
+        rectangles = templates.nest_eggs_mini.find_all(vision, (0.002, 0.12),(0.919, 0.846))
         img = vision.get_last_screen()
         print(f"found {len(rectangles)} rectangeles")
         for rect in rectangles:

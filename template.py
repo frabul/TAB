@@ -6,6 +6,7 @@ import math
 from PySide6.QtCore import QRectF
 import utils
 
+
 class info:
     def __init__(self, x, y, score):
         self.x = x
@@ -14,6 +15,7 @@ class info:
 
     def __str__(self):
         return f"{{{self.x}, {self.y}, {self.score} }}"
+
 
 class Template:
     img: np.ndarray = None
@@ -30,7 +32,7 @@ class Template:
         self.top_left = topleft
         self.bot_right = botright
         self.rect = (x, y, w, h)
-         
+
     def save(self, vision: Vision):
         img = vision.get_section_su(self.rect).copy()
         self.screen_size = (vision.w, vision.h)
@@ -39,14 +41,24 @@ class Template:
         self.img = img
 
     def load(self):
-        img = cv2.imread(f'./images/{self.name}.bmp')
-        self.img = self.prepare(img)
-        self.size_px = (img.shape[1], img.shape[0])
-        pass
+        self.original_img = cv2.imread(f'./images/{self.name}.bmp')
+        self.img = self.prepare(self.original_img)
+        self.size_px = (self.img.shape[1], self.img.shape[0])
+        self.win_size = (self.img.shape[1] / self.rect[2], self.img.shape[0] / self.rect[3])
+
+    def set_for_win_size(self, win_size):
+        return
+        if self.win_size != win_size:
+            w1, h1 = self.win_size
+            w2, h2 = win_size
+            img = cv2.resize(self.original_img, (0,0), fx=w2 / w1, fy=h2 / h1)
+            self.img = self.prepare(img)
+            self.size_px = (img[1], img[0])
+            self.win_size = win_size
 
     def prepare(self, img):
         return img
-         
+
     def match_exact(self, vision: Vision) -> bool:
         ''' cuts a rectangle at the recorded position and matches on same size'''
         img = vision.get_section_su(self.rect).copy()
@@ -94,10 +106,13 @@ class Template:
 
     def find_all(self, vision: Vision, topleft, botright) -> list[QRectF]:
         ''' search for matches '''
+
+        self.set_for_win_size((vision.w, vision.h))
+
         self.w_px = self.img.shape[1]
         self.h_px = self.img.shape[0]
 
-        img = vision.get_section_2p_su(topleft, botright) 
+        img = vision.get_section_2p_su(topleft, botright)
         #QImageViewer.show_image('screen',img)
         img = self.prepare(img)
         #QImageViewer.show_image('template',self.img)
@@ -116,9 +131,9 @@ class Template:
             truth_table = np.logical_and(booleanized[0], booleanized[1])
             truth_table = np.logical_and(truth_table, booleanized[2])
         else:
-            mat = cv2.matchTemplate(img , self.img , cv2.TM_SQDIFF_NORMED)
+            mat = cv2.matchTemplate(img, self.img, cv2.TM_SQDIFF_NORMED)
             score = mat
-            truth_table = (1 - mat) > self.score_min 
+            truth_table = (1 - mat) > self.score_min
 
         hits = np.where(truth_table)
         infos = []
@@ -161,9 +176,9 @@ class Template:
         rectangles = []
 
         #rectOnsection = img.copy()
-        for el in results:  
-            a = vision.point_px_to_su((el.x, el.y)) 
-            x,y = utils.point_sum(a, topleft) 
+        for el in results:
+            a = vision.point_px_to_su((el.x, el.y))
+            x, y = utils.point_sum(a, topleft)
             w, h = vision.point_px_to_su((self.w_px, self.h_px))
             rectangles.append(QRectF(x, y, w, h))
 

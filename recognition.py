@@ -253,11 +253,10 @@ if __name__ == '__main__':
     # rec.templates.magniglass.save(vision)
     # rec.templates.nest_l16.save(vision)
     debug = True
-    while not keyboard.is_pressed('ctrl+q'):
-        # if rec.is_outside():
-        #    print('outside')
-        # else:
-        #    print('inside')
+    while not keyboard.is_pressed('alt+q'):
+     
+        print(f'is_outside: {rec.is_outside()}')
+       
 
         # test read_world_position
         #pos = rec.read_world_position()
