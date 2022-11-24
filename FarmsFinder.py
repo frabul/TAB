@@ -88,7 +88,7 @@ class FarmsFinder:
                     self.session['last_y'] += self.column_step
                     self.session['last_y'] = min(self.session['last_y'], 1200)
                 nextposition = (self.session['last_x'], self.session['last_y'])
-                logging.info('Map limit reached. Pass to next column: {nextposition}')
+                logging.info(f'Map limit reached. Pass to next column: {nextposition}')
 
                 self.droid.go_to_location(nextposition)
 

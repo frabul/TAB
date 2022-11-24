@@ -31,18 +31,18 @@ class Stages:
     bug_search = 'bug_search'
 
 
-class AutoFarmer:
-    need_user_confirmation = False
+class AutoFarmer: 
 
-    def __init__(self, droid: Droid, farms_positions: list = None, troops_count=4, min_stamina=40, user_confirmation_required=False, max_cycles=2) -> None:
+    def __init__(self, droid: Droid, farms_positions: list = None, troops_count=4, min_stamina=40, user_confirmation_required=False, max_cycles=2) -> None: 
         self.min_stamina = min_stamina
         self.initial_troops = troops_count
         self.troops_count = troops_count
         self.farms_positions = farms_positions
         self.need_user_confirmation = user_confirmation_required
         self.max_cycles = max_cycles
-        self.farms_attacked = 0
 
+        self.farms_attacked = 0
+        self.troops_available_confirmation = 0
         self.droid = droid
         self.rec = droid.recognition
         self.actions: dict[str, typing.Callable | dict]
@@ -164,33 +164,41 @@ class AutoFarmer:
         while not self.can_go:
             sleep(0.1)
 
-    def search_bug(self):
-        troops_available = self.troops_count - self.rec.get_troops_deployed_count()
-        if troops_available > 0:
-            if self.need_user_confirmation:
-                self.wait_for_user_confirmation()
-            # we arre in outside stage
-            # click magniglass
-            self.droid.click_app((0.075, 0.654), delay_after=0.4)
-            # confirm search
-            self.droid.click_app((0.804, 0.865), delay_after=0.4)
-            # click bug found
-            self.droid.click_app((0.473, 0.506), delay_after=0.4)
-            self.stage[1] = Stages.confirm_attack
-        else:
-            sleep(5)
-
-    def search_farm(self):
+    def confirm_troop(self):
         # wait for troop availabe
         troops_available = self.troops_count - self.rec.get_troops_deployed_count()
         # sometimes a message can interfer with get_troops_deployed_count() so confirm it
         if troops_available > 0:
-            sleep(4)
-            troops_available = self.troops_count - self.rec.get_troops_deployed_count()
+            self.troops_available_confirmation += 1 
+        else:
+            self.troops_available_confirmation = 0
+        
+        if self.troops_available_confirmation > 2:
+            self.troops_available_confirmation = 0
+            return True
+        return False
 
-        if troops_available > 0:
+    def search_bug(self): 
+        if self.confirm_troop():
             if self.need_user_confirmation:
                 self.wait_for_user_confirmation()
+
+            # we arre in outside stage
+            # click magniglass
+            self.droid.click_app((0.075, 0.654), delay_after=0.75)
+            # confirm search
+            self.droid.click_app((0.804, 0.865), delay_after=0.75)
+            # click bug found
+            self.droid.click_app((0.473, 0.506), delay_after=0.75)
+            self.stage[1] = Stages.confirm_attack
+        else:
+            sleep(2)
+ 
+    def search_farm(self): 
+        if self.confirm_troop(): 
+            if self.need_user_confirmation:
+                self.wait_for_user_confirmation()
+
             fpos = self.next_farm()
             if(not fpos is None):
                 self.droid.activate_win()
@@ -206,7 +214,7 @@ class AutoFarmer:
                     # if no gump go to next farm
                     self.farms_attacked += 1
         else:
-            sleep(5)
+            sleep(2)
 
     def confirm_attack(self):
         # click attack
@@ -227,7 +235,7 @@ class AutoFarmer:
             # check if the selected
             for troop in stamok:
                 # click the position
-                self.droid.click_app(troop[1], delay_after=0.6)
+                self.droid.click_app(troop[1], delay_after=1)
                 if self.rec.is_march_button():
                     # click march
                     self.droid.click_app((0.71, 0.94), delay_after=0.6)
@@ -282,10 +290,10 @@ if __name__ == '__main__':
 
     farmer = AutoFarmer(
         droid,
-        farms_positions=[(556, 797), (558, 799), (557, 788)],
-        troops_count=2,
+        #farms_positions=[(556, 797), (558, 799), (557, 788)],
+        troops_count=4,
         max_cycles=2,
-        min_stamina=40,
+        min_stamina=20,
         user_confirmation_required=False,
     )
 
