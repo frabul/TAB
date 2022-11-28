@@ -11,22 +11,25 @@ if __name__ == '__main__':
     import os
     vision = Vision('BlueStacks App Player', (1, 35, 1, 1))
     vision.start()
-    templates = Templates()
+    all_templates = Templates()
     k: str = ''
 
-    to_search : list[Template] = []
-    for k, v in templates.items.items():
+    templates : list[Template] = []
+    for k, v in all_templates.items.items():
         if k.startswith('nest') and k.endswith('mini'):
-            to_search.append(v)
+            templates.append(v)
 
     while not keyboard.is_pressed('alt+q'):
         #maxVal, maxLoc = templates.location_marker.find_max(vision, (0.004, 0.079), (0.949, 0.754) )
         #print(f"found {maxVal} at {maxLoc}"  )
         rectangles = []
         def fu(): 
-            for template in to_search:
-                for rect in template.find_all(vision, (0.002, 0.12), (0.919, 0.846)):
-                    rectangles.append(rect)
+            for template in templates:
+                findings = template.find_all(vision, (0.135, 0.445),(0.81, 0.832))
+                if len(findings) > 0:
+                    print(f'template {template.name} found {len(findings)} rectangels')
+             
+                [ rectangles.append(rect) for rect in findings]
       
         print( f"Executed search in {timeit.timeit(fu, number=1)}s")
 

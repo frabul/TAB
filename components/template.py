@@ -22,7 +22,7 @@ class Template:
     bot_right = 0
     rect = (0, 0, 0, 0)
 
-    def __init__(self, name: str, topleft, botright, score_min=0.85) -> None:
+    def __init__(self, name: str, topleft, botright, score_min=0.90) -> None:
         self.name: str = name
         self.score_min = score_min
         x, y = topleft

@@ -32,8 +32,16 @@ class FarmsFinder:
             'skip_area': (350, 350, 500, 500),
             'sweep_start': (1200, 0)
         }
-        self.load_session()
 
+        # prepare templates
+        self.templates   = []
+        for k, v in self.recognition.templates.items.items():
+            if k.startswith('nest') and k.endswith('mini'):
+                self.templates.append(v)
+        
+        # load session
+        self.load_session()
+ 
         def set_stop_requested():
             self.stop_requested = True
 
@@ -236,9 +244,11 @@ class FarmsFinder:
             if not ok:
                 continue
             # search nest
-            nests = \
-                self.droid.recognition.templates.nest_l16_mini.find_all(self.vision, self.scan_p1, self.scan_p2) + \
-                self.droid.recognition.templates.nest_eggs_mini.find_all(self.vision, self.scan_p1, self.scan_p2)
+            nests : list[QRectF]= [] 
+            for t   in self.templates   :  
+                rects =  t.find_all(self.vision, self.scan_p1, self.scan_p2) + \
+                [nests.append(x) for x in rects]
+                
             for nest in nests:
                 if self.stop_requested:
                     return
@@ -259,6 +269,8 @@ class FarmsFinder:
                             self.farms.save()
                         break
                 self.dismiss_tile_info()
+
+
 
 
 if __name__ == '__main__':
