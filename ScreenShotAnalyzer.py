@@ -1,6 +1,6 @@
 from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal, QTimer, QPointF
 from PySide6.QtGui import (QPen, QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard,
-                           QPixmap, QMouseEvent)
+                           QPixmap, QMouseEvent, QIcon)
 from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
                                QGraphicsItem, QGraphicsRectItem,QGraphicsPixmapItem,
                                QGraphicsScene, QGraphicsSceneMouseEvent,
@@ -28,9 +28,10 @@ class ScreenShotAnalyzer(QMainWindow):
         self.vision = Vision('BlueStacks App Player', (1, 35, 1, 1))
         self.vision.start()
 
+        self.setWindowIcon(QIcon('./images/RemixIcon-ScreenshotLine.png'))
         self.setWindowTitle("Screenshot Analyzer")
         self.setGeometry(0, 0, 500, 800)
- 
+
         self.selection_start : QPointF= None
         self.selection_end : QPointF= None  
 

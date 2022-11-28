@@ -14,6 +14,7 @@ import keyboard
 import time
 import QDispatcher
 import utils
+import threading
 
 
 class Stages:
@@ -31,9 +32,9 @@ class Stages:
     bug_search = 'bug_search'
 
 
-class AutoFarmer: 
+class AutoFarmer:
 
-    def __init__(self, droid: Droid, farms_positions: list = None, troops_count=4, min_stamina=40, user_confirmation_required=False, max_cycles=2) -> None: 
+    def __init__(self, droid: Droid, farms_positions: list = None, troops_count=4, min_stamina=40, user_confirmation_required=False, max_cycles=2) -> None:
         self.min_stamina = min_stamina
         self.initial_troops = troops_count
         self.troops_count = troops_count
@@ -99,7 +100,7 @@ class AutoFarmer:
         act()
         pass
 
-    def press_esc(self, delay_after=0.1):
+    def press_esc(self, delay_after=0.35):
         pyautogui.press('esc')
         sleep(delay_after)
 
@@ -117,18 +118,22 @@ class AutoFarmer:
         else:
             self.stage[0] = Stages.unknown
 
+    ########### RUN ###############
     def run(self):
         print("Running autofarmer")
         self.farms_attacked = 0
 
         def set_stop_requested():
-            self.terminate = True
-
+            self.terminate = True 
         def toggle_pause():
-            self.pause = not self.pause
+            self.pause = not self.pause 
+        def toggle_confirm_required():
+            self.need_user_confirmation = not self.need_user_confirmation
+            print(f'need_user_confirmation is now {self.need_user_confirmation}')
 
         keyboard.add_hotkey('alt+q', callback=set_stop_requested)
-        keyboard.add_hotkey('alt+p', callback=toggle_pause)
+        keyboard.add_hotkey('alt+s', callback=toggle_pause)
+        keyboard.add_hotkey('alt+w', callback=toggle_confirm_required)
 
         while not self.terminate:
             self.pause_loop()
@@ -138,6 +143,7 @@ class AutoFarmer:
 
         keyboard.remove_hotkey(set_stop_requested)
         keyboard.remove_hotkey(toggle_pause)
+        keyboard.remove_hotkey(toggle_confirm_required)
         print('Autofarmer terminated')
 
     def pause_loop(self):
@@ -169,16 +175,16 @@ class AutoFarmer:
         troops_available = self.troops_count - self.rec.get_troops_deployed_count()
         # sometimes a message can interfer with get_troops_deployed_count() so confirm it
         if troops_available > 0:
-            self.troops_available_confirmation += 1 
+            self.troops_available_confirmation += 1
         else:
             self.troops_available_confirmation = 0
-        
+
         if self.troops_available_confirmation > 2:
             self.troops_available_confirmation = 0
             return True
         return False
 
-    def search_bug(self): 
+    def search_bug(self):
         if self.confirm_troop():
             if self.need_user_confirmation:
                 self.wait_for_user_confirmation()
@@ -193,20 +199,21 @@ class AutoFarmer:
             self.stage[1] = Stages.confirm_attack
         else:
             sleep(2)
- 
-    def search_farm(self): 
-        if self.confirm_troop(): 
+
+    def search_farm(self):
+        if self.confirm_troop():
             if self.need_user_confirmation:
                 self.wait_for_user_confirmation()
-
+            sleep(0.5)
             fpos = self.next_farm()
             if(not fpos is None):
                 self.droid.activate_win()
                 self.droid.go_to_location(fpos)
+                sleep(0.5)
                 # click farm
-                self.droid.click_in_range((0.42, 0.431), (0.516, 0.464))
+                self.droid.click_in_range((0.42, 0.431), (0.516, 0.464), delay_after=0.6)
                 # click attack
-                self.droid.click_in_range((0.556, 0.607), (0.614, 0.638), delay_after=0.3)
+                self.droid.click_in_range((0.556, 0.607), (0.614, 0.638), delay_after=0.6)
 
                 if self.droid.recognition.is_troop_selection_gump():
                     self.stage[1] = Stages.pick_troop
@@ -218,7 +225,7 @@ class AutoFarmer:
 
     def confirm_attack(self):
         # click attack
-        self.droid.click_app((0.47, 0.66), delay_after=0.4)
+        self.droid.click_app((0.47, 0.66), delay_after=0.6)
         self.stage[1] = Stages.pick_troop
 
     def pick_troop(self):
@@ -248,7 +255,7 @@ class AutoFarmer:
                     if not self.rec.is_outside() and not self.rec.is_troop_selection_gump():
                         # we have some kind of gump probably
                         self.droid.activate_win()
-                        pyautogui.press('esc')
+                        self.press_esc()
             return False
 
         ok = try_confirm()
@@ -264,7 +271,7 @@ class AutoFarmer:
         if not ok:
             self.decrease_available_troops()
             self.droid.activate_win()
-            pyautogui.press('esc')
+            self.press_esc()
 
         self.stage[1] = Stages.idle
         return ok
@@ -273,7 +280,6 @@ class AutoFarmer:
         # it was not accepted, probably troop stamina depleted
         # decrease available troops and increase it after 5 minutes
         self.troops_count -= 1
-        self.esc_and_idle()
 
         def increase():
             self.troops_count += 1
@@ -282,7 +288,6 @@ class AutoFarmer:
 
 
 if __name__ == '__main__':
-    import threading
     droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1)))
     droid.vision.start()
     while not droid.vision.is_ready():
@@ -290,10 +295,12 @@ if __name__ == '__main__':
 
     farmer = AutoFarmer(
         droid,
-        #farms_positions=[(556, 797), (558, 799), (557, 788)],
+        # farms_positions=[
+        #  (1022, 84), (963, 112), (1168, 114), (1090, 148), (985, 91), (914, 59), (1154, 151), (1037, 93), (914, 110), (1103, 34), (1062, 23)
+        # ],
         troops_count=4,
-        max_cycles=2,
-        min_stamina=20,
+        max_cycles=1,
+        min_stamina=30,
         user_confirmation_required=False,
     )
 

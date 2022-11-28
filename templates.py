@@ -20,6 +20,10 @@ class Templates:
             return img[1]
         self.magniglass.prepare = prepareMagni
 
+        # define workers_icon
+        self.workers_icon = Template('workers_icon', (0.027, 0.139),(0.099, 0.173), score_min=0.75) 
+  
+
         # nest_l16
         def prepareNest(img: np.ndarray):
             hsv_max = np.array([14, 178, 225])
@@ -52,6 +56,9 @@ class Templates:
             return utils.apply_hsv_mask(img, hsv_min, hsv_max, ksize=(2, 2))
         self.location_marker = Template('location_marker', (0.271, 0.526),(0.305, 0.552), score_min=0.85)
         self.location_marker.prepare = prepare_location_marker
+
+        #app_icon
+        self.app_icon = Template('app_icon', (0.704, 0.198),(0.8, 0.257), score_min=0.9)
 
         # load all
         for it in self.__dict__.values():

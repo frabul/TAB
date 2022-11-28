@@ -23,15 +23,14 @@ class FarmsFinder:
         self.droid = Droid(self.vision)
         self.recognition = self.droid.recognition
         self.column_step = 5
-        self.skip_zone = QRect(350, 350, 500, 500)
-        self.steps_in_skip_zone = 0
         self.scan_p1 = (0.283, 0.465)
         self.scan_p2 = (0.795, 0.829)
         self.scan_size = utils.point_sub(self.scan_p2, self.scan_p1)
         self.move_direction = (0, self.scan_size[1] * 0.65)
         self.session = {
-            'last_x': 1200,
-            'last_y': 0
+            'search_area': (0, 0, 1200, 1200),
+            'skip_area': (350, 350, 500, 500),
+            'sweep_start': (1200, 0)
         }
         self.load_session()
 
@@ -42,7 +41,40 @@ class FarmsFinder:
             self.pause = not self.pause
 
         keyboard.add_hotkey('alt+q', callback=set_stop_requested)
-        keyboard.add_hotkey('alt+p', callback=toggle_pause)
+        keyboard.add_hotkey('alt+s', callback=toggle_pause)
+
+    @property
+    def skip_zone(self):
+        if 'skip_area' in self.session:
+            return QRect(*self.session['skip_area'])
+        else:
+            return QRect(0, 0, 0, 0)
+    # @skip_zone.setter
+    # def skip_zone(self, val:tuple):
+    #    self.session['skip_area'] = val
+
+    @property
+    def search_area(self):
+        if 'search_area' in self.session:
+            return self.session['search_area']
+        else:
+            return (0, 0, 1200, 1200)
+
+    @search_area.setter
+    def search_area(self, val: tuple):
+        self.session['search_area'] = val
+
+    @property
+    def sweep_start(self):
+        if 'sweep_start' in self.session:
+            return self.session['sweep_start']
+        else:
+            x1, y1, w, h = self.search_area
+            return ( x1 + w, y1)
+
+    @sweep_start.setter
+    def sweep_start(self, val: tuple):
+        self.session['sweep_start'] = val
 
     def load_session(self):
         try:
@@ -57,41 +89,90 @@ class FarmsFinder:
             json.dump(self.session, fs)
 
     def assure_stage(self):
+        # check if the game is open
+        app_icon_pos = self.recognition.templates.app_icon.find_max(self.vision, (0, 0), (1, 1))
+        if not app_icon_pos is None:
+            logging.info('App closed, trying to launch')
+            self.droid.click_app(app_icon_pos[1], False, delay_after=40)
+
+        # dismiss attacks gumps eventually
         if self.recognition.is_attack_gump() or self.recognition.is_lizard_rally_gump():
             x = utils.random_range(0.259, 0.785)
             y = utils.random_range(0.1, 0.22)
             self.droid.click_app((x, y))
-        self.dismiss_tile_info()
+
+        # check if we are inside or outside
+        is_inside = self.recognition.is_inside()
+        is_outside = self.recognition.is_outside()
+        if not is_inside and not is_outside:
+            logging.debug('[assure_stage] not inside or outspide -> try esc')
+            pyautogui.press('esc')
+            time.sleep(0.5)
+
+        is_inside = self.recognition.is_inside()
+        is_outside = self.recognition.is_outside()
+        if is_inside:
+            logging.info('We are inside. Trying to go out and reduce zoom')
+            # todo - go outside and reduce zoom
+            self.droid.go_outside()
+            is_outside = self.recognition.is_outside()
+            if is_outside:
+                self.droid.go_to_location(self.sweep_start)
+                self.droid.activate_win()
+                self.droid.zoom_out()
+                self.droid.move((0, 0.1), (0.5, 0.5))
+                time.sleep(0.5)
+                self.droid.zoom_out()
+
+        # dismissi tile info if it exists
+        if is_outside:
+            self.dismiss_tile_info()
+        return is_outside
 
     def dismiss_tile_info(self):
         marker_pos = self.recognition.templates.location_marker.find_max(self.vision, (0.006, 0.082), (0.917, 0.849))
         if not marker_pos is None:
             # open goto position gump
             self.droid.open_search()
+            time.sleep(0.5)
             if not self.recognition.is_outside():
                 pyautogui.press('esc')
 
+    def get_next_sweep_start(self):
+        lx, ly = self.sweep_start
+        x1, y1, w, h = self.search_area
+        x2 = x1 + w
+        y2 = y1 + h
+        area = QRect(*self.search_area)
+        # check that start point is on the edges of the area
+        ok = (lx >= x1 and lx <= x2 and ly == 0) or (ly >= y1 and ly <= y2 and lx == 0)
+        if not ok:
+            return (x2, y1)
+        if lx > x1:
+            lx -= self.column_step
+            lx = max(lx, x1)
+        else:
+            ly += self.column_step
+            ly = min(ly, y2)
+        return (lx, ly)
+
     def move(self):
         self.droid.activate_win()
-        self.assure_stage()
+        stage_ok = self.assure_stage()
+        if not stage_ok:
+            logging.error(f'assure_stage() returned False')
+            time.sleep(60)
+            return False
+
         map_pos = self.droid.recognition.read_world_position()
         if map_pos:
             logging.info(f'Scanned at {map_pos}')
-
-            if map_pos[0] == 1200 or map_pos[1] == 1200:
-
+            if not QRect(*self.search_area).contains(*map_pos):
                 self.save_session()
-                if self.session['last_x'] >= 0:
-                    self.session['last_x'] -= self.column_step
-                    self.session['last_x'] = max(self.session['last_x'], 0)
-                else:
-                    self.session['last_y'] += self.column_step
-                    self.session['last_y'] = min(self.session['last_y'], 1200)
-                nextposition = (self.session['last_x'], self.session['last_y'])
-                logging.info(f'Map limit reached. Pass to next column: {nextposition}')
-
+                nextposition = self.get_next_sweep_start()
                 self.droid.go_to_location(nextposition)
-
+                self.sweep_start = nextposition
+                logging.info(f'Search area limit reached. Pass to next sweep: {nextposition}')
             else:
                 if self.skip_zone.contains(map_pos[0], map_pos[1]):
                     self.steps_in_skip_zone += 1
@@ -101,7 +182,7 @@ class FarmsFinder:
                 if self.steps_in_skip_zone > 2:
                     self.steps_in_skip_zone = 0
                     logging.info('Moving out of skip zone')
-                    cursor = (self.session['last_x'], self.session['last_y'])
+                    cursor = self.sweep_start
                     # cursor start at the colum origin and then moves to skip zone
                     while not self.skip_zone.contains(*cursor):
                         cursor = utils.point_sum(cursor, (1, 1))
@@ -117,7 +198,6 @@ class FarmsFinder:
                         y = 1200
                     # exit
                     self.droid.go_to_location((x, y))
-
         else:
             logging.warning(f'Scanned at unknown position')
         drag_start = utils.random_point_in_rectangle((0.128, 0.523), (0.823, 0.776))
@@ -126,6 +206,7 @@ class FarmsFinder:
             self.move_direction[0] * utils.random_range(0.85, 1.15),
             self.move_direction[1] * utils.random_range(0.85, 1.15))
         f.droid.move(direction, drag_start)
+        return True
 
     def pause_loop(self):
         if self.pause:
@@ -147,12 +228,13 @@ class FarmsFinder:
             if self.stop_requested:
                 return
             # move
-            self.move()
+            ok = self.move()
             self.pause_loop()
             if self.stop_requested:
                 return
             time.sleep(0.1)
-
+            if not ok:
+                continue
             # search nest
             nests = \
                 self.droid.recognition.templates.nest_l16_mini.find_all(self.vision, self.scan_p1, self.scan_p2) + \
@@ -178,8 +260,6 @@ class FarmsFinder:
                         break
                 self.dismiss_tile_info()
 
-         
-
 
 if __name__ == '__main__':
     import sys
@@ -189,7 +269,7 @@ if __name__ == '__main__':
         encoding='utf-8',
         level=logging.DEBUG
     )
-    root = logging.getLogger() 
+    root = logging.getLogger()
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

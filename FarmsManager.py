@@ -1,11 +1,11 @@
-import QDispatcher
+from components import QDispatcher
 QDispatcher.create(True)  
 
 from types import MethodType 
 import numpy as np
 from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal,QTimer 
 from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard, 
-                           QPixmap)
+                           QPixmap ,QIcon)
 from PySide6.QtWidgets import (QMessageBox, QApplication, QGraphicsEllipseItem,
                                QGraphicsItem, QGraphicsRectItem, 
                                QGraphicsScene, QGraphicsSceneMouseEvent,
@@ -76,11 +76,13 @@ class WidgetFarmsDisplay(QMainWindow):
     farms_map = None
     last_selected_marker: FarmMarker = None
     fixedPolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-
+    
 
     def __init__(self, farmsdb) -> None: 
         super().__init__()
+        icon = QIcon(QPixmap('images/field.png'))
         win = self
+        self.setWindowIcon(icon)
         self.map_size = (1200, 1200)
         self.farm_widgets: dict[tuple, FarmMarker] = {}
         self.droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1))) 

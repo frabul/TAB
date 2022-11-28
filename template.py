@@ -78,7 +78,7 @@ class Template:
             match = cv2.matchTemplate(img, self.img, cv2.TM_SQDIFF_NORMED)
             return 1 - cv2.minMaxLoc(match)[1] > self.score_min
 
-    def find_max(self, vision: Vision, topleft, botright):
+    def find_max(self, vision: Vision, topleft = (0,0), botright = (1,1))-> tuple[float, tuple[int,int]] | None:
         img = vision.get_section_2p_su(topleft, botright).copy()
         img = self.prepare(img)
         #QImageViewer.show_image('screen', img)

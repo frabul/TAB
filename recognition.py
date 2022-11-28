@@ -26,8 +26,9 @@ class Recognition:
         tm = self.templates.magniglass
         return tm.match_exact(self.vision)
 
-    read_world_position_lower_val = [88, 90, 120]
-    read_world_position_upper_val = [105, 160, 200]
+    def is_inside(self) -> bool:
+        tm = self.templates.workers_icon
+        return tm.match_exact(self.vision)     
 
     def read_world_position(self) -> tuple[int]:
         img = self.vision.get_section_2p_su((0.38, 0.79), (0.60, 0.82))
@@ -153,8 +154,7 @@ class Recognition:
 
         return (name, alliance, location)
 
-    def is_inside(self) -> bool:
-        return False
+   
 
     def read_staminas(self) -> tuple[str, tuple[float, float]]:
         markers = self.templates.stamina_marker.find_all(self.vision, (0.491, 0.321), (0.781, 0.886))
@@ -256,7 +256,7 @@ if __name__ == '__main__':
     while not keyboard.is_pressed('alt+q'):
      
         print(f'is_outside: {rec.is_outside()}')
-       
+        print(f'is_inside: {rec.is_inside()}')
 
         # test read_world_position
         #pos = rec.read_world_position()

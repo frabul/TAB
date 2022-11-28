@@ -19,16 +19,18 @@ class Droid:
 
     def activate_win(self, timeout=0.5):
         try:
-            ret = win32gui.SetForegroundWindow(self.vision.hwnd)
-            sleep(0.01)
-            ret = win32gui.SetActiveWindow(self.vision.hwnd)
-            tstart = time.time()
-            while win32gui.GetForegroundWindow() != self.vision.hwnd and time.time() < tstart + timeout:
+            if win32gui.GetForegroundWindow() != self.vision.hwnd:
+                ret = win32gui.SetForegroundWindow(self.vision.hwnd)
                 sleep(0.01)
+                ret = win32gui.SetActiveWindow(self.vision.hwnd)
+                tstart = time.time()
+                while win32gui.GetForegroundWindow() != self.vision.hwnd and time.time() < tstart + timeout:
+                    sleep(0.01)
         except Exception as ex:
             print("Exception in Droid.activate_win" + str(ex))
 
     def click_app(self, pos, dismiss_keyboard=True, delay_after=0.15, radius_px=5):
+        self.activate_win()
         if dismiss_keyboard:
             self.assure_keyboard_disabled()
         cx, cy = self.vision.get_screen_position_su(pos)
@@ -88,17 +90,28 @@ class Droid:
         sleep(0.1)
 
         # click go
-        self.click_app((0.8, 0.84))
+        self.click_app((0.8, 0.84), delay_after=2)
         return True
 
     def go_outside(self):
         self.activate_win()
         if self.recognition.is_outside():
             return
-        self.click_app((0.86, 0.94))
+        self.click_app((0.86, 0.94), delay_after=8)
 
     def random_range(self, rangestart, rangend):
         return rangestart + random.random() * (rangend - rangestart)
+
+    def zoom_out(self, pointer_position = (0.466, 0.434)):
+        pos = self.vision.get_screen_position_su(pointer_position)
+        pyautogui.moveTo(pos)
+        sleep(0.1)
+        pyautogui.keyDown('ctrl')
+        for x in range(10):  
+            sleep(0.1)
+            pyautogui.scroll(-100)
+            time.sleep(0.6)
+        pyautogui.keyUp('ctrl')
 
     def move(self, direction_su, drag_start):
         ''' direction is expresses in screen units '''

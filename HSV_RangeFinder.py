@@ -2,7 +2,7 @@ from types import MethodType
 import numpy as np
 from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal, QTimer
 from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard,
-                           QPixmap, QDropEvent)
+                           QPixmap, QDropEvent, QIcon)
 from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
                                QGraphicsItem, QGraphicsRectItem,
                                QGraphicsScene, QGraphicsSceneMouseEvent,
@@ -20,6 +20,7 @@ class HSV_RangeFinder(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setGeometry(100,100,600,400)
+        self.setWindowIcon(QIcon('./images/colors.png'))
         centralWidget = QWidget(self)
         self.setCentralWidget(centralWidget)
 
