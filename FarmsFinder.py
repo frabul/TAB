@@ -1,11 +1,11 @@
 import time
-from droid import Droid
-from vision import Vision
-from recognition import Recognition
-from FarmsDb import FarmsDb, Farm
+from components.droid import Droid
+from components.vision import Vision
+from components.recognition import Recognition
+from components.FarmsDb import FarmsDb, Farm
 from PySide6.QtCore import QRect, QRectF
 import keyboard
-import utils
+from components import utils
 import pyautogui
 import os
 import json

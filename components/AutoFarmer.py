@@ -1,21 +1,16 @@
-from droid import Droid
-import typing
-import cv2 as cv
-import cv2
+
+import typing 
 import numpy as np
-from vision import Vision
 import pyautogui
 from time import sleep
-import QImageViewer
-from PySide6.QtWidgets import QMessageBox
-from vision import Vision
-from recognition import Recognition
+from PySide6.QtWidgets import QMessageBox 
 import keyboard
 import time
-import QDispatcher
-import utils
 import threading
-
+from . import QDispatcher  
+from . import utils
+from .vision import Vision 
+from .droid import Droid
 
 class Stages:
     unknown = 'unknown'
@@ -286,23 +281,4 @@ class AutoFarmer:
         time = threading.Timer(60 * 5, increase)
         time.start()
 
-
-if __name__ == '__main__':
-    droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1)))
-    droid.vision.start()
-    while not droid.vision.is_ready():
-        sleep(1)
-
-    farmer = AutoFarmer(
-        droid,
-        # farms_positions=[
-        #  (1022, 84), (963, 112), (1168, 114), (1090, 148), (985, 91), (914, 59), (1154, 151), (1037, 93), (914, 110), (1103, 34), (1062, 23)
-        # ],
-        troops_count=4,
-        max_cycles=1,
-        min_stamina=30,
-        user_confirmation_required=False,
-    )
-
-    farmer.run()
-    exit()
+ 

@@ -10,8 +10,8 @@ from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
  
 
 
-from vision import Vision    
-import QDispatcher
+from components.vision import Vision    
+from components import QDispatcher  
 import threading
 
 import cv2
@@ -73,17 +73,14 @@ class ScreenShotAnalyzer(QMainWindow):
         self.selection_rect.hide()
         self.screen_scene.addItem(self.selection_rect)
         def selection_rect_mouseDoubleClickEvent(event):
-            rect =   self.selection_rect.rect().toRect()
-            section = self.last_screen_cv[ 
-                rect.y() : rect.y() +rect.height(),
-                rect.x() : rect.x() +rect.width(),
-                :
-            ].copy()
+           
+            section = self.get_selected_screen_section()
             cv2.imwrite('screen_selection.bmp',section)
             h, w, _ = section.shape
             QApplication.clipboard().setImage(
                 QImage(section.data, w, h, 3 * w, QImage.Format.Format_BGR888))
             pass 
+
         self.selection_rect.mouseDoubleClickEvent = selection_rect_mouseDoubleClickEvent
         # view
         self.view = QGraphicsView(self.screen_scene, self)
@@ -128,6 +125,15 @@ class ScreenShotAnalyzer(QMainWindow):
         self.label_rect_size.mouseDoubleClickEvent = \
             lambda ev: QApplication.clipboard().setText(self.label_rect_size.to_clipboard)
         right_panel_layout.addWidget(self.label_rect_size)
+        
+        # lineEdit_template_name
+        self.lineEdit_template_name = QLineEdit('template1')
+        right_panel_layout.addWidget(self.lineEdit_template_name)
+        # button save as file
+        self.button_add_template = QPushButton('Add Template')
+        self.button_add_template.clicked.connect(self.handle_button_add_template_clicked)
+        right_panel_layout.addWidget(self.button_add_template)
+
         # filler
         right_panel_layout.addWidget(QWidget())
 
@@ -135,7 +141,26 @@ class ScreenShotAnalyzer(QMainWindow):
         self.timer.setInterval(150)
         self.timer.timeout.connect(self.handle_timer_timeout)
         self.timer.start()
- 
+
+    def get_selected_screen_section(self):
+        rect = self.selection_rect.rect().toRect()
+        section = self.last_screen_cv[ 
+            rect.y() : rect.y() +rect.height(),
+            rect.x() : rect.x() +rect.width(),
+            :
+        ].copy()
+        return section
+
+    def handle_button_add_template_clicked(self):
+        if self.selection_rect.isVisible():
+            template_name = self.lineEdit_template_name.text() 
+            template_str = \
+                f"# {template_name} \r\n" \
+                f"self.{template_name} = Template('{template_name}', {self.top_left}, {self.bot_right} ) \r\n\r\n"   
+            section = self.get_selected_screen_section()
+            cv2.imwrite(f'images/{template_name}.bmp', section)    
+            QApplication.clipboard().setText(template_str)
+
     def handle_label_mouse_move(self, event: QGraphicsSceneMouseEvent) -> None:
         x, y = event.scenePos().toTuple()
         x_rel = x / self.screen_scene.width() 

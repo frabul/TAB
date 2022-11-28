@@ -3,14 +3,14 @@ import cv2
 import numpy as np
 import os
 from time import sleep, time 
-from vision import Vision
+from components.vision import Vision
 from pynput import keyboard, mouse
 import pyautogui
 import queue 
 import re
 
 import easyocr
-import QImageViewer
+from components import QImageViewer
 import pytesseract
 import timeit
 

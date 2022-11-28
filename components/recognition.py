@@ -2,11 +2,11 @@ import numpy as np
 import cv2
 import pytesseract
 import re
-from vision import Vision
-import QImageViewer
-from template import Template
-from templates import Templates
-import utils
+from .vision import Vision
+from .template import Template
+from .templates import Templates
+from . import QImageViewer
+from . import utils
 
 pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe'
 debug = False

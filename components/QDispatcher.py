@@ -4,8 +4,7 @@ from PySide6.QtWidgets import QMainWindow, QApplication, QLabel, QWidget
 from threading import Thread, Lock
 from queue import Queue,Empty
 import typing
-import time 
-import threading
+import time  
 
 
 class QDispatcher(QApplication):

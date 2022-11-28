@@ -9,11 +9,10 @@ from PySide6.QtWidgets import (QApplication, QGraphicsEllipseItem,
                                QGraphicsView, QLabel, QMainWindow, QWidget,
                                QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout,
                                QSlider
-                               )
-from vision import Vision
+                               ) 
 import cv2
-import QDispatcher
-import utils
+from components import QDispatcher  
+from components import utils
 
 class HSV_RangeFinder(QMainWindow):
     image_original : np.ndarray = None

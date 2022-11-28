@@ -1,10 +1,9 @@
 import numpy as np
-import cv2
-import QImageViewer
-from vision import Vision
+import cv2 
+from components.vision import Vision
 import math
 from PySide6.QtCore import QRectF
-import utils
+from components import utils
 
 
 class info:

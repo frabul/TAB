@@ -1,6 +1,6 @@
-from AutoFarmer import AutoFarmer
-from droid import Droid
-from vision import Vision
+from components.AutoFarmer import AutoFarmer
+from components.droid import Droid
+from components.vision import Vision
 from time import sleep
 
 droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1)))

@@ -1,4 +1,4 @@
-from components import QDispatcher
+from components import QDispatcher  
 QDispatcher.create(True)  
 
 from types import MethodType 
@@ -12,10 +12,10 @@ from PySide6.QtWidgets import (QMessageBox, QApplication, QGraphicsEllipseItem,
                                QGraphicsView, QLabel, QMainWindow, QWidget,
                                QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout,QSlider
                                )
-from droid import Droid
-from vision import Vision
-from FarmsDb import Farm, FarmsDb
-import utils
+from components.droid import Droid
+from components.vision import Vision
+from components.FarmsDb import Farm, FarmsDb
+from components import utils
 
 class FarmMarker(QGraphicsEllipseItem):
     def __init__( self, farm:Farm, pos_in_map) -> None: 
@@ -343,7 +343,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.label_farms_selected.setText(f"Farms selected: {len(self.scene.selectedItems())}")
 
     def handle_attack_selected(self):
-        from AutoFarmer import AutoFarmer
+        from components.AutoFarmer import AutoFarmer
         mbox = QMessageBox(parent=self, text="Need user confirmation?", standardButtons= QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No ) 
         answer = mbox.exec()
         self.farmer = AutoFarmer(

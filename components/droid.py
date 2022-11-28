@@ -1,14 +1,13 @@
 import numpy as np
-
 import pyautogui
-from time import sleep
-from recognition import Recognition
-from vision import Vision
-import autoit
+from time import sleep  
 import win32gui
 import time
 import random
-import utils
+
+from .recognition import Recognition
+from .vision import Vision
+from . import utils
 
 
 class Droid:
