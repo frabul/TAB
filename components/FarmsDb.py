@@ -8,7 +8,7 @@ import shutil
 class Farm:
     strtimeformat = '%Y%m%d%H%M%S'
 
-    def __init__(self, position=(0, 0), level=1, name=None, last_raid=None, alliance = None) -> None:
+    def __init__(self, position=(0, 0), level=1, name=None, last_raid=None, alliance=None) -> None:
         self.position = position
         self.level = level
         self.name = name
@@ -20,12 +20,12 @@ class Farm:
 
     @staticmethod
     def from_json_object(jfarm):
-        
+
         return Farm(
             position=tuple(jfarm['position']),
             level=jfarm['level'],
             name=jfarm['name'],
-            alliance= jfarm['alliance'] if 'alliance' in jfarm else None, 
+            alliance=jfarm['alliance'] if 'alliance' in jfarm else None,
             last_raid=datetime.datetime.strptime(jfarm['last_raid'], Farm.strtimeformat)
         )
 
@@ -42,12 +42,20 @@ class Farm:
 class FarmsDb:
 
     def __init__(self, farms_file: str, farms_list: list[Farm] = None) -> None:
-        self.farms: dict[tuple, Farm] = {}
         self.farms_file = farms_file
+        self.farms: dict[tuple, Farm] = {}
 
+        self.reload()
+
+        if farms_list:
+            for fa in farms_list:
+                self.farms[fa.position] = fa
+
+    def reload(self):
+        self.farms.clear()
         if os.path.isfile(self.farms_file):
             try:
-                with open(farms_file, 'r') as fs:
+                with open(self.farms_file, 'r') as fs:
                     jfarms = json.load(fs)
                     for jf in jfarms:
                         fa = Farm.from_json_object(jf)
@@ -56,10 +64,6 @@ class FarmsDb:
                 print("[FarmsDb] error during load db: " + str(ex))
         else:
             print("[FarmsDb] db file not found")
-
-        if farms_list:
-            for fa in farms_list:
-                self.farms[fa.position] = fa
 
     def save(self, backup=True):
         if backup and os.path.isfile(self.farms_file):
@@ -90,11 +94,3 @@ class FarmsDb:
 
     def __iter__(self):
         return self.generator()
-
-
-if __name__ == '__main__':
-    import farms_positions
-    farmlist = [Farm(position=x) for x in farms_positions.farms]
-    db = FarmsDb('FarmsDb.json', farms_list=farmlist)
-    db.save()
-  

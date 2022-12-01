@@ -28,7 +28,7 @@ class Recognition:
 
     def is_inside(self) -> bool:
         tm = self.templates.workers_icon
-        return tm.match_exact(self.vision)     
+        return tm.match_exact(self.vision)
 
     def read_world_position(self) -> tuple[int]:
         img = self.vision.get_section_2p_su((0.38, 0.79), (0.60, 0.82))
@@ -111,32 +111,37 @@ class Recognition:
             return True
         return False
 
-    def read_location_info(self):
-        ''' returns (name, alliance, location)'''
+    def read_nest_info(self):
+        ''' returns (name, alliance, location) '''
         res = self.templates.location_marker.find_max(self.vision, (0.002, 0.193), (0.821, 0.844))
         name = None
         location = None
         alliance = None
         if res:
             maxVal, maxLoc = res
-            nameRect1 = (maxLoc[0] - 0.015, maxLoc[1] - .105, 0.364, 0.027)
-            nameRect2 = (maxLoc[0] - 0.015, maxLoc[1] - .126, 0.364, 0.027)
+            nameRect1 = (maxLoc[0] - 0.015, maxLoc[1] - .105, 0.364, 0.027)  # no alliance
+            nameRect2 = (maxLoc[0] - 0.015, maxLoc[1] - .126, 0.364, 0.027)  # expect alliance
             locRect = (maxLoc[0] + .028, maxLoc[1], 0.195, 0.027)
 
+            ok = False
             nameImg1 = self.vision.get_section_su(nameRect1)
             nameImg2 = self.vision.get_section_su(nameRect2)
-            for nameImg in [nameImg2, nameImg1]:
-                txt: str = pytesseract.image_to_string(nameImg)
-                #txt: str = pytesseract.image_to_string(nameImg )
-                #txt = self.read_small_white_text(nameImg, 1, 120, None, chars_allowed=None)
+            # nameImg1 - no alliance
+            txt: str = pytesseract.image_to_string(nameImg1)
+            if len(txt) > 0:
+                ok = True
+                name = txt.splitlines()[0]
+            else:
+                # nameImg2 - alliance expected
+                txt: str = pytesseract.image_to_string(nameImg2)
                 if len(txt) > 0:
-                    name = txt.splitlines()[0]
-                    rematch = re.match("[(]([A-Za-z0-9]+)[)](.+)", name)
+                    rematch = re.match("[(]([A-Za-z0-9]+)[)](.+)", txt.splitlines()[0])
                     if rematch:
+                        ok = True
                         name = rematch.group(2)
                         alliance = rematch.group(1)
-                    break
 
+            # read location
             locImg = self.vision.get_section_su(locRect)
             locStr = self.read_small_white_text(
                 locImg,
@@ -154,18 +159,16 @@ class Recognition:
 
         return (name, alliance, location)
 
-   
-
     def read_staminas(self) -> tuple[str, tuple[float, float]]:
         markers = self.templates.stamina_marker.find_all(self.vision, (0.491, 0.321), (0.781, 0.886))
         twidth = self.templates.stamina_marker.rect[2]
         results = []
-        for marker in markers:
+        for i, marker in enumerate(markers):
             x, y = utils.point_sum(marker.topLeft().toTuple(), (twidth - 0.001, -0.002))
             w, h = (0.126, 0.028)
             img = self.vision.get_section_su((x, y, w, h))
 
-            stam_txt = self.read_small_white_text(img, dilate_size=(2, 2), chars_allowed='0123456789/', threshold=50)
+            stam_txt = self.read_small_white_text(img, dilate_size=(2, 2), chars_allowed='0123456789/', threshold=60)
             parts = stam_txt.split('/')
             if len(parts) == 2:
                 try:
@@ -238,45 +241,3 @@ class Recognition:
             confstring += f'-c tessedit_char_whitelist="{chars_allowed}"'
         txt = pytesseract.image_to_string(img, config=confstring)
         return txt
-
-
-if __name__ == '__main__':
-    import time
-    import keyboard
-    import os
-
-    vision = Vision('BlueStacks App Player', (1, 35, 1, 1))
-    vision.start()
-    while not vision.is_ready():
-        time.sleep(0.1)
-    rec = Recognition(vision)
-    # rec.templates.magniglass.save(vision)
-    # rec.templates.nest_l16.save(vision)
-    debug = True
-    while not keyboard.is_pressed('alt+q'):
-     
-        print(f'is_outside: {rec.is_outside()}')
-        print(f'is_inside: {rec.is_inside()}')
-
-        # test read_world_position
-        #pos = rec.read_world_position()
-        #print(f'Pos read: {pos}')
-
-        # test get_troops_deployed_count
-        # print(rec.get_troops_deployed_count())
-        #print(f"is attack = {rec.is_attack_gump()}")
-
-        # test read tile info
-        print(rec.read_location_info())
-
-        #staminas = rec.read_staminas()
-        #print(f'Squads found: {staminas}')
-        # for s in staminas:
-        #    print(s)
-
-        #print(f'is_march_button() -> {rec.is_march_button()}')
-
-        #print(f'read_nest_level() -> {rec.read_nest_level()}')
-
-        time.sleep(1)
-    os._exit(0)

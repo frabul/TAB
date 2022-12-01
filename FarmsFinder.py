@@ -27,6 +27,7 @@ class FarmsFinder:
         self.scan_p2 = (0.795, 0.829)
         self.scan_size = utils.point_sub(self.scan_p2, self.scan_p1)
         self.move_direction = (0, self.scan_size[1] * 0.65)
+        self.out_of_search_area_confirmations = 0
         self.session = {
             'search_area': (0, 0, 1200, 1200),
             'skip_area': (350, 350, 500, 500),
@@ -153,7 +154,7 @@ class FarmsFinder:
         y2 = y1 + h
         area = QRect(*self.search_area)
         # check that start point is on the edges of the area
-        ok = (lx >= x1 and lx <= x2 and ly == 0) or (ly >= y1 and ly <= y2 and lx == 0)
+        ok = (lx >= x1 and lx <= x2 and ly == y1) or (ly >= y1 and ly <= y2 and lx == x1)
         if not ok:
             return (x2, y1)
         if lx > x1:
@@ -176,12 +177,16 @@ class FarmsFinder:
         if map_pos:
             logging.info(f'Scanned at {map_pos}')
             if not QRect(*self.search_area).contains(*map_pos):
-                self.save_session()
-                nextposition = self.get_next_sweep_start()
-                self.droid.go_to_location(nextposition)
-                self.sweep_start = nextposition
-                logging.info(f'Search area limit reached. Pass to next sweep: {nextposition}')
+                self.out_of_search_area_confirmations +=1 
+                if self.out_of_search_area_confirmations > 2: 
+                    self.out_of_search_area_confirmations = 0
+                    self.save_session()
+                    nextposition = self.get_next_sweep_start()
+                    self.droid.go_to_location(nextposition)
+                    self.sweep_start = nextposition
+                    logging.info(f'Search area limit reached. Pass to next sweep: {nextposition}')
             else:
+                self.out_of_search_area_confirmations = 0
                 if self.skip_zone.contains(map_pos[0], map_pos[1]):
                     self.steps_in_skip_zone += 1
                 else:
@@ -246,7 +251,7 @@ class FarmsFinder:
             # search nest
             nests : list[QRectF]= [] 
             for t   in self.templates   :  
-                rects =  t.find_all(self.vision, self.scan_p1, self.scan_p2) + \
+                rects =  t.find_all(self.vision, self.scan_p1, self.scan_p2)  
                 [nests.append(x) for x in rects]
                 
             for nest in nests:
@@ -257,7 +262,7 @@ class FarmsFinder:
                 self.droid.click_app((nest.center().x(), nest.center().y()))
                 trycnt = 0
                 while trycnt < 20:
-                    name, ally, location = self.recognition.read_location_info()
+                    name, ally, location = self.recognition.read_nest_info()
                     trycnt += 1
                     if (name is None or location is None):
                         time.sleep(0.25)

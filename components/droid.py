@@ -1,6 +1,6 @@
 import numpy as np
 import pyautogui
-from time import sleep  
+from time import sleep
 import win32gui
 import time
 import random
@@ -40,8 +40,8 @@ class Droid:
 
     def click_in_range(self, p1, p2, dismiss_keyboard=True, delay_after=0.15):
         x = utils.random_range(p1[0], p2[0])
-        y = utils.random_range(p1[1],p2[1])
-        self.click_app((x,y), dismiss_keyboard, delay_after, 0)
+        y = utils.random_range(p1[1], p2[1])
+        self.click_app((x, y), dismiss_keyboard, delay_after, 0)
 
     def sleep_random(self, delay, variability=0.2):
         random_delay = (1 + utils.random_range(-variability, +variability)) * delay
@@ -53,7 +53,7 @@ class Droid:
 
     def open_goto_gum(self):
         # apro gump
-        self.click_app((0.5, 0.81))
+        self.click_in_range((0.399, 0.794), (0.471, 0.809))
 
     def open_search(self):
         self.click_app((0.075, 0.654))
@@ -68,7 +68,7 @@ class Droid:
         #self.click_app((0.5, 0.5), False)
 
         # apro gump
-        self.open_goto_gum( )
+        self.open_goto_gum()
 
         # insert x
         self.click_app((0.22, 0.84))
@@ -89,7 +89,7 @@ class Droid:
         sleep(0.1)
 
         # click go
-        self.click_app((0.8, 0.84), delay_after=2)
+        self.click_app((0.8, 0.84), delay_after=1)
         return True
 
     def go_outside(self):
@@ -101,12 +101,12 @@ class Droid:
     def random_range(self, rangestart, rangend):
         return rangestart + random.random() * (rangend - rangestart)
 
-    def zoom_out(self, pointer_position = (0.466, 0.434)):
+    def zoom_out(self, pointer_position=(0.466, 0.434)):
         pos = self.vision.get_screen_position_su(pointer_position)
         pyautogui.moveTo(pos)
         sleep(0.1)
         pyautogui.keyDown('ctrl')
-        for x in range(10):  
+        for x in range(10):
             sleep(0.1)
             pyautogui.scroll(-100)
             time.sleep(0.6)

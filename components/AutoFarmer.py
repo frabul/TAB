@@ -193,7 +193,7 @@ class AutoFarmer:
             self.droid.click_app((0.473, 0.506), delay_after=0.75)
             self.stage[1] = Stages.confirm_attack
         else:
-            sleep(2)
+            sleep(1.5)
 
     def search_farm(self):
         if self.confirm_troop():
@@ -216,7 +216,7 @@ class AutoFarmer:
                     # if no gump go to next farm
                     self.farms_attacked += 1
         else:
-            sleep(2)
+            sleep(1.5)
 
     def confirm_attack(self):
         # click attack
@@ -259,7 +259,7 @@ class AutoFarmer:
             sx = utils.random_range(0.4, 0.43)
             sy = utils.random_range(0.74, 0.77)
             self.droid.move((0, 0.5), (sx, sy))
-            self.droid.move((0, 0.5), (sx, sy))
+            #self.droid.move((0, 0.5), (sx, sy))
             sleep(1)
             ok = try_confirm()
 

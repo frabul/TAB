@@ -1,29 +1,31 @@
-from components import QDispatcher  
-QDispatcher.create(True)  
-
-from types import MethodType 
-import numpy as np
-from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal,QTimer 
-from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard, 
-                           QPixmap ,QIcon)
+from PySide6.QtCore import QObject, QRect, Qt, QThread, Signal, QTimer
 from PySide6.QtWidgets import (QMessageBox, QApplication, QGraphicsEllipseItem,
-                               QGraphicsItem, QGraphicsRectItem, 
+                               QGraphicsItem, QGraphicsRectItem,
                                QGraphicsScene, QGraphicsSceneMouseEvent,
-                               QGraphicsView, QLabel, QMainWindow, QWidget,
-                               QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout,QSlider
-                               )
-from components.droid import Droid
-from components.vision import Vision
-from components.FarmsDb import Farm, FarmsDb
+                               QGraphicsView, QLabel, QMainWindow, QWidget, QFormLayout,
+                               QGridLayout, QPushButton, QVBoxLayout, QSizePolicy, QLineEdit, QHBoxLayout, QSlider, QToolTip)
+from PySide6.QtGui import (QAction, QBrush, QImage, QKeySequence, QMouseEvent, QShortcut, QClipboard,
+                           QPixmap, QIcon)
+from types import MethodType
 from components import utils
+from components.FarmsDb import Farm, FarmsDb
+from components.vision import Vision
+from components.droid import Droid
+import time
+import pyautogui
+import numpy as np
+from components import QDispatcher
+QDispatcher.create(True)
+
 
 class FarmMarker(QGraphicsEllipseItem):
-    def __init__( self, farm:Farm, pos_in_map) -> None: 
-        super().__init__( )
+    def __init__(self, farm: Farm, pos_in_map) -> None:
+        super().__init__()
         self.set_position(pos_in_map)
-        self.farm : Farm = farm
+        self.farm: Farm = farm
         self.set_explored(False)
         self.setFlags(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
+        self.setToolTip(f"({self.farm.alliance}) {self.farm.name}\nLevel: {self.farm.level}")
 
     def set_position(self, pos_in_map):
         rect = QRect(pos_in_map[0] - 8, pos_in_map[1] - 8, 16, 16)
@@ -52,22 +54,25 @@ class FarmMarker(QGraphicsEllipseItem):
 
     def set_explored(self, was_explored: bool):
         if was_explored:
-            self._setBrushes( 
-                    QBrush(Qt.GlobalColor.blue),
-                    QBrush(Qt.GlobalColor.cyan) 
-                )
+            self._setBrushes(
+                QBrush(Qt.GlobalColor.blue),
+                QBrush(Qt.GlobalColor.cyan)
+            )
         else:
-            self._setBrushes( 
-                    QBrush(Qt.GlobalColor.blue),
-                    QBrush(Qt.GlobalColor.red) 
-                )
+            self._setBrushes(
+                QBrush(Qt.GlobalColor.blue),
+                QBrush(Qt.GlobalColor.red)
+            )
+
 
 class FixedSizeLabel(QLabel):
     fixedPolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-    def __init__(self, txt = None, parent =None  ):
-        super().__init__( )
+
+    def __init__(self, txt=None, parent=None):
+        super().__init__()
         self.setText(txt)
         self.setSizePolicy(self.fixedPolicy)
+
 
 class WidgetFarmsDisplay(QMainWindow):
     mouse_move_handler = None
@@ -76,53 +81,57 @@ class WidgetFarmsDisplay(QMainWindow):
     farms_map = None
     last_selected_marker: FarmMarker = None
     fixedPolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-    
 
-    def __init__(self, farmsdb) -> None: 
+    def __init__(self, farmsdb: FarmsDb) -> None:
         super().__init__()
         icon = QIcon(QPixmap('images/field.png'))
         win = self
         self.setWindowIcon(icon)
         self.map_size = (1200, 1200)
         self.farm_widgets: dict[tuple, FarmMarker] = {}
-        self.droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1))) 
-        self.farms = farmsdb
+        self.droid = Droid(Vision('BlueStacks App Player', (1, 35, 1, 1)))
+        self.farms: FarmsDb = farmsdb
         self.droid.vision.start()
 
         self.setWindowTitle("Farms display")
         self.setGeometry(0, 0, 800, 800)
-        
+
         # scene
         self.scene = QGraphicsScene()
         self.scene.setBackgroundBrush(QBrush(Qt.GlobalColor.black))
-        self.scene.setSceneRect(-5, -5, self.map_size[0] + 10, self.map_size[1]+10)
+        self.scene.setSceneRect(-5, -5, self.map_size[0] + 10, self.map_size[1] + 10)
         self.scene.mouseDoubleClickEvent = MethodType(WidgetFarmsDisplay.handle_mouse_double_click_on_scene, self)
         self.scene.mouseMoveEvent = MethodType(WidgetFarmsDisplay.handle_mouse_move_on_scene, self)
         self.scene.selectionChanged.connect(self.handle_scene_selectionChanged)
 
         # my marker
-        self.my_position = (600,600)
+        self.my_position = (600, 600)
         self.my_marker = FarmMarker(Farm(self.my_position, name='Me'), self.world_to_map(self.my_position))
         self.my_marker.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, False)
-        self.my_marker._setBrushes(QBrush(Qt.GlobalColor.green),QBrush(Qt.GlobalColor.green))
+        self.my_marker._setBrushes(QBrush(Qt.GlobalColor.green), QBrush(Qt.GlobalColor.green))
         self.scene.addItem(self.my_marker)
 
         # view
         self.view = QGraphicsView(self.scene, win)
         self.view.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.view.setDragMode(QGraphicsView.DragMode.RubberBandDrag)
-        self.view.setContentsMargins(0,0,0,0)
-        self.view.setGeometry(0, 0, self.scene.width()/2 + 2 , self.scene.height()/2 + 2 ) 
+        self.view.setContentsMargins(0, 0, 0, 0)
+        self.view.setGeometry(0, 0, self.scene.width() / 2 + 2, self.scene.height() / 2 + 2)
         self.view.setSceneRect(self.scene.sceneRect())
         self.view.scale(0.5, 0.5)
         self.view.setMouseTracking(True)
 
-        # layout 
+        # layout
         widget = QWidget(self)
-        self.side_gui = QVBoxLayout() 
+        self.side_gui = QVBoxLayout()
+
+        # button_attack_selected
+        self.button_reload_db = QPushButton(text="Reload DB")
+        self.button_reload_db.clicked.connect(self.reload_db)
+        self.side_gui.addWidget(self.button_reload_db)
 
         # label_cursor
-        self.label_cursor = FixedSizeLabel("Cursor: (0, 0)") 
+        self.label_cursor = FixedSizeLabel("Cursor: (0, 0)")
         self.side_gui.addWidget(self.label_cursor)
 
         # label_farms_selected
@@ -130,7 +139,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.side_gui.addWidget(self.label_farms_selected)
 
         # label_last_selected
-        self.label_last_selected = FixedSizeLabel("Last Selected: (0, 0)") 
+        self.label_last_selected = FixedSizeLabel("Last Selected: (0, 0)")
         self.side_gui.addWidget(self.label_last_selected)
 
         # button_attack_selected
@@ -152,7 +161,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.button_mark_explored = QPushButton(text='Mark Explored')
         self.button_mark_explored.clicked.connect(self.handle_mark_explored)
         self.side_gui.addWidget(self.button_mark_explored)
-         
+
         # X Y to add
         horiz = QHBoxLayout()
         self.side_gui.addLayout(horiz)
@@ -162,7 +171,7 @@ class WidgetFarmsDisplay(QMainWindow):
         self.ledit_y = QLineEdit('0')
         horiz.addWidget(FixedSizeLabel('Y:'))
         horiz.addWidget(self.ledit_y)
-         
+
         # button_add
         self.button_add = QPushButton(text='Add')
         self.button_add.clicked.connect(self.handle_add)
@@ -173,25 +182,31 @@ class WidgetFarmsDisplay(QMainWindow):
         self.button_remove.clicked.connect(self.handle_remove)
         self.side_gui.addWidget(self.button_remove)
 
-        # filter by level   
-        self.slider_filter_level = QSlider(Qt.Orientation.Horizontal) 
+        # filter by alliance
+        label_and_line = QHBoxLayout()
+        label_and_line.addWidget(FixedSizeLabel("Allys Excluded:"))
+        self.ledit_alliances_excluded = QLineEdit()
+        label_and_line.addWidget(self.ledit_alliances_excluded)
+        self.side_gui.addLayout(label_and_line)
+
+        # filter by level
+        self.slider_filter_level = QSlider(Qt.Orientation.Horizontal)
         self.slider_filter_level.label = FixedSizeLabel()
-        self.slider_filter_level.setRange(-1,25)
-        self.slider_filter_level.setValue(-1) 
+        self.slider_filter_level.setRange(-1, 25)
+        self.slider_filter_level.setValue(-1)
         self.slider_filter_level.valueChanged.connect(self.handle_filters_change)
         self.side_gui.addWidget(self.slider_filter_level.label)
         self.side_gui.addWidget(self.slider_filter_level)
-        
 
         # filter by distance
-        self.slider_filter_distance = QSlider(Qt.Orientation.Horizontal) 
+        self.slider_filter_distance = QSlider(Qt.Orientation.Horizontal)
         self.slider_filter_distance.label = FixedSizeLabel()
-        self.slider_filter_distance.valueChanged.connect(self.handle_filters_change)
-        self.slider_filter_distance.setRange(0,2000)
+        self.slider_filter_distance.setRange(0, 2000)
         self.slider_filter_distance.setValue(2000)
+        self.slider_filter_distance.valueChanged.connect(self.handle_filters_change)
         self.side_gui.addWidget(self.slider_filter_distance.label)
         self.side_gui.addWidget(self.slider_filter_distance)
-        
+
         # filler
         filler = QWidget()
         filler.sizePolicy().setVerticalStretch(1)
@@ -212,20 +227,26 @@ class WidgetFarmsDisplay(QMainWindow):
         self.update_map()
         self.handle_filters_change()
 
-    def handle_filters_change(self, arg1=None, arg2=None): 
+    def handle_filters_change(self, arg1=None, arg2=None):
         min_level = self.slider_filter_level.value()
         max_d = self.slider_filter_distance.value()
+        alliances = [a.strip() for a in self.ledit_alliances_excluded.text().split(',')]
         for pos, marker in self.farm_widgets.items():
-            d = utils.point_distance(self.my_position, pos )  
-            if d > max_d or  marker.farm.level < min_level:
-                marker.hide()
-            else:
+            d = utils.point_distance(self.my_position, pos)
+            included = \
+                d <= max_d \
+                and marker.farm.level >= min_level \
+                and not marker.farm.alliance in alliances
+
+            if included:
                 marker.show()
+            else:
+                marker.hide()
 
         self.slider_filter_distance.label.setText(f"Filter by distance: {max_d}")
         self.slider_filter_level.label.setText(f"Filter by level: {min_level}")
-    
-    def closeEvent(self, event ) -> None:
+
+    def closeEvent(self, event) -> None:
         exit()
         return super().closeEvent(event)
 
@@ -237,9 +258,9 @@ class WidgetFarmsDisplay(QMainWindow):
         self.my_marker.farm.position = pos
         mpos = self.world_to_map(pos)
         self.my_marker.set_position(mpos)
- 
-    def handle_mouse_move_on_scene(self, event: QGraphicsSceneMouseEvent): 
-        pos = self.map_to_world(event.scenePos().toTuple() )
+
+    def handle_mouse_move_on_scene(self, event: QGraphicsSceneMouseEvent):
+        pos = self.map_to_world(event.scenePos().toTuple())
         self.label_cursor.setText(f"Cursor: {pos}")
 
     def handle_add(self):
@@ -249,13 +270,12 @@ class WidgetFarmsDisplay(QMainWindow):
             newfarm = Farm((x, y))
             self.farms.add_farm(newfarm)
             if not newfarm.position in self.farm_widgets:
-                self.add_marker(newfarm) 
+                self.add_marker(newfarm)
             else:
                 self.farm_widgets[newfarm.position].farm = newfarm
             self.farms.save()
         except:
             pass
-       
 
     def handle_remove(self):
         changed = False
@@ -269,7 +289,7 @@ class WidgetFarmsDisplay(QMainWindow):
                     changed = True
                     it.hide()
         except:
-            pass 
+            pass
         if changed:
             self.farms.save()
 
@@ -293,9 +313,11 @@ class WidgetFarmsDisplay(QMainWindow):
 
     def handle_goto(self, checked):
         if self.last_selected_marker:
+            pos = pyautogui.position()
             ok = self.droid.go_to_location(self.last_selected_marker.farm.position)
-            if ok: 
+            if ok:
                 self.last_selected_marker.set_explored(True)
+            pyautogui.moveTo(pos)
 
     def world_to_map(self, pos):
         mw, mh = self.map_size
@@ -312,9 +334,9 @@ class WidgetFarmsDisplay(QMainWindow):
 
     def add_marker(self, farm):
         x, y = self.world_to_map(farm.position)
-        item = FarmMarker(farm, (x,y))  
+        item = FarmMarker(farm, (x, y))
 
-        def handleItemSelectedChanged(sender : FarmMarker, val):
+        def handleItemSelectedChanged(sender: FarmMarker, val):
             if val:
                 self.set_label_position(sender.farm.position)
                 self.last_selected_marker = sender
@@ -330,9 +352,9 @@ class WidgetFarmsDisplay(QMainWindow):
         for it in self.farm_widgets.values():
             self.scene.removeItem(it)
         self.farm_widgets.clear()
-       
+
         for farm in self.farms:
-            self.add_marker(farm) 
+            self.add_marker(farm)
 
         self.scene.invalidate()
 
@@ -344,32 +366,48 @@ class WidgetFarmsDisplay(QMainWindow):
 
     def handle_attack_selected(self):
         from components.AutoFarmer import AutoFarmer
-        mbox = QMessageBox(parent=self, text="Need user confirmation?", standardButtons= QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No ) 
+        mbox = QMessageBox(parent=self, text="Need user confirmation?",
+                           standardButtons=QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         answer = mbox.exec()
         self.farmer = AutoFarmer(
             drodi=self.droid,
             farms_positions=[x.farm.position for x in self.scene.selectedItems()],
-            troops_count= 2,
-            min_stamina= 25,
+            troops_count=2,
+            min_stamina=25,
             user_confirmation_required=(answer == QMessageBox.StandardButton.Yes),
             max_cycles=4
         )
-        
+
     def handle_refresh_info(self):
-        pass
+        for farm in [it.farm for it in self.scene.selectedItems() if type(it) is FarmMarker]:
+            self.droid.go_to_location(farm.position)
+            time.sleep(0.1)
+            self.droid.click_in_range((0.439, 0.428), (0.509, 0.455))
+            cnt = 0
+            while cnt < 10:
+                cnt += 1
+                name, ally, pos = self.droid.recognition.read_nest_info()
+                if not (name is None or pos is None):
+                    print(f'Adding farm: {name} from {ally} at {pos}')
+                    self.farms.add_farm(Farm(pos, -1, alliance=ally, name=name))
+                    break
+                time.sleep(0.35)
+
+    def reload_db(self):
+        self.farms.reload()
+        self.update_map()
 
 ######################################################################################
+
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Manage farms')
-    parser.add_argument('farms_db', nargs='?', default='FarmsDb.json') 
-    ns = parser.parse_args() 
+    parser.add_argument('farms_db', nargs='?', default='FarmsDb_new.json')
+    ns = parser.parse_args()
 
     QApplication.setDoubleClickInterval(250)
     win = WidgetFarmsDisplay(FarmsDb(ns.farms_db))
     win.show()
     QDispatcher.exec()
     exit()
-
- 

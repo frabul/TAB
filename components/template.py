@@ -11,7 +11,7 @@ class info:
         self.x = x
         self.y = y
         self.score = score
-
+        self.arr = np.array([x,y])
     def __str__(self):
         return f"{{{self.x}, {self.y}, {self.score} }}"
 
@@ -21,6 +21,7 @@ class Template:
     top_left = 0
     bot_right = 0
     rect = (0, 0, 0, 0)
+    max_hits_count_safe_limit = 50
 
     def __init__(self, name: str, topleft, botright, score_min=0.90) -> None:
         self.name: str = name
@@ -135,31 +136,50 @@ class Template:
             truth_table = (1 - mat) > self.score_min
 
         hits = np.where(truth_table)
+        if len(hits) > self.max_hits_count_safe_limit:
+            print(f"Error! too many hits for template {self.name}.")
+            return []
+ 
+        coordinates = zip(hits[0], hits[1]) 
         infos = []
-
-        coordinates = list(zip(hits[0], hits[1]))
         for hit in coordinates:
             infos.append(info(x=hit[1], y=hit[0], score=score[hit[0]][hit[1]]))
-
+ 
         # scrematura doppioni
         templateSize = vision.point_su_to_px(self.rect[2:4])
         minDist = math.sqrt(templateSize[0]**2 + templateSize[1]**2)
 
-        def distance(a: info, b: info):
-            return math.sqrt((a.x - b.x)**2 + (a.y - b.y)**2)
+        #$def distance(a: info, b: info):
+        #    return math.sqrt((a.x - b.x)**2 + (a.y - b.y)**2)
+        #def distance(a: info, b: info):
+        #    return  np.linalg.norm(b.arr-a.arr)
+        def distance(a: info, b: np.ndarray):
+            return  np.linalg.norm(b-a.arr)
+       
+        class group_t(list):
+            def append(self, __object: info) -> None: 
+                retval = super().append(__object) 
+                self.center = np.array(
+                    [np.average(np.array([el.x for el in self])),
+                    np.average(np.array([el.y for el in self]))]
+                )
+                return retval
 
-        groups: list[list[info]] = []
+        groups: list[group_t[info]] = []
+
         for to_add in infos:
             added = False
-            for group in groups:
-                if not added:
-                    for elem in group:
-                        if distance(to_add, elem) < minDist:
-                            group.append(to_add)
-                            added = True
-                            break
+            for group in groups: 
+                    #for elem in group:
+                if distance(to_add, group.center) < minDist:
+                    added = True
+                    group.append(to_add)  
+                    break
+
             if not added:
-                groups.append([to_add, ])
+                g = group_t( )
+                g.append(to_add)
+                groups.append(g)
 
         # search max for each group
         results: list[info] = []

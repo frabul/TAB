@@ -27,7 +27,7 @@ def pause_loop():
         print("Resuming...")
 time.sleep(1)
 while True: 
-    name, ally, location = recognition.read_location_info() 
+    name, ally, location = recognition.read_nest_info() 
     if (name is None or location is None):
         pass
     else:
