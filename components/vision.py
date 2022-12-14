@@ -5,7 +5,7 @@ import win32con
 from threading import Thread, Lock 
 import pytesseract 
 
-pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe' 
+#pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe' 
 
 class Vision:
     # threading properties

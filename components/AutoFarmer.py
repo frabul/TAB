@@ -29,7 +29,7 @@ class Stages:
 
 class AutoFarmer:
 
-    def __init__(self, droid: Droid, farms_positions: list = None, troops_count=4, min_stamina=40, user_confirmation_required=False, max_cycles=2) -> None:
+    def __init__(self, droid: Droid, farms_positions: list = None, troops_count=4, min_stamina=40, user_confirmation_required=False, max_cycles=2, only_explore=True) -> None:
         self.min_stamina = min_stamina
         self.initial_troops = troops_count
         self.troops_count = troops_count
@@ -45,6 +45,8 @@ class AutoFarmer:
         self.stage = [Stages.unknown, Stages.idle, Stages.unknown, Stages.unknown]
         self.pause = False
         self.terminate = False
+        self.only_explore = only_explore
+
         self.stage_decisions = {
             Stages.unknown: self.press_esc,
             Stages.inside: self.droid.go_outside,
@@ -122,6 +124,8 @@ class AutoFarmer:
             self.terminate = True 
         def toggle_pause():
             self.pause = not self.pause 
+            print(f'pause is now {self.pause}')
+            
         def toggle_confirm_required():
             self.need_user_confirmation = not self.need_user_confirmation
             print(f'need_user_confirmation is now {self.need_user_confirmation}')
@@ -205,16 +209,23 @@ class AutoFarmer:
                 self.droid.activate_win()
                 self.droid.go_to_location(fpos)
                 sleep(0.5)
+                
                 # click farm
                 self.droid.click_in_range((0.42, 0.431), (0.516, 0.464), delay_after=0.6)
-                # click attack
-                self.droid.click_in_range((0.556, 0.607), (0.614, 0.638), delay_after=0.6)
-
-                if self.droid.recognition.is_troop_selection_gump():
-                    self.stage[1] = Stages.pick_troop
-                else:
-                    # if no gump go to next farm
+                if self.only_explore:
+                    self.droid.click_in_range((0.457, 0.632),(0.489, 0.652), delay_after=0.5) #click explore bubble
+                    self.droid.click_in_range((0.417, 0.608),(0.498, 0.631), delay_after=0.35) #click confirmation
                     self.farms_attacked += 1
+                    self.stage[1] = Stages.idle
+                else:
+                    # click attack
+                    self.droid.click_in_range((0.556, 0.607), (0.614, 0.638), delay_after=0.6)
+                    
+                    if self.droid.recognition.is_troop_selection_gump():
+                        self.stage[1] = Stages.pick_troop
+                    else:
+                        # if no gump go to next farm
+                        self.farms_attacked += 1
         else:
             sleep(1.5)
 

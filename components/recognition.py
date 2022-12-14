@@ -8,7 +8,7 @@ from .templates import Templates
 from . import QImageViewer
 from . import utils
 
-pytesseract.pytesseract.tesseract_cmd = 'D:\\Tools\\Tesseract\\tesseract.exe'
+#pytesseract.pytesseract.tesseract_cmd = 'e:\\Tools\\Tesseract\\tesseract.exe'
 debug = False
 
 
@@ -220,7 +220,7 @@ class Recognition:
         return None
 
     @staticmethod
-    def read_small_white_text(locImg: cv2.Mat, resize_factor=2, threshold=70, dilate_size=None, chars_allowed='', margin=5) -> str:
+    def read_small_white_text(locImg, resize_factor=2, threshold=70, dilate_size=None, chars_allowed='', margin=5) -> str:
         img = locImg.copy()
         img = cv2.resize(img, (img.shape[1] * resize_factor, img.shape[0] * resize_factor))
         img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
