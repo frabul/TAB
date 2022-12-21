@@ -106,9 +106,9 @@ class Droid:
         pyautogui.moveTo(pos)
         sleep(0.1)
         pyautogui.keyDown('ctrl')
-        for x in range(10):
+        for x in range(13):
             sleep(0.1)
-            pyautogui.scroll(-100)
+            pyautogui.scroll(-200)
             time.sleep(0.6)
         pyautogui.keyUp('ctrl')
 

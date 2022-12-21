@@ -35,7 +35,7 @@
          175
       ],
       "level": 1,
-      "name": "Looklikemap",
+      "name": "Looklikeman",
       "alliance": null,
       "last_raid": "00010101000000"
    },
@@ -445,8 +445,8 @@
          120
       ],
       "level": 1,
-      "name": "te",
-      "alliance": null,
+      "name": "AMB",
+      "alliance": "APA",
       "last_raid": "00010101000000"
    },
    {
@@ -615,7 +615,7 @@
          71
       ],
       "level": 1,
-      "name": "il",
+      "name": "easyzoro",
       "alliance": null,
       "last_raid": "00010101000000"
    },
@@ -635,7 +635,7 @@
          236
       ],
       "level": 1,
-      "name": "Stitch = \u00ab",
+      "name": "Stitch",
       "alliance": "FMA",
       "last_raid": "00010101000000"
    },
@@ -675,7 +675,7 @@
          29
       ],
       "level": 1,
-      "name": "Hanni Myst",
+      "name": "Hanni",
       "alliance": "SHR",
       "last_raid": "00010101000000"
    },
@@ -825,7 +825,7 @@
          133
       ],
       "level": 1,
-      "name": "Jlexuy",
+      "name": "lexus",
       "alliance": null,
       "last_raid": "00010101000000"
    },
@@ -855,7 +855,7 @@
          244
       ],
       "level": 1,
-      "name": "Breizhoneig",
+      "name": "Breizhonejg",
       "alliance": null,
       "last_raid": "00010101000000"
    },
@@ -985,7 +985,7 @@
          317
       ],
       "level": 1,
-      "name": "Claudio1981",
+      "name": "Claudio1981 *",
       "alliance": "RaG",
       "last_raid": "00010101000000"
    },
@@ -995,7 +995,7 @@
          277
       ],
       "level": 1,
-      "name": "flanvenb",
+      "name": "Qannenb",
       "alliance": null,
       "last_raid": "00010101000000"
    },
@@ -1036,6 +1036,3786 @@
       ],
       "level": 1,
       "name": "DRACULLA",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         259,
+         44
+      ],
+      "level": 1,
+      "name": "Sxxxil",
+      "alliance": "ThA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         465,
+         236
+      ],
+      "level": 1,
+      "name": "Stitch",
+      "alliance": "FMA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         455,
+         289
+      ],
+      "level": 1,
+      "name": "amz103",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         354,
+         205
+      ],
+      "level": 1,
+      "name": "PEPEL",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         189,
+         29
+      ],
+      "level": 1,
+      "name": "Hanni",
+      "alliance": "SHR",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         306,
+         204
+      ],
+      "level": 1,
+      "name": "Constance",
+      "alliance": "vkb",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         181,
+         79
+      ],
+      "level": 1,
+      "name": "ese S&S",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1,
+         79
+      ],
+      "level": 1,
+      "name": "tobi",
+      "alliance": "fat",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         322,
+         258
+      ],
+      "level": 1,
+      "name": "Ruler6311B4CCI",
+      "alliance": "CMQ",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         389,
+         329
+      ],
+      "level": 1,
+      "name": "Kroshka",
+      "alliance": "Che",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         517,
+         45
+      ],
+      "level": 1,
+      "name": "XXX",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         16,
+         128
+      ],
+      "level": 1,
+      "name": "ManviwiKka",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         421,
+         428
+      ],
+      "level": 1,
+      "name": "9 DeaMooN 9",
+      "alliance": "ZaF",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         10,
+         40
+      ],
+      "level": 1,
+      "name": "DonP",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         13,
+         77
+      ],
+      "level": 1,
+      "name": "Ruler63540950",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         97,
+         162
+      ],
+      "level": 1,
+      "name": "Twilight",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         338,
+         417
+      ],
+      "level": 1,
+      "name": "leya",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         382,
+         457
+      ],
+      "level": 1,
+      "name": "Newni",
+      "alliance": "Che",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         453,
+         530
+      ],
+      "level": 1,
+      "name": "Sworben",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         258,
+         346
+      ],
+      "level": 1,
+      "name": "chubr",
+      "alliance": "CMQ",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         258,
+         306
+      ],
+      "level": 1,
+      "name": "chubr",
+      "alliance": "CMQ",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         258,
+         350
+      ],
+      "level": 1,
+      "name": "hatchi",
+      "alliance": "CMQ",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         271,
+         364
+      ],
+      "level": 1,
+      "name": "mindxuntep",
+      "alliance": "CMQ",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         204,
+         311
+      ],
+      "level": 1,
+      "name": "w6nw Makcuma",
+      "alliance": "CMQ",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         331,
+         440
+      ],
+      "level": 1,
+      "name": "TASKA",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         463,
+         573
+      ],
+      "level": 1,
+      "name": " % &TEMECT",
+      "alliance": "TdS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         379,
+         498
+      ],
+      "level": 1,
+      "name": "Kakek BagBar *",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         109,
+         229
+      ],
+      "level": 1,
+      "name": "JokerZSmile",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         179,
+         323
+      ],
+      "level": 1,
+      "name": "koninaf",
+      "alliance": "FED",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         449,
+         587
+      ],
+      "level": 1,
+      "name": "ataka Ha 3TO",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         52,
+         200
+      ],
+      "level": 1,
+      "name": " ysuux",
+      "alliance": "SON",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         428,
+         585
+      ],
+      "level": 1,
+      "name": "Sugar Dida",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         357,
+         583
+      ],
+      "level": 1,
+      "name": "cunbubih payxom",
+      "alliance": "RaG",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         342,
+         531
+      ],
+      "level": 1,
+      "name": "Ugly Doll",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         63,
+         254
+      ],
+      "level": 1,
+      "name": "DecoDer",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         277,
+         468
+      ],
+      "level": 1,
+      "name": "wkonbunk 36",
+      "alliance": "TdS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         349,
+         544
+      ],
+      "level": 1,
+      "name": "Blood eagle",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         423,
+         625
+      ],
+      "level": 1,
+      "name": "DORAMI",
+      "alliance": "FMA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         240,
+         448
+      ],
+      "level": 1,
+      "name": "Enex 30",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         163,
+         383
+      ],
+      "level": 1,
+      "name": "ALFII",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         65,
+         291
+      ],
+      "level": 1,
+      "name": "Ruler6354098B",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         435,
+         674
+      ],
+      "level": 1,
+      "name": "Drwer Fr",
+      "alliance": "BAF",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         435,
+         676
+      ],
+      "level": 1,
+      "name": "Hulk",
+      "alliance": "BAF",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         437,
+         680
+      ],
+      "level": 1,
+      "name": "Tdklee fr",
+      "alliance": "BAF",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         368,
+         615
+      ],
+      "level": 1,
+      "name": "Hades",
+      "alliance": "ORD",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         458,
+         706
+      ],
+      "level": 1,
+      "name": "jettie",
+      "alliance": "DrA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         311,
+         562
+      ],
+      "level": 1,
+      "name": "witcher",
+      "alliance": "DRM",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         399,
+         655
+      ],
+      "level": 1,
+      "name": "lele2312 *",
+      "alliance": "Mor",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         62,
+         339
+      ],
+      "level": 1,
+      "name": "Alex112",
+      "alliance": "Yiw",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         50,
+         450
+      ],
+      "level": 1,
+      "name": "inuyasha plays ~*~ \u2014 \u00a9",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         50,
+         350
+      ],
+      "level": 1,
+      "name": "inuyasha plays",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         207,
+         503
+      ],
+      "level": 1,
+      "name": "Grayfox",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         264,
+         562
+      ],
+      "level": 1,
+      "name": "thjpurs",
+      "alliance": "RaG",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         266,
+         566
+      ],
+      "level": 1,
+      "name": "Vautron \u2014",
+      "alliance": "RaG",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         264,
+         56
+      ],
+      "level": 1,
+      "name": "KY",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         236,
+         550
+      ],
+      "level": 1,
+      "name": "Labode",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         206,
+         523
+      ],
+      "level": 1,
+      "name": "eghall",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         302,
+         618
+      ],
+      "level": 1,
+      "name": "Laurent5555",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         73,
+         393
+      ],
+      "level": 1,
+      "name": "Chiara",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         429,
+         750
+      ],
+      "level": 1,
+      "name": "LeChnao",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         154,
+         484
+      ],
+      "level": 1,
+      "name": "manu12",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         430,
+         760
+      ],
+      "level": 1,
+      "name": "k ffs zzz vh",
+      "alliance": "PSA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         436,
+         763
+      ],
+      "level": 1,
+      "name": "jadounature2",
+      "alliance": "PSA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         30,
+         365
+      ],
+      "level": 1,
+      "name": "Ruler631237C4",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         64,
+         398
+      ],
+      "level": 1,
+      "name": "Mantuza",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         425,
+         756
+      ],
+      "level": 1,
+      "name": "deadshote",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         428,
+         767
+      ],
+      "level": 1,
+      "name": "MINHOtaure",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         344,
+         694
+      ],
+      "level": 1,
+      "name": "peffel",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         462,
+         808
+      ],
+      "level": 1,
+      "name": "Anita Shah",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         48,
+         401
+      ],
+      "level": 1,
+      "name": "Tomekk",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         446,
+         800
+      ],
+      "level": 1,
+      "name": "Manny",
+      "alliance": "TSS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         347,
+         733
+      ],
+      "level": 1,
+      "name": "Meeresleuchten",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         58,
+         455
+      ],
+      "level": 1,
+      "name": "Naples",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         276,
+         675
+      ],
+      "level": 1,
+      "name": "Namthar",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         384,
+         784
+      ],
+      "level": 1,
+      "name": "Vrokhan",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         59,
+         462
+      ],
+      "level": 1,
+      "name": "STALKER",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         234,
+         639
+      ],
+      "level": 1,
+      "name": "dsa",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         286,
+         687
+      ],
+      "level": 1,
+      "name": "ShamanTheBear",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         364,
+         775
+      ],
+      "level": 1,
+      "name": "Alien Ant Farm",
+      "alliance": "RaG",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         286,
+         719
+      ],
+      "level": 1,
+      "name": "Marie",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         323,
+         759
+      ],
+      "level": 1,
+      "name": "Alex aliyns",
+      "alliance": "TdS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         323,
+         789
+      ],
+      "level": 1,
+      "name": "Alex aliyns",
+      "alliance": "TdSs",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         180,
+         624
+      ],
+      "level": 1,
+      "name": "SALIGIA",
+      "alliance": "war",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         73,
+         516
+      ],
+      "level": 1,
+      "name": "XpulpixX",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         194,
+         642
+      ],
+      "level": 1,
+      "name": "vonne",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         157,
+         614
+      ],
+      "level": 1,
+      "name": "davide = @",
+      "alliance": "ITA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         328,
+         785
+      ],
+      "level": 1,
+      "name": "Sugar Doyok",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         290,
+         769
+      ],
+      "level": 1,
+      "name": "Woody",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         159,
+         643
+      ],
+      "level": 1,
+      "name": "ruler ivoxx",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         324,
+         813
+      ],
+      "level": 1,
+      "name": "Ruler6311D0B8",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         37,
+         552
+      ],
+      "level": 1,
+      "name": "redneck",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         92,
+         619
+      ],
+      "level": 1,
+      "name": "producing ants",
+      "alliance": "Dra",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         43,
+         574
+      ],
+      "level": 1,
+      "name": "Anarchy",
+      "alliance": "Ang",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         219,
+         754
+      ],
+      "level": 1,
+      "name": "madam",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         37,
+         579
+      ],
+      "level": 1,
+      "name": "Burilshik",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         116,
+         668
+      ],
+      "level": 1,
+      "name": "Angi001",
+      "alliance": "pon",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         199,
+         758
+      ],
+      "level": 1,
+      "name": " Sofi",
+      "alliance": "BAF",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         132,
+         695
+      ],
+      "level": 1,
+      "name": "Pekkz",
+      "alliance": "Wrd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         192,
+         695
+      ],
+      "level": 1,
+      "name": "Way JA",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         241,
+         803
+      ],
+      "level": 1,
+      "name": "DeViL78rus",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         55,
+         691
+      ],
+      "level": 1,
+      "name": "Hektik",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         55,
+         661
+      ],
+      "level": 1,
+      "name": "Hektik",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         131,
+         744
+      ],
+      "level": 1,
+      "name": "AnthillLegend",
+      "alliance": "HxH",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         181,
+         744
+      ],
+      "level": 1,
+      "name": "AnthillLegend _",
+      "alliance": "HxH",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         99,
+         734
+      ],
+      "level": 1,
+      "name": "Ruleringking1999",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         23,
+         671
+      ],
+      "level": 1,
+      "name": "Harshi",
+      "alliance": "APA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         62,
+         712
+      ],
+      "level": 1,
+      "name": "Starbugs",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         62,
+         799
+      ],
+      "level": 1,
+      "name": "Mori mori",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         33,
+         788
+      ],
+      "level": 1,
+      "name": "Waschmaschine",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         29,
+         823
+      ],
+      "level": 1,
+      "name": "Vaatis53",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         58,
+         937
+      ],
+      "level": 1,
+      "name": "Antman3521 &",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         306,
+         1198
+      ],
+      "level": 1,
+      "name": "Med",
+      "alliance": "Tun",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         83,
+         989
+      ],
+      "level": 1,
+      "name": "AnHywKka",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         137,
+         1047
+      ],
+      "level": 1,
+      "name": "valala",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         115,
+         1034
+      ],
+      "level": 1,
+      "name": "Annchen",
+      "alliance": "sGz",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         118,
+         1034
+      ],
+      "level": 1,
+      "name": "Annchen",
+      "alliance": "sGz",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         226,
+         1148
+      ],
+      "level": 1,
+      "name": "Deepbluefish",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         196,
+         1123
+      ],
+      "level": 1,
+      "name": "maxsky",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         160,
+         1092
+      ],
+      "level": 1,
+      "name": "Bernhard 69",
+      "alliance": "Wrd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         47,
+         1094
+      ],
+      "level": 1,
+      "name": "tangolima",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         47,
+         1004
+      ],
+      "level": 1,
+      "name": "tangolima",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         178,
+         1142
+      ],
+      "level": 1,
+      "name": " Overlord",
+      "alliance": "UAa",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         121,
+         1109
+      ],
+      "level": 1,
+      "name": "WytHuk",
+      "alliance": "IAU",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         37,
+         1030
+      ],
+      "level": 1,
+      "name": "astaroth27",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         189,
+         1180
+      ],
+      "level": 1,
+      "name": "ObviousPrime",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         20,
+         1018
+      ],
+      "level": 1,
+      "name": "Ant and Ant",
+      "alliance": "Dra",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         161,
+         1161
+      ],
+      "level": 1,
+      "name": "Lord Vip\u00e9re",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         16,
+         1028
+      ],
+      "level": 1,
+      "name": "Kymbipexa",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         90,
+         1102
+      ],
+      "level": 1,
+      "name": "SandMonster",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         170,
+         1189
+      ],
+      "level": 1,
+      "name": "Tailers",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         69,
+         1112
+      ],
+      "level": 1,
+      "name": "Sector",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         189,
+         842
+      ],
+      "level": 1,
+      "name": "RuNik",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         425,
+         1083
+      ],
+      "level": 1,
+      "name": "BuKktop 80",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         325,
+         994
+      ],
+      "level": 1,
+      "name": "Sway",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         411,
+         1084
+      ],
+      "level": 1,
+      "name": "JulianTester",
+      "alliance": "Dra",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         241,
+         917
+      ],
+      "level": 1,
+      "name": "AHTOXA",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         424,
+         1101
+      ],
+      "level": 1,
+      "name": "flofreywi",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         346,
+         1029
+      ],
+      "level": 1,
+      "name": "Butzimasu",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         212,
+         917
+      ],
+      "level": 1,
+      "name": "Promt",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         73,
+         781
+      ],
+      "level": 1,
+      "name": "Ruler63124785",
+      "alliance": "DrA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         407,
+         1115
+      ],
+      "level": 1,
+      "name": "Giftzwerg",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         216,
+         931
+      ],
+      "level": 1,
+      "name": "ashburn",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         255,
+         966
+      ],
+      "level": 1,
+      "name": "Ghosstt",
+      "alliance": "PSA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         333,
+         1046
+      ],
+      "level": 1,
+      "name": "Baco",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         407,
+         11
+      ],
+      "level": 1,
+      "name": "Giftzwerg",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         316,
+         1037
+      ],
+      "level": 1,
+      "name": "LEXX",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         468,
+         1189
+      ],
+      "level": 1,
+      "name": "C130947r4",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         243,
+         990
+      ],
+      "level": 1,
+      "name": "Rav\u00e9on",
+      "alliance": "Xye",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         308,
+         1056
+      ],
+      "level": 1,
+      "name": "big boss",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         339,
+         1085
+      ],
+      "level": 1,
+      "name": "RattyNation",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         444,
+         1190
+      ],
+      "level": 1,
+      "name": "Ruler63125DAC.",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         225,
+         977
+      ],
+      "level": 1,
+      "name": "cheshiris",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         313,
+         1066
+      ],
+      "level": 1,
+      "name": "Mrpox1",
+      "alliance": "BAF",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         337,
+         1100
+      ],
+      "level": 1,
+      "name": "PSchneider",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         238,
+         1013
+      ],
+      "level": 1,
+      "name": "Ruler63128113",
+      "alliance": "DrA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         39,
+         820
+      ],
+      "level": 1,
+      "name": "Bete",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         403,
+         1198
+      ],
+      "level": 1,
+      "name": "Deluxe84",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         239,
+         1039
+      ],
+      "level": 1,
+      "name": "killerdragon27",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         34,
+         839
+      ],
+      "level": 1,
+      "name": "Ruler6311B4CC",
+      "alliance": "Xye",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         385,
+         1196
+      ],
+      "level": 1,
+      "name": "beecks",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         86,
+         907
+      ],
+      "level": 1,
+      "name": "MexaKoT",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         372,
+         1197
+      ],
+      "level": 1,
+      "name": "Hanuman",
+      "alliance": "FMS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         372,
+         1107
+      ],
+      "level": 1,
+      "name": "Hanuman",
+      "alliance": "FMS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         20,
+         854
+      ],
+      "level": 1,
+      "name": " -F=\u2014",
+      "alliance": "PSA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         20,
+         864
+      ],
+      "level": 1,
+      "name": " =",
+      "alliance": "PSA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         83,
+         918
+      ],
+      "level": 1,
+      "name": "Newb",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         283,
+         1117
+      ],
+      "level": 1,
+      "name": "HapiowKxads",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         144,
+         981
+      ],
+      "level": 1,
+      "name": "mp3shkka",
+      "alliance": "PSA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         121,
+         963
+      ],
+      "level": 1,
+      "name": "Ship King",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         264,
+         1109
+      ],
+      "level": 1,
+      "name": "BekloppterPanda",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         139,
+         984
+      ],
+      "level": 1,
+      "name": "JuraCatYt",
+      "alliance": "Dra",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         192,
+         1044
+      ],
+      "level": 1,
+      "name": "Wlquiorra",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         329,
+         1182
+      ],
+      "level": 1,
+      "name": "Ruler6311C30B",
+      "alliance": "KOR",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         67,
+         978
+      ],
+      "level": 1,
+      "name": "Lily *",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1164,
+         83
+      ],
+      "level": 1,
+      "name": "eyk",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1197,
+         120
+      ],
+      "level": 1,
+      "name": "wolf",
+      "alliance": "FAE",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1119,
+         52
+      ],
+      "level": 1,
+      "name": "Dav",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1149,
+         81
+      ],
+      "level": 1,
+      "name": "Ruler631216DE",
+      "alliance": "Wrd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1080,
+         27
+      ],
+      "level": 1,
+      "name": "STEPNOY",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1164,
+         123
+      ],
+      "level": 1,
+      "name": "OJIEHb",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1108,
+         78
+      ],
+      "level": 1,
+      "name": "glockstar",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1114,
+         91
+      ],
+      "level": 1,
+      "name": "SANDRONE84",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1016,
+         20
+      ],
+      "level": 1,
+      "name": "Sugar Son",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1195,
+         135
+      ],
+      "level": 1,
+      "name": "619",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1135,
+         135
+      ],
+      "level": 1,
+      "name": "619",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1011,
+         28
+      ],
+      "level": 1,
+      "name": "vero",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1028,
+         54
+      ],
+      "level": 1,
+      "name": "Som Copaty",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1009,
+         46
+      ],
+      "level": 1,
+      "name": "MeFiStOfEl!",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1166,
+         203
+      ],
+      "level": 1,
+      "name": "Zahajin",
+      "alliance": "FED",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1178,
+         211
+      ],
+      "level": 1,
+      "name": "rs",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         994,
+         34
+      ],
+      "level": 1,
+      "name": "Hago npocto \u00bb",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1157,
+         205
+      ],
+      "level": 1,
+      "name": "IOnna",
+      "alliance": "BAF",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         961,
+         17
+      ],
+      "level": 1,
+      "name": "Grouick",
+      "alliance": "FED",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         966,
+         26
+      ],
+      "level": 1,
+      "name": "amirlul76",
+      "alliance": "Amy",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         935,
+         32
+      ],
+      "level": 1,
+      "name": "Dark Devil",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1103,
+         201
+      ],
+      "level": 1,
+      "name": "MrNice",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1128,
+         241
+      ],
+      "level": 1,
+      "name": "Ruler6311DA47",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         933,
+         60
+      ],
+      "level": 1,
+      "name": "gotti",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1016,
+         161
+      ],
+      "level": 1,
+      "name": "SlavikPRO55555",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1097,
+         239
+      ],
+      "level": 1,
+      "name": "jadou nature",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1057,
+         203
+      ],
+      "level": 1,
+      "name": "Ruler6311CB7F",
+      "alliance": "Wrd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1061,
+         213
+      ],
+      "level": 1,
+      "name": "SugarEvil",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         946,
+         106
+      ],
+      "level": 1,
+      "name": "MadreDio",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         929,
+         113
+      ],
+      "level": 1,
+      "name": "Faselo",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1156,
+         32
+      ],
+      "level": 1,
+      "name": "Santa Claus",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         920,
+         108
+      ],
+      "level": 1,
+      "name": "1921",
+      "alliance": "Tds",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1150,
+         333
+      ],
+      "level": 1,
+      "name": "Santa Claus",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         948,
+         148
+      ],
+      "level": 1,
+      "name": "fermanupat",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         81,
+         33
+      ],
+      "level": 1,
+      "name": "Lis",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         902,
+         119
+      ],
+      "level": 1,
+      "name": "Fie eo.",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         954,
+         188
+      ],
+      "level": 1,
+      "name": "manu",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         988,
+         233
+      ],
+      "level": 1,
+      "name": "Bianca993",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1117,
+         364
+      ],
+      "level": 1,
+      "name": "sam210239",
+      "alliance": "DrA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1061,
+         34
+      ],
+      "level": 1,
+      "name": "The Ruler",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1061,
+         314
+      ],
+      "level": 1,
+      "name": "The Ruler",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         997,
+         25
+      ],
+      "level": 1,
+      "name": "Haytemmm.",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         978,
+         241
+      ],
+      "level": 1,
+      "name": "AmeismeisAmeisme",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         997,
+         255
+      ],
+      "level": 1,
+      "name": "Haytemmm",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         993,
+         259
+      ],
+      "level": 1,
+      "name": "Wolf",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1190,
+         464
+      ],
+      "level": 1,
+      "name": "FekaYKT",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1190,
+         484
+      ],
+      "level": 1,
+      "name": "FekaYKT",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1071,
+         350
+      ],
+      "level": 1,
+      "name": "AzAKG",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1100,
+         464
+      ],
+      "level": 1,
+      "name": "FekaYKT",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1002,
+         289
+      ],
+      "level": 1,
+      "name": "Monster Spiler",
+      "alliance": "SCO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1120,
+         408
+      ],
+      "level": 1,
+      "name": "Niko",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1184,
+         472
+      ],
+      "level": 1,
+      "name": "nupat",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         821,
+         115
+      ],
+      "level": 1,
+      "name": "ninou",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         876,
+         185
+      ],
+      "level": 1,
+      "name": "mauddus",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1152,
+         467
+      ],
+      "level": 1,
+      "name": "Jomei",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1162,
+         473
+      ],
+      "level": 1,
+      "name": "Lauralissandro _",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         857,
+         1
+      ],
+      "level": 1,
+      "name": "Looklikeman",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1162,
+         467
+      ],
+      "level": 1,
+      "name": "Jomei",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1182,
+         467
+      ],
+      "level": 1,
+      "name": "Jomei \u00a9",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         891,
+         217
+      ],
+      "level": 1,
+      "name": "Cpt Gingerfist",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1027,
+         353
+      ],
+      "level": 1,
+      "name": "Varell",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1148,
+         497
+      ],
+      "level": 1,
+      "name": "Ctankep",
+      "alliance": "CMQ",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1005,
+         353
+      ],
+      "level": 1,
+      "name": "K@hiouni",
+      "alliance": "FMA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1023,
+         398
+      ],
+      "level": 1,
+      "name": "Agostino",
+      "alliance": "rus",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         881,
+         290
+      ],
+      "level": 1,
+      "name": "JOY",
+      "alliance": "HxH",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1176,
+         601
+      ],
+      "level": 1,
+      "name": "DolphinFury",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         5,
+         265
+      ],
+      "level": 1,
+      "name": "Dua Pacl",
+      "alliance": "An6",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         985,
+         442
+      ],
+      "level": 1,
+      "name": "Hesepcop",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1053,
+         523
+      ],
+      "level": 1,
+      "name": "Maheri222",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         983,
+         457
+      ],
+      "level": 1,
+      "name": "Schratcher",
+      "alliance": "APA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1093,
+         576
+      ],
+      "level": 1,
+      "name": "Bop",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1135,
+         628
+      ],
+      "level": 1,
+      "name": "Bostongeorge",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1149,
+         653
+      ],
+      "level": 1,
+      "name": "Bon Jovi",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         966,
+         475
+      ],
+      "level": 1,
+      "name": "Kiryl",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1055,
+         566
+      ],
+      "level": 1,
+      "name": "Badauz",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1050,
+         565
+      ],
+      "level": 1,
+      "name": "3N3MYy",
+      "alliance": "DEI",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1075,
+         591
+      ],
+      "level": 1,
+      "name": "Ruler63121352",
+      "alliance": "Wrd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1081,
+         603
+      ],
+      "level": 1,
+      "name": "Ruler123456789",
+      "alliance": "CMQ",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         85,
+         357
+      ],
+      "level": 1,
+      "name": "TheFurfan",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         915,
+         452
+      ],
+      "level": 1,
+      "name": "Tibsy",
+      "alliance": "Ang",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1155,
+         692
+      ],
+      "level": 1,
+      "name": "Natalia",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1195,
+         738
+      ],
+      "level": 1,
+      "name": "ZiGOtA",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         917,
+         463
+      ],
+      "level": 1,
+      "name": "Chaos",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1032,
+         592
+      ],
+      "level": 1,
+      "name": "frigo SPQ",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         883,
+         485
+      ],
+      "level": 1,
+      "name": "bicieee",
+      "alliance": "ITA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         876,
+         463
+      ],
+      "level": 1,
+      "name": "Barablas",
+      "alliance": "An5",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         98,
+         574
+      ],
+      "level": 1,
+      "name": "Jasio",
+      "alliance": "dzS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         982,
+         574
+      ],
+      "level": 1,
+      "name": "Jasio",
+      "alliance": "dzS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1081,
+         675
+      ],
+      "level": 1,
+      "name": "Karl6693",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1023,
+         620
+      ],
+      "level": 1,
+      "name": "Invalide2",
+      "alliance": "FED",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         927,
+         529
+      ],
+      "level": 1,
+      "name": "Hampelmann",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         837,
+         450
+      ],
+      "level": 1,
+      "name": "BabySSoft",
+      "alliance": "UAa",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         965,
+         584
+      ],
+      "level": 1,
+      "name": "DimanZenit1988",
+      "alliance": "Ang",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1116,
+         740
+      ],
+      "level": 1,
+      "name": "Crown Sinner",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         859,
+         509
+      ],
+      "level": 1,
+      "name": "Reaper",
+      "alliance": "QLU",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         966,
+         641
+      ],
+      "level": 1,
+      "name": "snan co6aka",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1037,
+         710
+      ],
+      "level": 1,
+      "name": "Emmi",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         870,
+         547
+      ],
+      "level": 1,
+      "name": "Typa",
+      "alliance": "APA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         952,
+         628
+      ],
+      "level": 1,
+      "name": "N3Il4p0w4",
+      "alliance": "Dra",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         975,
+         653
+      ],
+      "level": 1,
+      "name": "Balorso",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1138,
+         832
+      ],
+      "level": 1,
+      "name": "modra",
+      "alliance": "Amy",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1089,
+         792
+      ],
+      "level": 1,
+      "name": "Newna",
+      "alliance": "jum",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1066,
+         773
+      ],
+      "level": 1,
+      "name": "Esrenni",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         853,
+         570
+      ],
+      "level": 1,
+      "name": "Eupho",
+      "alliance": "DrA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         919,
+         634
+      ],
+      "level": 1,
+      "name": "qiang MT",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1015,
+         798
+      ],
+      "level": 1,
+      "name": "MARSUPILAMI ~~,",
+      "alliance": "FMA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1079,
+         800
+      ],
+      "level": 1,
+      "name": "aasunna",
+      "alliance": "UAa",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         982,
+         710
+      ],
+      "level": 1,
+      "name": "Hata",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1015,
+         738
+      ],
+      "level": 1,
+      "name": "MARSUPILAMI",
+      "alliance": "FMA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1145,
+         873
+      ],
+      "level": 1,
+      "name": "Isgramor",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         970,
+         704
+      ],
+      "level": 1,
+      "name": "Melorat",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         982,
+         0
+      ],
+      "level": 1,
+      "name": "H\u00e9ta",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         964,
+         701
+      ],
+      "level": 1,
+      "name": "Mad Dean",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         970,
+         708
+      ],
+      "level": 1,
+      "name": "Melorat",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         994,
+         730
+      ],
+      "level": 1,
+      "name": "Vilart",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         954,
+         701
+      ],
+      "level": 1,
+      "name": "meisi",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         951,
+         710
+      ],
+      "level": 1,
+      "name": "little sword",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         836,
+         597
+      ],
+      "level": 1,
+      "name": "Arizak",
+      "alliance": "psa",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         954,
+         735
+      ],
+      "level": 1,
+      "name": "Acta",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1068,
+         851
+      ],
+      "level": 1,
+      "name": "sigi",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         972,
+         758
+      ],
+      "level": 1,
+      "name": "Vero13123",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1180,
+         973
+      ],
+      "level": 1,
+      "name": "klikkii",
+      "alliance": "pon",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         942,
+         744
+      ],
+      "level": 1,
+      "name": "A01",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1136,
+         945
+      ],
+      "level": 1,
+      "name": "Noke",
+      "alliance": "Amy",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         904,
+         716
+      ],
+      "level": 1,
+      "name": "Bagum",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1141,
+         949
+      ],
+      "level": 1,
+      "name": "Lorlisay",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         900,
+         723
+      ],
+      "level": 1,
+      "name": "Okcana",
+      "alliance": "ttt",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         908,
+         731
+      ],
+      "level": 1,
+      "name": "MelleLee",
+      "alliance": "QLU",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1149,
+         969
+      ],
+      "level": 1,
+      "name": "Liza",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1049,
+         969
+      ],
+      "level": 1,
+      "name": "Liza",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         901,
+         729
+      ],
+      "level": 1,
+      "name": "Baba",
+      "alliance": "DrA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         906,
+         733
+      ],
+      "level": 1,
+      "name": "TKDGL",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         826,
+         661
+      ],
+      "level": 1,
+      "name": " ant nasty 5",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         834,
+         667
+      ],
+      "level": 1,
+      "name": "rexata",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         841,
+         674
+      ],
+      "level": 1,
+      "name": "Cenbeana",
+      "alliance": "Le0",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1145,
+         976
+      ],
+      "level": 1,
+      "name": "Toutoupacha",
+      "alliance": "RUS",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         818,
+         654
+      ],
+      "level": 1,
+      "name": "MsDimasik26",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         821,
+         658
+      ],
+      "level": 1,
+      "name": "Denaturov a",
+      "alliance": "Le0",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         826,
+         665
+      ],
+      "level": 1,
+      "name": "x ray",
+      "alliance": "Le0",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         826,
+         6
+      ],
+      "level": 1,
+      "name": "x ray",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         830,
+         668
+      ],
+      "level": 1,
+      "name": "Di721",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         817,
+         661
+      ],
+      "level": 1,
+      "name": "uunaBuKk",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         820,
+         663
+      ],
+      "level": 1,
+      "name": "Perpetually",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         826,
+         669
+      ],
+      "level": 1,
+      "name": "ilyaking0S",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         828,
+         669
+      ],
+      "level": 1,
+      "name": "Fierta",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         826,
+         671
+      ],
+      "level": 1,
+      "name": "@uepta",
+      "alliance": "Le0",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         834,
+         677
+      ],
+      "level": 1,
+      "name": "Blackbeard",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1077,
+         919
+      ],
+      "level": 1,
+      "name": "Dwarf",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         825,
+         674
+      ],
+      "level": 1,
+      "name": "Tommu",
+      "alliance": "Le0",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         829,
+         674
+      ],
+      "level": 1,
+      "name": "TheBigBoss",
+      "alliance": "Le0",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         827,
+         674
+      ],
+      "level": 1,
+      "name": "Xonepa",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         825,
+         6
+      ],
+      "level": 1,
+      "name": "Tommu",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         863,
+         711
+      ],
+      "level": 1,
+      "name": "Queen Z",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         822,
+         672
+      ],
+      "level": 1,
+      "name": "Mr Ant",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         818,
+         675
+      ],
+      "level": 1,
+      "name": "AnastasiiiaMK",
+      "alliance": "LeO",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         880,
+         739
+      ],
+      "level": 1,
+      "name": "BigAntwithbigass",
+      "alliance": "PSA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         899,
+         765
+      ],
+      "level": 1,
+      "name": "icelandfreak",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         815,
+         688
+      ],
+      "level": 1,
+      "name": "Vip157",
+      "alliance": "POC",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1171,
+         1045
+      ],
+      "level": 1,
+      "name": "Lady",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         829,
+         707
+      ],
+      "level": 1,
+      "name": " flomuk 8 ropax",
+      "alliance": "BPH",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         833,
+         710
+      ],
+      "level": 1,
+      "name": "Pobeda90",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1170,
+         1049
+      ],
+      "level": 1,
+      "name": "gibbon19",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         832,
+         726
+      ],
+      "level": 1,
+      "name": "Kaptur 956",
+      "alliance": "YiW",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         840,
+         736
+      ],
+      "level": 1,
+      "name": "\"a Hy6 \"",
+      "alliance": "YiW",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1153,
+         1062
+      ],
+      "level": 1,
+      "name": "XYNMAH",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         846,
+         759
+      ],
+      "level": 1,
+      "name": "Ruler6312815D",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1070,
+         982
+      ],
+      "level": 1,
+      "name": "Bini",
+      "alliance": "111",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1153,
+         162
+      ],
+      "level": 1,
+      "name": "XYNIMTAH",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1161,
+         1075
+      ],
+      "level": 1,
+      "name": "Ruler63121F50",
+      "alliance": "GPu",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         919,
+         839
+      ],
+      "level": 1,
+      "name": "H AMTARO",
+      "alliance": "FMA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1020,
+         935
+      ],
+      "level": 1,
+      "name": "Eagle King",
+      "alliance": "FRA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1170,
+         1087
+      ],
+      "level": 1,
+      "name": "Entant",
+      "alliance": "Xye",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1166,
+         1099
+      ],
+      "level": 1,
+      "name": "Yi se |.",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1146,
+         1077
+      ],
+      "level": 1,
+      "name": "Kanexn",
+      "alliance": "APA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         875,
+         815
+      ],
+      "level": 1,
+      "name": "Baneng",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         826,
+         786
+      ],
+      "level": 1,
+      "name": "December",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         988,
+         951
+      ],
+      "level": 1,
+      "name": " posHaa Mypawka",
+      "alliance": "Kul",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1169,
+         1129
+      ],
+      "level": 1,
+      "name": "Malu",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         869,
+         858
+      ],
+      "level": 1,
+      "name": "kif",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         964,
+         962
+      ],
+      "level": 1,
+      "name": "Radu",
+      "alliance": "PSA",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1071,
+         1067
+      ],
+      "level": 1,
+      "name": "Abend",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         961,
+         963
+      ],
+      "level": 1,
+      "name": "Lolojojoo",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1058,
+         106
+      ],
+      "level": 1,
+      "name": "lorbi",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1063,
+         1075
+      ],
+      "level": 1,
+      "name": "Ruler6311B01B",
+      "alliance": "An6",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1068,
+         1079
+      ],
+      "level": 1,
+      "name": "GustavoPizza",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         803,
+         827
+      ],
+      "level": 1,
+      "name": "Mik \u00ab+",
+      "alliance": "QLU",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1108,
+         1131
+      ],
+      "level": 1,
+      "name": "Merat",
+      "alliance": "fSF",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         840,
+         868
+      ],
+      "level": 1,
+      "name": "@underant",
+      "alliance": "asd",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         1141,
+         1185
+      ],
+      "level": 1,
+      "name": "Fanfan",
+      "alliance": "Mor",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         819,
+         874
+      ],
+      "level": 1,
+      "name": "Kelker",
+      "alliance": "AUM",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         842,
+         960
+      ],
+      "level": 1,
+      "name": "DeathGun",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         876,
+         997
+      ],
+      "level": 1,
+      "name": "ktrhjlouggf",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         996,
+         1123
+      ],
+      "level": 1,
+      "name": "Azziline",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         831,
+         964
+      ],
+      "level": 1,
+      "name": "Patxisto",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         831,
+         96
+      ],
+      "level": 1,
+      "name": "Patxisto",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         865,
+         1004
+      ],
+      "level": 1,
+      "name": "Baca",
+      "alliance": "far",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         905,
+         1060
+      ],
+      "level": 1,
+      "name": "Tarapun",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         984,
+         1170
+      ],
+      "level": 1,
+      "name": "Ruler63124705",
+      "alliance": "QLU",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         921,
+         1121
+      ],
+      "level": 1,
+      "name": "wiSeRioN",
+      "alliance": "Dra",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         964,
+         1176
+      ],
+      "level": 1,
+      "name": "LordMeruem",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         805,
+         1046
+      ],
+      "level": 1,
+      "name": "Ruler63120578",
+      "alliance": "Bla",
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         809,
+         1073
+      ],
+      "level": 1,
+      "name": "Nuisible",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         869,
+         1137
+      ],
+      "level": 1,
+      "name": "Rykan",
+      "alliance": null,
+      "last_raid": "00010101000000"
+   },
+   {
+      "position": [
+         844,
+         1168
+      ],
+      "level": 1,
+      "name": "AntyDavong",
       "alliance": null,
       "last_raid": "00010101000000"
    }

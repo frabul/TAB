@@ -231,12 +231,16 @@ class WidgetFarmsDisplay(QMainWindow):
         min_level = self.slider_filter_level.value()
         max_d = self.slider_filter_distance.value()
         alliances = [a.strip() for a in self.ledit_alliances_excluded.text().split(',')]
+        exclude_all_alliances = False
+        if '*' in alliances:
+            exclude_all_alliances = True
         for pos, marker in self.farm_widgets.items():
             d = utils.point_distance(self.my_position, pos)
             included = \
                 d <= max_d \
                 and marker.farm.level >= min_level \
-                and not marker.farm.alliance in alliances
+                and not marker.farm.alliance in alliances \
+                and not(exclude_all_alliances and marker.farm.alliance != None)
 
             if included:
                 marker.show()
