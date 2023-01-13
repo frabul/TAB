@@ -301,9 +301,11 @@ class WidgetFarmsDisplay(QMainWindow):
         positions = []
         for it in self.scene.selectedItems():
             if type(it) is FarmMarker:
-                positions.append(it.farm.position)
+                d = utils.point_distance(self.my_position, it.farm.position) 
+                positions.append((it.farm.position, d))
+        positions = sorted(positions, key=lambda p: p[1])
         clipboard = QApplication.clipboard()
-        clipboard.setText(str(positions)[1:-1])
+        clipboard.setText(str([e[0] for e in positions])[1:-1])
 
     def handle_unmark_explored(self, checked):
         for it in self.scene.selectedItems():

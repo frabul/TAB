@@ -14,8 +14,8 @@ farmer = AutoFarmer(
     droid,
     troops_count=4,
     max_cycles=1,
-    min_stamina=60,
-    user_confirmation_required=True,
+    min_stamina=30,
+    user_confirmation_required=False,
 )
 
 farmer.run()
